@@ -214,7 +214,7 @@ void Game::render() {
 	}
 	SDL_SetTextureBlendMode(chunkTexture, SDL_BLENDMODE_NONE);
 	SDL_SetTextureBlendMode(gameTexture, SDL_BLENDMODE_NONE);
-	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+	//SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 
 	
 
