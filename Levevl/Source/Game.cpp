@@ -13,6 +13,7 @@ SDL_Texture* Game::gameTexture = nullptr;
 int Game::mouseX = 0;
 int Game::mouseY = 0;
 bool Game::leftMouseButtonPressed = false;
+bool Game::rightMouseButtonPressed = false;
 bool Game::num1KeyPressed = false;
 bool Game::num2KeyPressed = false;
 bool Game::spaceKeyPressed = false;
@@ -90,6 +91,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height) {
 
 void Game::handleEvents() {
 	leftMouseButtonPressed = false;
+	rightMouseButtonPressed = false;
 	num1KeyPressed = false;
 	num2KeyPressed = false;
 	spaceKeyPressed = false;
@@ -104,7 +106,12 @@ void Game::handleEvents() {
 	case SDL_MOUSEBUTTONDOWN:
 		mouseX = event.button.x;
 		mouseY = event.button.y;
-		leftMouseButtonPressed = true;
+		if (event.button.button == SDL_BUTTON_LEFT) {
+			leftMouseButtonPressed = true;
+		}
+		else if (event.button.button == SDL_BUTTON_RIGHT) {
+			rightMouseButtonPressed = true;
+		}
 		break;
 	case SDL_KEYDOWN:
 		if (event.key.keysym.sym == SDLK_1) {
@@ -154,11 +161,11 @@ void Game::update() {
 		selectedChunk->Move(0, 1);
 	}
 	if (leftMouseButtonPressed) {
-		if (!selectedChunk->Edit(mouseX, mouseY)) {
+		if (!selectedChunk->Edit(mouseX, mouseY, 1)) {
 			bool b_hasFoundChunk = false;
 			for (int i = 0; i < MAX_CHUNK; i++) {
 				if (!chunks[i]) continue;
-				if (chunks[i]->Edit(mouseX, mouseY)) {
+				if (chunks[i]->Edit(mouseX, mouseY, 1)) {
 					selectedChunk = chunks[i];
 					b_hasFoundChunk = true;
 					break;
@@ -170,6 +177,17 @@ void Game::update() {
 						selectedChunk = chunks[i] = new Chunk(int(floor(mouseX / TILE_SIZE) * TILE_SIZE), int(floor(mouseY / TILE_SIZE) * TILE_SIZE));
 						break;
 					}
+				}
+			}
+		}
+	}
+	else if (rightMouseButtonPressed) {
+		if (!selectedChunk->Edit(mouseX, mouseY, 0)) {
+			for (int i = 0; i < MAX_CHUNK; i++) {
+				if (!chunks[i]) continue;
+				if (chunks[i]->Edit(mouseX, mouseY, 0)) {
+					selectedChunk = chunks[i];
+					break;
 				}
 			}
 		}

@@ -19,5 +19,5 @@ public:
 	void Fill(char value);
 	void DrawMap();
 	void Move(int x, int y);
-	int Edit(int mouseX, int mouseY);
+	int Edit(int mouseX, int mouseY, char value);
 };

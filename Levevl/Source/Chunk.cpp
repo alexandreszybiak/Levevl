@@ -43,11 +43,11 @@ void Chunk::Move(int x, int y) {
 	m_y += y * TILE_SIZE;
 }
 
-int Chunk::Edit(int mouseX, int mouseY) {
-	char tile_x = char(floor((mouseX - m_x) / TILE_SIZE));
-	char tile_y = char(floor((mouseY - m_y) / TILE_SIZE));
+int Chunk::Edit(int mouseX, int mouseY, char value) {
+	int tile_x = floor(float(mouseX - m_x) / TILE_SIZE);
+	int tile_y = floor(float(mouseY - m_y) / TILE_SIZE);
 	if (tile_x < 0 || tile_x >= m_width || tile_y < 0 || tile_y >= m_height)
 		return 0;
-	m_data[tile_x][tile_y] = 1;
+	m_data[tile_x][tile_y] = value;
 	return 1;
 }

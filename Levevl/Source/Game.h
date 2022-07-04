@@ -22,6 +22,7 @@ public:
 	SDL_Rect viewportRect;
 	static SDL_Texture* chunkTexture;
 	static bool leftMouseButtonPressed;
+	static bool rightMouseButtonPressed;
 	static bool num1KeyPressed;
 	static bool num2KeyPressed;
 	static bool spaceKeyPressed;
