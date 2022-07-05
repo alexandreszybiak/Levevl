@@ -55,8 +55,6 @@
     <Image Include="Assets\chunk_texture.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Assets\chunk_mask_tileset.png">
-      <Filter>Resource Files</Filter>
-    </Image>
+    <Image Include="Assets\chunk_mask_tileset.tga" />
   </ItemGroup>
 </Project>

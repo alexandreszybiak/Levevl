@@ -206,7 +206,7 @@
     <ClInclude Include="Source\TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Assets\chunk_mask_tileset.png" />
+    <Image Include="Assets\chunk_mask_tileset.tga" />
     <Image Include="Assets\chunk_texture.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
