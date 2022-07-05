@@ -85,7 +85,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height) {
 	}
 
 	chunkTexture = TextureManager::LoadTexture("Assets/chunk_texture.png");
-	chunkMaskTexture = TextureManager::LoadTexture("Assets/chunk_mask_tileset.png");
+	chunkMaskTexture = TextureManager::LoadTexture("Assets/chunk_mask_tileset.tga");
 	gameTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, 640, 360);
 	selectedChunk = chunks[0] = new Chunk(0, 0);
 	chunks[1] = new Chunk(6 * TILE_SIZE, 0);
@@ -212,31 +212,32 @@ void Game::update() {
 }
 
 void Game::render() {
+	SDL_BlendMode bm = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_ONE, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_ADD, SDL_BLENDFACTOR_ONE, SDL_BLENDFACTOR_ZERO, SDL_BLENDOPERATION_ADD);
+	SDL_BlendMode bm2 = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_DST_ALPHA, SDL_BLENDFACTOR_ONE_MINUS_DST_ALPHA, SDL_BLENDOPERATION_ADD, SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_ADD);
+	
 	// Pre-draw
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_RenderClear(renderer);
-
+	
 	// Begin render in texture
 	SDL_SetRenderTarget(renderer, gameTexture);
 	SDL_SetRenderDrawColor(renderer, 27, 28, 29, 255);
 	SDL_RenderClear(renderer);
-
-	// Render mask
-	SDL_BlendMode bm = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_ADD, SDL_BLENDFACTOR_ONE, SDL_BLENDFACTOR_ZERO, SDL_BLENDOPERATION_ADD);
+	
+	// Draw mask
 	SDL_SetTextureBlendMode(chunkMaskTexture, bm);
 	for (int i = 0; i < MAX_CHUNK; i++) {
 		if (chunks[i])
 			chunks[i]->DrawMask();
 	}
 
-	// Render everything else
-	SDL_BlendMode bm2 = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_DST_ALPHA, SDL_BLENDFACTOR_ONE_MINUS_DST_ALPHA, SDL_BLENDOPERATION_ADD, SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_ADD);
+	// Draw everything else
 	SDL_SetTextureBlendMode(chunkTexture, bm2);
 	for (int i = 0; i < MAX_CHUNK; i++) {
 		if (chunks[i])
 			chunks[i]->DrawMap();
-	}	
-
+	}
+	
 	// End draw
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderCopy(renderer, gameTexture, &viewportRect, &viewportRect);

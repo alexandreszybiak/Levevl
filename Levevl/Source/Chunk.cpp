@@ -43,10 +43,21 @@ void Chunk::DrawMap() {
 void Chunk::DrawMask() {
 	for (int column = 0; column < m_width; column++) {
 		for (int row = 0; row < m_height; row++) {
+			SDL_Rect rect = { 0,0,TILE_SIZE,TILE_SIZE };
+			// Look at neighbours horizontal
+			if (column + 1 < m_width && m_data[column + 1][row])
+				rect.x += TILE_SIZE;
+			if (column > 0 && m_data[column - 1][row])
+				rect.x += TILE_SIZE * 2;
+			// Look at neighbours vertical
+			if (row + 1 < m_height && m_data[column][row + 1])
+				rect.y += TILE_SIZE;
+			if (row > 0 && m_data[column][row - 1])
+				rect.y += TILE_SIZE * 2;
 			m_destinationRect.x = column * TILE_SIZE + m_x;
 			m_destinationRect.y = row * TILE_SIZE + m_y;
 			if (m_data[column][row]) {
-				TextureManager::Draw(m_maskTexture, m_emptyRect, m_destinationRect);
+				TextureManager::Draw(m_maskTexture, rect, m_destinationRect);
 			}
 		}
 	}

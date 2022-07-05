@@ -5,8 +5,8 @@ class Chunk {
 public:
 
 private:
-	static const int m_width = 5;
-	static const int m_height = 5;
+	static const int m_width = 8;
+	static const int m_height = 8;
 	SDL_Texture* m_texture;
 	SDL_Texture* m_maskTexture;
 	SDL_Rect m_emptyRect, m_brickRect, m_destinationRect;
