@@ -10,6 +10,7 @@ Chunk::Chunk(int x, int y) : m_x(0), m_y(0), m_data() {
 	m_x = x;
 	m_y = y;
 	m_texture = Game::chunkTexture;
+	m_maskTexture = Game::chunkMaskTexture;
 	m_emptyRect = { 0,0,TILE_SIZE,TILE_SIZE };
 	m_brickRect = { TILE_SIZE,0,TILE_SIZE,TILE_SIZE };
 	m_destinationRect = { 0,0,TILE_SIZE,TILE_SIZE };
@@ -34,6 +35,18 @@ void Chunk::DrawMap() {
 			}
 			else if (m_data[column][row] == 2) {
 				TextureManager::Draw(m_texture, m_brickRect, m_destinationRect);
+			}
+		}
+	}
+}
+
+void Chunk::DrawMask() {
+	for (int column = 0; column < m_width; column++) {
+		for (int row = 0; row < m_height; row++) {
+			m_destinationRect.x = column * TILE_SIZE + m_x;
+			m_destinationRect.y = row * TILE_SIZE + m_y;
+			if (m_data[column][row]) {
+				TextureManager::Draw(m_maskTexture, m_emptyRect, m_destinationRect);
 			}
 		}
 	}

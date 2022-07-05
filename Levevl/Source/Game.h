@@ -21,6 +21,7 @@ public:
 	static SDL_Texture* gameTexture;
 	SDL_Rect viewportRect;
 	static SDL_Texture* chunkTexture;
+	static SDL_Texture* chunkMaskTexture;
 	static bool leftMouseButtonPressed;
 	static bool rightMouseButtonPressed;
 	static bool num1KeyPressed;

@@ -9,6 +9,7 @@
 
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Texture* Game::chunkTexture = nullptr;
+SDL_Texture* Game::chunkMaskTexture = nullptr;
 SDL_Texture* Game::gameTexture = nullptr;
 int Game::mouseX = 0;
 int Game::mouseY = 0;
@@ -84,6 +85,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height) {
 	}
 
 	chunkTexture = TextureManager::LoadTexture("Assets/chunk_texture.png");
+	chunkMaskTexture = TextureManager::LoadTexture("Assets/chunk_mask_tileset.png");
 	gameTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, 640, 360);
 	selectedChunk = chunks[0] = new Chunk(0, 0);
 	chunks[1] = new Chunk(6 * TILE_SIZE, 0);
@@ -210,38 +212,35 @@ void Game::update() {
 }
 
 void Game::render() {
+	// Pre-draw
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_RenderClear(renderer);
-	
-	
+
+	// Begin render in texture
 	SDL_SetRenderTarget(renderer, gameTexture);
 	SDL_SetRenderDrawColor(renderer, 27, 28, 29, 255);
-	SDL_RenderFillRect(renderer, &viewportRect);
 	SDL_RenderClear(renderer);
 
-	SDL_Rect rect = { 24,24,24,24 };
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	// Render mask
 	SDL_BlendMode bm = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_ADD, SDL_BLENDFACTOR_ONE, SDL_BLENDFACTOR_ZERO, SDL_BLENDOPERATION_ADD);
-	SDL_SetRenderDrawBlendMode(renderer, bm);
-	SDL_RenderFillRect(renderer, &rect);
+	SDL_SetTextureBlendMode(chunkMaskTexture, bm);
+	for (int i = 0; i < MAX_CHUNK; i++) {
+		if (chunks[i])
+			chunks[i]->DrawMask();
+	}
+
+	// Render everything else
 	SDL_BlendMode bm2 = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_DST_ALPHA, SDL_BLENDFACTOR_ONE_MINUS_DST_ALPHA, SDL_BLENDOPERATION_ADD, SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_ADD);
 	SDL_SetTextureBlendMode(chunkTexture, bm2);
 	for (int i = 0; i < MAX_CHUNK; i++) {
 		if (chunks[i])
 			chunks[i]->DrawMap();
-	}
-	SDL_SetTextureBlendMode(chunkTexture, SDL_BLENDMODE_NONE);
-	SDL_SetTextureBlendMode(gameTexture, SDL_BLENDMODE_NONE);
-	//SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+	}	
 
-	
-
+	// End draw
 	SDL_SetRenderTarget(renderer, NULL);
-
 	SDL_RenderCopy(renderer, gameTexture, &viewportRect, &viewportRect);
-
 	SDL_RenderPresent(renderer);
-	//isRunning = false;
 }
 
 void Game::clean() {
