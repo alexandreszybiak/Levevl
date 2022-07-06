@@ -3,6 +3,7 @@
 #include "SDL_image.h"
 #include "TextureManager.h"
 #include "Chunk.h"
+#include "Map.h"
 #include "Game.h"
 
 
@@ -10,6 +11,7 @@
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Texture* Game::chunkTexture = nullptr;
 SDL_Texture* Game::chunkMaskTexture = nullptr;
+SDL_Texture* Game::worldTexture = nullptr;
 SDL_Texture* Game::gameTexture = nullptr;
 int Game::mouseX = 0;
 int Game::mouseY = 0;
@@ -26,6 +28,8 @@ bool Game::fullscreenKeyPressed = false;
 
 Chunk* chunks[] = { nullptr };
 Chunk* selectedChunk = nullptr;
+
+Map* Game::worldMap = nullptr;
 
 Game::Game() {
 }
@@ -86,9 +90,11 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height) {
 
 	chunkTexture = TextureManager::LoadTexture("Assets/chunk_texture.png");
 	chunkMaskTexture = TextureManager::LoadTexture("Assets/chunk_mask_tileset.tga");
+	worldTexture = TextureManager::LoadTexture("Assets/world_texture.png");
 	gameTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, 640, 360);
-	selectedChunk = chunks[0] = new Chunk(0, 0);
-	chunks[1] = new Chunk(6 * TILE_SIZE, 0);
+	worldMap = new Map();
+	selectedChunk = chunks[0] = new Chunk(TILE_SIZE, TILE_SIZE);
+	chunks[1] = new Chunk(9 * TILE_SIZE, TILE_SIZE);
 }
 
 void Game::handleEvents() {
@@ -174,12 +180,13 @@ void Game::update() {
 				}
 			}
 			if (!b_hasFoundChunk) {
-				for (int i = 0; i < MAX_CHUNK; i++) {
+				worldMap->Edit(mouseX, mouseY, 1);
+				/*for (int i = 0; i < max_chunk; i++) {
 					if (!chunks[i]) {
-						selectedChunk = chunks[i] = new Chunk(int(floor(mouseX / TILE_SIZE) * TILE_SIZE), int(floor(mouseY / TILE_SIZE) * TILE_SIZE));
+						selectedchunk = chunks[i] = new chunk(int(floor(mousex / tile_size) * tile_size), int(floor(mousey / tile_size) * tile_size));
 						break;
 					}
-				}
+				}*/
 			}
 		}
 	}
@@ -223,6 +230,9 @@ void Game::render() {
 	SDL_SetRenderTarget(renderer, gameTexture);
 	SDL_SetRenderDrawColor(renderer, 27, 28, 29, 255);
 	SDL_RenderClear(renderer);
+
+	//Draw world map
+	worldMap->DrawMap();
 	
 	// Draw mask
 	SDL_SetTextureBlendMode(chunkMaskTexture, bm);

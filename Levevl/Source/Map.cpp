@@ -6,14 +6,12 @@
 #include "math.h"
 
 Map::Map() {
-	brick = TextureManager::LoadTexture("Assets/brick.png");
-	emptyRect = { 0,0,TILE_SIZE,TILE_SIZE };
-	brickRect = { TILE_SIZE,0,TILE_SIZE,TILE_SIZE };
-	destinationRect = { 0,0,72,72 };
+	brickRect = { 0,0,TILE_SIZE,TILE_SIZE };
+	destinationRect = { 0,0,TILE_SIZE,TILE_SIZE };
 
-	int defaultLevelData[MAP_HEIGHT][MAP_WIDTH] = { 0 };
+	int defaultLevelData[MAP_WIDTH][MAP_HEIGHT] = { 0 };
 
-	LoadMap();
+	//LoadMap();
 }
 
 Map::~Map() {
@@ -22,8 +20,8 @@ Map::~Map() {
 
 void Map::Update() {
 	if (Game::leftMouseButtonPressed) {
-		map[int(floor(Game::mouseY / TILE_RENDER_SIZE))][int(floor(Game::mouseX / TILE_RENDER_SIZE))] = brushValue;
-		Save();
+		map[int(floor(Game::mouseY / TILE_SIZE))][int(floor(Game::mouseX / TILE_SIZE))] = 1;
+		//Save();
 	}
 	else if (Game::num1KeyPressed) {
 		brushValue = 1;
@@ -32,7 +30,7 @@ void Map::Update() {
 		brushValue = 2;
 	}
 	else if (Game::spaceKeyPressed) {
-		LoadMap();
+		//LoadMap();
 	}
 }
 
@@ -51,15 +49,23 @@ void Map::LoadMap() {
 }
 
 void Map::DrawMap() {
-	for (int row = 0; row < MAP_HEIGHT; row++) {
-		for (int column = 0; column < MAP_WIDTH; column++) {
-			destinationRect.y = row * TILE_SIZE * 3;
-			destinationRect.x = column * TILE_SIZE * 3;
-			if (map[row][column] == 1) {
-				TextureManager::Draw(brick, emptyRect, destinationRect);
-			}
-			else if (map[row][column] == 2) {
-				TextureManager::Draw(brick, brickRect, destinationRect);
+	for (int column = 0; column < MAP_WIDTH; column++) {
+		for (int row = 0; row < MAP_HEIGHT; row++) {
+			SDL_Rect rect = { 0,0,TILE_SIZE,TILE_SIZE };
+			// Look at neighbours horizontal
+			if (column + 1 < MAP_WIDTH && map[column + 1][row] || column + 1 == MAP_WIDTH)
+				rect.x += TILE_SIZE;
+			if (column > 0 && map[column - 1][row] || column == 0)
+				rect.x += TILE_SIZE * 2;
+			// Look at neighbours vertical
+			if (row + 1 < MAP_HEIGHT && map[column][row + 1] || row + 1 == MAP_HEIGHT)
+				rect.y += TILE_SIZE;
+			if (row > 0 && map[column][row - 1] || row == 0)
+				rect.y += TILE_SIZE * 2;
+			destinationRect.x = column * TILE_SIZE;
+			destinationRect.y = row * TILE_SIZE;
+			if (map[column][row]) {
+				TextureManager::Draw(Game::worldTexture, rect, destinationRect);
 			}
 		}
 	}
@@ -76,4 +82,13 @@ void Map::Save() {
 		myFile << std::endl;
 	}
 	myFile.close();
+}
+
+int Map::Edit(int mouseX, int mouseY, char value) {
+	int tile_x = floor(float(mouseX - 0) / TILE_SIZE);
+	int tile_y = floor(float(mouseY - 0) / TILE_SIZE);
+	if (tile_x < 0 || tile_x >= MAP_WIDTH || tile_y < 0 || tile_y >= MAP_HEIGHT)
+		return 0;
+	map[tile_x][tile_y] = value;
+	return 1;
 }

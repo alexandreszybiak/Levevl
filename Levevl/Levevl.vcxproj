@@ -208,6 +208,7 @@
   <ItemGroup>
     <Image Include="Assets\chunk_mask_tileset.tga" />
     <Image Include="Assets\chunk_texture.png" />
+    <Image Include="Assets\world_texture.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

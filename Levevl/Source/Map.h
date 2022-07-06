@@ -1,8 +1,10 @@
 #pragma once
 
-#define MAP_WIDTH 20
-#define MAP_HEIGHT 20
-#define TILE_RENDER_SIZE 72
+#define MAP_WIDTH 27
+#define MAP_HEIGHT 15
+
+struct SDL_Rect;
+struct SDL_Texture;
 
 class Map {
 public:
@@ -12,12 +14,13 @@ public:
 	void DrawMap();
 	void Update();
 	void Save();
+	int Edit(int mouseX, int mouseY, char value);
 
 private:
-	SDL_Rect emptyRect, brickRect, destinationRect;
+	SDL_Rect brickRect, destinationRect;
 	SDL_Texture* brick;
 
 	Uint8 brushValue = 1;
-	int map[MAP_HEIGHT][MAP_WIDTH];
+	int map[MAP_WIDTH][MAP_HEIGHT];
 };
 
