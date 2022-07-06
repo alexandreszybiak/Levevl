@@ -1,13 +1,14 @@
 #include <iostream>
 #include "SDL.h"
 #include "SDL_image.h"
+#include "Input.h"
 #include "TextureManager.h"
 #include "Chunk.h"
 #include "Map.h"
 #include "Game.h"
 
 
-
+Input* Game::input = nullptr;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Texture* Game::chunkTexture = nullptr;
 SDL_Texture* Game::chunkMaskTexture = nullptr;
@@ -32,19 +33,12 @@ Chunk* selectedChunk = nullptr;
 Map* Game::worldMap = nullptr;
 
 Game::Game() {
-}
-
-Game::~Game() {
-
-}
-
-void Game::init(const char* title, int xpos, int ypos, int width, int height) {
 	int flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
 	flags = 0;
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
 		std::cout << "Subsystems initialized!..." << std::endl;
 
-		window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
+		window = SDL_CreateWindow("Levevl", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1920, 1080, flags);
 
 		if (window) {
 			std::cout << "Window created!" << std::endl;
@@ -55,7 +49,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height) {
 		if (renderer) {
 			SDL_SetRenderDrawColor(renderer, 27, 28, 29, 255);
 			std::cout << "Renderer created!" << std::endl;
-			
+
 			SDL_RendererInfo info;
 			if (SDL_GetRendererInfo(renderer, &info) != 0)
 			{
@@ -95,77 +89,69 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height) {
 	worldMap = new Map();
 	selectedChunk = chunks[0] = new Chunk(TILE_SIZE, TILE_SIZE);
 	chunks[1] = new Chunk(9 * TILE_SIZE, TILE_SIZE);
+
+	Loop();
 }
 
-void Game::handleEvents() {
-	leftMouseButtonPressed = false;
-	rightMouseButtonPressed = false;
-	num1KeyPressed = false;
-	num2KeyPressed = false;
-	spaceKeyPressed = false;
-	leftKeyPressed = false;
-	rightKeyPressed = false;
-	upKeyPressed = false;
-	downKeyPressed = false;
-	fullscreenKeyPressed = false;
+Game::~Game() {
+	SDL_DestroyTexture(chunkTexture);
+	SDL_DestroyWindow(window);
+	SDL_DestroyRenderer(renderer);
+	SDL_Quit();
+	std::cout << "Game cleaned!" << std::endl;
+}
+
+void Game::Loop() {
+	input = new Input();
 	SDL_Event event;
-	SDL_PollEvent(&event);
-	switch (event.type) {
-	case SDL_MOUSEBUTTONDOWN:
-		mouseX = event.button.x;
-		mouseY = event.button.y;
-		if (event.button.button == SDL_BUTTON_LEFT) {
-			leftMouseButtonPressed = true;
+
+	//Framerate
+	const int FPS = 60;
+	const int frameDuration = 1000 / 60;
+	Uint32 frameStart;
+	int frameTime;
+
+	while (running()) {
+		frameStart = SDL_GetTicks();
+
+		Game::input->BeginNewFrame();
+
+		while (SDL_PollEvent(&event)) {
+			if (event.type == SDL_KEYDOWN) {
+				if (event.key.repeat == 0) {
+					Game::input->KeyDownEvent(event);
+				}
+			}
+			else if (event.type == SDL_KEYUP) {
+				Game::input->KeyUpEvent(event);
+			}
+			else if (event.type == SDL_QUIT) {
+				isRunning = false;
+				return;
+			}
 		}
-		else if (event.button.button == SDL_BUTTON_RIGHT) {
-			rightMouseButtonPressed = true;
+
+		update();
+		render();
+
+		frameTime = SDL_GetTicks() - frameStart;
+		if (frameTime < frameDuration) {
+			SDL_Delay(frameDuration - frameTime);
 		}
-		break;
-	case SDL_KEYDOWN:
-		if (event.key.keysym.sym == SDLK_1) {
-			num1KeyPressed = true;
-		}
-		else if (event.key.keysym.sym == SDLK_2) {
-			num2KeyPressed = true;
-		}
-		else if (event.key.keysym.sym == SDLK_SPACE) {
-			spaceKeyPressed = true;
-		}
-		else if (event.key.keysym.sym == SDLK_LEFT) {
-			leftKeyPressed = true;
-		}
-		else if (event.key.keysym.sym == SDLK_RIGHT) {
-			rightKeyPressed = true;
-		}
-		else if (event.key.keysym.sym == SDLK_UP) {
-			upKeyPressed = true;
-		}
-		else if (event.key.keysym.sym == SDLK_DOWN) {
-			downKeyPressed = true;
-		}
-		else if (event.key.keysym.sym == SDLK_F11) {
-			fullscreenKeyPressed = true;
-		}
-		break;
-	case SDL_QUIT:
-		isRunning = false;
-		break;
-	default:
-		break;
 	}
 }
 
 void Game::update() {
-	if (leftKeyPressed) {
+	if (Game::input->WasKeyPressed(SDL_SCANCODE_LEFT)) {
 		selectedChunk->Move(-1, 0);
 	}
-	else if (rightKeyPressed) {
+	else if (Game::input->WasKeyPressed(SDL_SCANCODE_RIGHT)) {
 		selectedChunk->Move(1, 0);
 	}
-	else if (upKeyPressed) {
+	else if (Game::input->WasKeyPressed(SDL_SCANCODE_UP)) {
 		selectedChunk->Move(0, -1);
 	}
-	else if (downKeyPressed) {
+	else if (Game::input->WasKeyPressed(SDL_SCANCODE_DOWN)) {
 		selectedChunk->Move(0, 1);
 	}
 	if (leftMouseButtonPressed) {
@@ -201,7 +187,7 @@ void Game::update() {
 			}
 		}
 	}
-	if (fullscreenKeyPressed) {
+	if (Game::input->WasKeyPressed(SDL_SCANCODE_F11)) {
 		Uint32 flags = SDL_GetWindowFlags(window);
 		Uint32 value = flags & SDL_WINDOW_FULLSCREEN_DESKTOP;
 		if (value == 0)

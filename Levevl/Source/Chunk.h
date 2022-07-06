@@ -1,7 +1,6 @@
 #pragma once
 #include "SDL.h"
 
-
 //A piece of a level that can be moved around
 class Chunk {
 public:

@@ -1,4 +1,6 @@
 #pragma once
+#include "SDL.h"
+#include "Input.h"
 
 #define MAX_CHUNK 10
 #define TILE_SIZE 24
@@ -11,11 +13,12 @@ public:
 	Game();
 	~Game();
 
-	void init(const char* title, int xpos, int ypos, int width, int height);
 	void handleEvents();
 	void update();
 	void render();
 	void clean();
+
+
 
 	bool running() { return isRunning; }
 
@@ -38,6 +41,8 @@ public:
 	static int mouseX;
 	static int mouseY;
 
+	static Input* input;
+
 	static Map* worldMap;
 	Chunk* chunks[10];
 	Chunk* selectedChunk;
@@ -46,4 +51,6 @@ private:
 	bool isRunning;
 	int frameCount;
 	SDL_Window* window;
+
+	void Loop();
 };
