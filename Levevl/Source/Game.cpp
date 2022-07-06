@@ -7,8 +7,6 @@
 #include "Map.h"
 #include "Game.h"
 
-
-Input* Game::input = nullptr;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Texture* Game::chunkTexture = nullptr;
 SDL_Texture* Game::chunkMaskTexture = nullptr;
@@ -102,7 +100,7 @@ Game::~Game() {
 }
 
 void Game::Loop() {
-	input = new Input();
+	Input input;
 	SDL_Event event;
 
 	//Framerate
@@ -114,16 +112,22 @@ void Game::Loop() {
 	while (running()) {
 		frameStart = SDL_GetTicks();
 
-		Game::input->BeginNewFrame();
+		input.BeginNewFrame();
 
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_KEYDOWN) {
 				if (event.key.repeat == 0) {
-					Game::input->KeyDownEvent(event);
+					input.KeyDownEvent(event);
 				}
 			}
 			else if (event.type == SDL_KEYUP) {
-				Game::input->KeyUpEvent(event);
+				input.KeyUpEvent(event);
+			}
+			else if (event.type == SDL_MOUSEBUTTONDOWN) {
+				input.MouseButtonDownEvent(event.button);
+			}
+			else if (event.type == SDL_MOUSEBUTTONUP) {
+				input.MouseButtonUpEvent(event.button);
 			}
 			else if (event.type == SDL_QUIT) {
 				isRunning = false;
@@ -131,7 +135,7 @@ void Game::Loop() {
 			}
 		}
 
-		update();
+		update(input);
 		render();
 
 		frameTime = SDL_GetTicks() - frameStart;
@@ -141,32 +145,32 @@ void Game::Loop() {
 	}
 }
 
-void Game::update() {
-	if (Game::input->WasKeyPressed(SDL_SCANCODE_LEFT)) {
+void Game::update(Input& input) {
+	if (input.WasKeyPressed(SDL_SCANCODE_LEFT)) {
 		selectedChunk->Move(-1, 0);
 	}
-	else if (Game::input->WasKeyPressed(SDL_SCANCODE_RIGHT)) {
+	if (input.WasKeyPressed(SDL_SCANCODE_RIGHT)) {
 		selectedChunk->Move(1, 0);
 	}
-	else if (Game::input->WasKeyPressed(SDL_SCANCODE_UP)) {
+	if (input.WasKeyPressed(SDL_SCANCODE_UP)) {
 		selectedChunk->Move(0, -1);
 	}
-	else if (Game::input->WasKeyPressed(SDL_SCANCODE_DOWN)) {
+	if (input.WasKeyPressed(SDL_SCANCODE_DOWN)) {
 		selectedChunk->Move(0, 1);
 	}
-	if (leftMouseButtonPressed) {
-		if (!selectedChunk->Edit(mouseX, mouseY, 1)) {
+	if (input.WasMouseButtonPressed(SDL_BUTTON_LEFT)) {
+		if (!selectedChunk->Edit(input.GetMouseX(), input.GetMouseY(), 1)) {
 			bool b_hasFoundChunk = false;
 			for (int i = 0; i < MAX_CHUNK; i++) {
 				if (!chunks[i]) continue;
-				if (chunks[i]->Edit(mouseX, mouseY, 1)) {
+				if (chunks[i]->Edit(input.GetMouseX(), input.GetMouseY(), 1)) {
 					selectedChunk = chunks[i];
 					b_hasFoundChunk = true;
 					break;
 				}
 			}
 			if (!b_hasFoundChunk) {
-				worldMap->Edit(mouseX, mouseY, 1);
+				worldMap->Edit(input.GetMouseX(), input.GetMouseY(), 1);
 				/*for (int i = 0; i < max_chunk; i++) {
 					if (!chunks[i]) {
 						selectedchunk = chunks[i] = new chunk(int(floor(mousex / tile_size) * tile_size), int(floor(mousey / tile_size) * tile_size));
@@ -176,18 +180,18 @@ void Game::update() {
 			}
 		}
 	}
-	else if (rightMouseButtonPressed) {
-		if (!selectedChunk->Edit(mouseX, mouseY, 0)) {
+	if (input.WasMouseButtonPressed(SDL_BUTTON_RIGHT)) {
+		if (!selectedChunk->Edit(input.GetMouseX(), input.GetMouseY(), 0)) {
 			for (int i = 0; i < MAX_CHUNK; i++) {
 				if (!chunks[i]) continue;
-				if (chunks[i]->Edit(mouseX, mouseY, 0)) {
+				if (chunks[i]->Edit(input.GetMouseX(), input.GetMouseY(), 0)) {
 					selectedChunk = chunks[i];
 					break;
 				}
 			}
 		}
 	}
-	if (Game::input->WasKeyPressed(SDL_SCANCODE_F11)) {
+	if (input.WasKeyPressed(SDL_SCANCODE_F11)) {
 		Uint32 flags = SDL_GetWindowFlags(window);
 		Uint32 value = flags & SDL_WINDOW_FULLSCREEN_DESKTOP;
 		if (value == 0)

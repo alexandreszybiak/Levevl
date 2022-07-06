@@ -14,7 +14,7 @@ public:
 	~Game();
 
 	void handleEvents();
-	void update();
+	void update(Input& input);
 	void render();
 	void clean();
 
@@ -40,8 +40,6 @@ public:
 	static bool fullscreenKeyPressed;
 	static int mouseX;
 	static int mouseY;
-
-	static Input* input;
 
 	static Map* worldMap;
 	Chunk* chunks[10];
