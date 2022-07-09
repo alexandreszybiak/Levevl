@@ -1,11 +1,11 @@
 #include <fstream>
 #include "SDL.h"
-#include "TextureManager.h"
+#include "Graphics.h"
 #include "Map.h"
 #include "Game.h"
 #include "math.h"
 
-Map::Map() {
+Map::Map(): map() {
 	brickRect = { 0,0,TILE_SIZE,TILE_SIZE };
 	destinationRect = { 0,0,TILE_SIZE,TILE_SIZE };
 
@@ -48,7 +48,7 @@ void Map::LoadMap() {
 	}
 }
 
-void Map::DrawMap() {
+void Map::DrawMap(Graphics& graphics) {
 	for (int column = 0; column < MAP_WIDTH; column++) {
 		for (int row = 0; row < MAP_HEIGHT; row++) {
 			SDL_Rect rect = { 0,0,TILE_SIZE,TILE_SIZE };
@@ -65,7 +65,7 @@ void Map::DrawMap() {
 			destinationRect.x = column * TILE_SIZE;
 			destinationRect.y = row * TILE_SIZE;
 			if (map[column][row]) {
-				TextureManager::Draw(Game::worldTexture, rect, destinationRect);
+				graphics.Draw(graphics.worldTexture, rect, destinationRect);
 			}
 		}
 	}

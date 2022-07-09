@@ -193,21 +193,17 @@
   <ItemGroup>
     <ClCompile Include="Source\Chunk.cpp" />
     <ClCompile Include="Source\Game.cpp" />
-    <ClCompile Include="Source\GameObject.cpp" />
     <ClCompile Include="Source\Graphics.cpp" />
     <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Map.cpp" />
-    <ClCompile Include="Source\TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chunk.h" />
     <ClInclude Include="Source\Game.h" />
-    <ClInclude Include="Source\GameObject.h" />
     <ClInclude Include="Source\Graphics.h" />
     <ClInclude Include="Source\Input.h" />
     <ClInclude Include="Source\Map.h" />
-    <ClInclude Include="Source\TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\chunk_mask_tileset.tga" />
