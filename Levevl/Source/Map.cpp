@@ -18,18 +18,18 @@ Map::~Map() {
 
 }
 
-void Map::Update() {
-	if (Game::leftMouseButtonPressed) {
-		map[int(floor(Game::mouseY / TILE_SIZE))][int(floor(Game::mouseX / TILE_SIZE))] = 1;
+void Map::Update(Input& input) {
+	if (0) {
+		map[int(floor(input.GetMouseX() / TILE_SIZE))][int(floor(input.GetMouseY() / TILE_SIZE))] = 1;
 		//Save();
 	}
-	else if (Game::num1KeyPressed) {
+	else if (0) {
 		brushValue = 1;
 	}
-	else if (Game::num2KeyPressed) {
+	else if (0) {
 		brushValue = 2;
 	}
-	else if (Game::spaceKeyPressed) {
+	else if (0) {
 		//LoadMap();
 	}
 }

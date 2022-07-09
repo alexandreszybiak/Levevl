@@ -28,18 +28,6 @@ public:
 	static SDL_Texture* chunkTexture;
 	static SDL_Texture* chunkMaskTexture;
 	static SDL_Texture* worldTexture;
-	static bool leftMouseButtonPressed;
-	static bool rightMouseButtonPressed;
-	static bool num1KeyPressed;
-	static bool num2KeyPressed;
-	static bool spaceKeyPressed;
-	static bool leftKeyPressed;
-	static bool rightKeyPressed;
-	static bool upKeyPressed;
-	static bool downKeyPressed;
-	static bool fullscreenKeyPressed;
-	static int mouseX;
-	static int mouseY;
 
 	static Map* worldMap;
 	Chunk* chunks[10];

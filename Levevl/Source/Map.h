@@ -5,6 +5,7 @@
 
 struct SDL_Rect;
 struct SDL_Texture;
+class Input;
 
 class Map {
 public:
@@ -12,7 +13,7 @@ public:
 	~Map();
 	void LoadMap();
 	void DrawMap();
-	void Update();
+	void Update(Input& input);
 	void Save();
 	int Edit(int mouseX, int mouseY, char value);
 
