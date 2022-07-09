@@ -192,17 +192,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Chunk.cpp" />
+    <ClCompile Include="Source\Editor.cpp" />
     <ClCompile Include="Source\Game.cpp" />
     <ClCompile Include="Source\Graphics.cpp" />
     <ClCompile Include="Source\Input.cpp" />
+    <ClCompile Include="Source\Level.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Map.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chunk.h" />
+    <ClInclude Include="Source\Editor.h" />
     <ClInclude Include="Source\Game.h" />
     <ClInclude Include="Source\Graphics.h" />
     <ClInclude Include="Source\Input.h" />
+    <ClInclude Include="Source\Level.h" />
     <ClInclude Include="Source\Map.h" />
   </ItemGroup>
   <ItemGroup>

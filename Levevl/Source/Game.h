@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "SDL.h"
 #include "Input.h"
 
@@ -8,7 +9,7 @@
 class Graphics;
 class Map;
 class Chunk;
-
+class Level;
 
 class Game {
 public:
@@ -20,9 +21,12 @@ public:
 
 	bool running() { return isRunning; }
 
-	static Map* worldMap;
+	/*static Map* worldMap;
 	Chunk* chunks[10];
-	Chunk* selectedChunk;
+	Chunk* selectedChunk;*/
+
+	Level* level;
+	
 
 private:
 	bool isRunning;

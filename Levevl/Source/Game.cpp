@@ -6,10 +6,8 @@
 #include "Map.h"
 #include "Game.h"
 #include "Graphics.h"
-
-Chunk* chunks[] = { nullptr };
-Chunk* selectedChunk = nullptr;
-Map* Game::worldMap = nullptr;
+#include "Editor.h"
+#include "Level.h"
 
 Game::Game() {
 
@@ -42,10 +40,12 @@ void Game::Loop() {
 
 	isRunning = true;
 
-	//World
-	worldMap = new Map();
-	selectedChunk = chunks[0] = new Chunk(TILE_SIZE, TILE_SIZE);
-	chunks[1] = new Chunk(9 * TILE_SIZE, TILE_SIZE);
+	level = new Level();
+
+	//std::cout << "v_chunks address is : " << &v_chunks << std::endl;
+
+	// Editor
+	Editor editor(level);
 
 	while (running()) {
 		frameStart = SDL_GetTicks();
@@ -79,6 +79,7 @@ void Game::Loop() {
 		// Update
 		update(input);
 		graphics.Update(input);
+		editor.Update(input);
 
 		// Draw phase
 		render(graphics);
@@ -93,54 +94,6 @@ void Game::Loop() {
 
 void Game::update(Input& input) {
 
-
-
-	// To be moved to Editor.cpp
-	if (input.WasKeyPressed(SDL_SCANCODE_LEFT)) {
-		selectedChunk->Move(-1, 0);
-	}
-	if (input.WasKeyPressed(SDL_SCANCODE_RIGHT)) {
-		selectedChunk->Move(1, 0);
-	}
-	if (input.WasKeyPressed(SDL_SCANCODE_UP)) {
-		selectedChunk->Move(0, -1);
-	}
-	if (input.WasKeyPressed(SDL_SCANCODE_DOWN)) {
-		selectedChunk->Move(0, 1);
-	}
-	if (input.WasMouseButtonPressed(SDL_BUTTON_LEFT)) {
-		if (!selectedChunk->Edit(input.GetMouseX(), input.GetMouseY(), 1)) {
-			bool b_hasFoundChunk = false;
-			for (int i = 0; i < MAX_CHUNK; i++) {
-				if (!chunks[i]) continue;
-				if (chunks[i]->Edit(input.GetMouseX(), input.GetMouseY(), 1)) {
-					selectedChunk = chunks[i];
-					b_hasFoundChunk = true;
-					break;
-				}
-			}
-			if (!b_hasFoundChunk) {
-				worldMap->Edit(input.GetMouseX(), input.GetMouseY(), 1);
-				/*for (int i = 0; i < max_chunk; i++) {
-					if (!chunks[i]) {
-						selectedchunk = chunks[i] = new chunk(int(floor(mousex / tile_size) * tile_size), int(floor(mousey / tile_size) * tile_size));
-						break;
-					}
-				}*/
-			}
-		}
-	}
-	if (input.WasMouseButtonPressed(SDL_BUTTON_RIGHT)) {
-		if (!selectedChunk->Edit(input.GetMouseX(), input.GetMouseY(), 0)) {
-			for (int i = 0; i < MAX_CHUNK; i++) {
-				if (!chunks[i]) continue;
-				if (chunks[i]->Edit(input.GetMouseX(), input.GetMouseY(), 0)) {
-					selectedChunk = chunks[i];
-					break;
-				}
-			}
-		}
-	}
 }
 
 void Game::render(Graphics& graphics) {
@@ -158,20 +111,18 @@ void Game::render(Graphics& graphics) {
 	SDL_RenderClear(graphics.m_renderer);
 
 	//Draw world map
-	worldMap->DrawMap(graphics);
+	level->worldMap->DrawMap(graphics);
 
 	// Draw mask
 	SDL_SetTextureBlendMode(graphics.chunkMaskTexture, bm);
-	for (int i = 0; i < MAX_CHUNK; i++) {
-		if (chunks[i])
-			chunks[i]->DrawMask(graphics);
+	for (Chunk& chunk : level->v_chunks) {
+		chunk.DrawMask(graphics);
 	}
 
 	// Draw everything else
 	SDL_SetTextureBlendMode(graphics.chunkTexture, bm2);
-	for (int i = 0; i < MAX_CHUNK; i++) {
-		if (chunks[i])
-			chunks[i]->DrawMap(graphics);
+	for (Chunk& chunk : level->v_chunks) {
+		chunk.DrawMap(graphics);
 	}
 
 

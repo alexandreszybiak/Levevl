@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include "SDL.h"
 #include "Graphics.h"
 #include "Chunk.h"
@@ -6,7 +7,7 @@
 
 
 
-Chunk::Chunk(int x, int y) : m_x(0), m_y(0), m_data() {
+Chunk::Chunk(int x, int y) : m_x(0), m_y(0) {
 	Fill(2);
 	m_x = x;
 	m_y = y;
@@ -15,6 +16,7 @@ Chunk::Chunk(int x, int y) : m_x(0), m_y(0), m_data() {
 	m_emptyRect = { 0,0,TILE_SIZE,TILE_SIZE };
 	m_brickRect = { TILE_SIZE,0,TILE_SIZE,TILE_SIZE };
 	m_destinationRect = { 0,0,TILE_SIZE,TILE_SIZE };
+	std::cout << "Chunk created." << std::endl;
 }
 Chunk::~Chunk() {
 
