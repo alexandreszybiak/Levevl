@@ -8,12 +8,11 @@
 
 
 
-Chunk::Chunk(int x, int y) : m_x(0), m_y(0) {
-	m_data.push_back({ 1, 2, 2, 1 });
-	m_data.push_back({ 1, 2, 1, 2 });
+Chunk::Chunk(int x, int y, int width, int height) : m_x(x), m_y(y), m_width(width), m_height(height) {
+	for (int i = 0; i < m_width * m_height; i++) {
+		m_data.push_back(1);
+	}
 	Fill(2);
-	m_x = x;
-	m_y = y;
 	m_emptyRect = { 0,0,TILE_SIZE,TILE_SIZE };
 	m_brickRect = { TILE_SIZE,0,TILE_SIZE,TILE_SIZE };
 	m_destinationRect = { 0,0,TILE_SIZE,TILE_SIZE };
@@ -24,22 +23,26 @@ Chunk::~Chunk() {
 }
 
 void Chunk::Fill(char value) {
-	for (int x = 0; x < m_data.size(); x++) {
-		for (int y = 0; y < m_data[x].size(); y++) {
-			m_data[x][y] = value;
+	for (int x = 0; x < m_width; x++) {
+		for (int y = 0; y < m_height; y++) {
+			if ((y * m_width + x) >= m_data.size()) {
+				std::cout << "Value too high in Chunk::Fill" << std::endl;
+				continue;
+			}
+			m_data[y * m_width + x] = value;
 		}
 	}
 }
 
 void Chunk::Draw(Graphics& graphics) {
-	for (int column = 0; column < m_data.size(); column++) {
-		for (int row = 0; row < m_data[column].size(); row++) {
+	for (int column = 0; column < m_width; column++) {
+		for (int row = 0; row < m_height; row++) {
 			m_destinationRect.x = column * TILE_SIZE + m_x;
 			m_destinationRect.y = row * TILE_SIZE + m_y;
-			if (m_data[column][row] == 1) {
+			if (m_data[column + row * m_width]  == 1) {
 				graphics.Draw(graphics.chunkTexture, m_emptyRect, m_destinationRect);
 			}
-			else if (m_data[column][row] == 2) {
+			else if (m_data[column + row * m_width] == 2) {
 				graphics.Draw(graphics.chunkTexture, m_brickRect, m_destinationRect);
 			}
 		}
@@ -47,22 +50,22 @@ void Chunk::Draw(Graphics& graphics) {
 }
 
 void Chunk::DrawMask(Graphics& graphics) {
-	for (int column = 0; column < m_data.size(); column++) {
-		for (int row = 0; row < m_data[column].size(); row++) {
+	for (int column = 0; column < m_width; column++) {
+		for (int row = 0; row < m_height; row++) {
 			SDL_Rect rect = { 0,0,TILE_SIZE,TILE_SIZE };
 			// Look at neighbours horizontal
-			if (column + 1 < m_data.size() && m_data[column + 1][row])
+			if (column + 1 < m_width && m_data[column + 1 + row * m_width])
 				rect.x += TILE_SIZE;
-			if (column > 0 && m_data[column - 1][row])
+			if (column > 0 && m_data[column - 1 + row * m_width])
 				rect.x += TILE_SIZE * 2;
 			// Look at neighbours vertical
-			if (row + 1 < m_data[column].size() && m_data[column][row + 1])
+			if (row + 1 < m_height && m_data[column + (row + 1) * m_width])
 				rect.y += TILE_SIZE;
-			if (row > 0 && m_data[column][row - 1])
+			if (row > 0 && m_data[column + (row - 1) * m_width])
 				rect.y += TILE_SIZE * 2;
 			m_destinationRect.x = column * TILE_SIZE + m_x;
 			m_destinationRect.y = row * TILE_SIZE + m_y;
-			if (m_data[column][row]) {
+			if (m_data[column + row * m_width]) {
 				graphics.Draw(graphics.chunkMaskTexture, rect, m_destinationRect);
 			}
 		}
@@ -76,8 +79,41 @@ void Chunk::Move(int x, int y) {
 int Chunk::Edit(int mouseX, int mouseY, char value) {
 	int tile_x = floor(float(mouseX - m_x) / TILE_SIZE);
 	int tile_y = floor(float(mouseY - m_y) / TILE_SIZE);
-	if (tile_x < 0 || tile_x >= m_data.size() || tile_y < 0 || tile_y >= m_data[0].size())
+	if (tile_x < 0 || tile_x >= m_width || tile_y < 0 || tile_y >= m_height)
 		return 0;
-	m_data[tile_x][tile_y] = value;
+	m_data[tile_x + tile_y * m_width] = value;
 	return 1;
+}
+
+int Chunk::GetX() {
+	return m_x;
+}
+
+int Chunk::GetY() {
+	return m_y;
+}
+
+bool Chunk::OverlapsPoint(int x, int y) {
+	int tile_x = floor(float(x - m_x) / TILE_SIZE);
+	int tile_y = floor(float(y - m_y) / TILE_SIZE);
+
+	if (tile_x < 0 || tile_x >= m_width || tile_y < 0 || tile_y >= m_height)
+		return false;
+
+	return true;
+}
+
+void Chunk::SetRegion(int x1, int y1, int x2, int y2) {
+	x1 -= m_x / TILE_SIZE;
+	y1 -= m_y / TILE_SIZE;
+	x2 -= m_x / TILE_SIZE;
+	y2 -= m_y / TILE_SIZE;
+
+	for (int x = x1; x < x2; x++) {
+		for (int y = y1; y < y2; y++) {
+			if (x < 0 || x >= m_width || y < 0 || y >= m_height)
+				continue;
+			m_data[x + y * m_width] = 1;
+		}
+	}
 }

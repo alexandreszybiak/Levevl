@@ -68,6 +68,9 @@ void Game::Loop() {
 			else if (event.type == SDL_MOUSEBUTTONUP) {
 				input.MouseButtonUpEvent(event.button);
 			}
+			else if (event.type == SDL_MOUSEMOTION) {
+				input.MouseMotionEvent(event.motion);
+			}
 			else if (event.type == SDL_QUIT) {
 				isRunning = false;
 				return;
@@ -83,6 +86,10 @@ void Game::Loop() {
 
 		// Draw phase
 		render(graphics);
+		editor.Draw(graphics);
+
+		// End draw
+		SDL_RenderPresent(graphics.m_renderer);
 
 		// Wait phase
 		frameTime = SDL_GetTicks() - frameStart;
@@ -129,5 +136,5 @@ void Game::render(Graphics& graphics) {
 	// End draw
 	SDL_SetRenderTarget(graphics.m_renderer, NULL);
 	SDL_RenderCopy(graphics.m_renderer, graphics.gameTexture, &graphics.m_viewportRect, &graphics.m_viewportRect);
-	SDL_RenderPresent(graphics.m_renderer);
+
 }

@@ -1,16 +1,17 @@
 #include <iostream>
+#include <algorithm>
 #include "SDL.h"
+#include "Game.h"
 #include "Input.h"
+#include "Graphics.h"
 #include "Editor.h"
 #include "Map"
 #include "Chunk.h"
 #include "Level.h"
 
-Editor::Editor(Level* level) : m_brushValue(1) {
+Editor::Editor(Level* level) : m_brushValue(1), m_selection({0,0,0,0}) {
 	m_level_ref = level;
-	//std::cout << "chunks address is : " << &chunks << std::endl;
 	m_selectedChunk = &m_level_ref->v_chunks[0];
-	//std::cout << "m_selectedChunk points to this address : " << m_selectedChunk << std::endl;
 }
 
 Editor::~Editor() {
@@ -30,37 +31,55 @@ void Editor::Update(Input& input) {
 	if (input.WasKeyPressed(SDL_SCANCODE_DOWN)) {
 		m_selectedChunk->Move(0, 1);
 	}
+
 	if (input.WasMouseButtonPressed(SDL_BUTTON_LEFT)) {
-		if (!m_selectedChunk->Edit(input.GetMouseX(), input.GetMouseY(), 1)) {
-			bool b_hasFoundChunk = false;
-			for (Chunk& chunk : m_level_ref->v_chunks) {
-				if (chunk.Edit(input.GetMouseX(), input.GetMouseY(), 1)) {
-					m_selectedChunk = &chunk;
-					b_hasFoundChunk = true;
-					break;
-				}
+		// Initialize the selection
+		m_selection.x = input.GetMouseX();
+		m_selection.y = input.GetMouseY();
+
+		// Reset the selected chunk
+		m_selectedChunk = nullptr;
+
+		// Look for the first chunk
+		for (std::vector<Chunk>::reverse_iterator i = m_level_ref->v_chunks.rbegin();
+			i != m_level_ref->v_chunks.rend(); ++i) {
+			if (i->OverlapsPoint(input.GetMouseX(), input.GetMouseY())) {
+				m_selectedChunk = &*i;
+				break;
 			}
-			if (!b_hasFoundChunk) {
-				m_level_ref->worldMap->Edit(input.GetMouseX(), input.GetMouseY(), 1);
-				/*for (int i = 0; i < max_chunk; i++) {
-					if (!chunks[i]) {
-						selectedchunk = chunks[i] = new chunk(int(floor(mousex / tile_size) * tile_size), int(floor(mousey / tile_size) * tile_size));
-						break;
-					}
-				}*/
-			}
-		}
+		}	
 	}
-	if (input.WasMouseButtonPressed(SDL_BUTTON_RIGHT)) {
-		if (!m_selectedChunk->Edit(input.GetMouseX(), input.GetMouseY(), 0)) {
-			for (Chunk& chunk : m_level_ref->v_chunks) {
-				if (chunk.Edit(input.GetMouseX(), input.GetMouseY(), 0)) {
-					m_selectedChunk = &chunk;
-					break;
-				}
-			}
+	if (input.WasMouseButtonReleased(SDL_BUTTON_LEFT)) {
+		//
+		int gridX = std::min(input.GetMouseX(), m_selection.x) / TILE_SIZE;
+		int gridY = std::min(input.GetMouseY(), m_selection.y) / TILE_SIZE;
+
+		int gridX2 = ceil(float(std::max(input.GetMouseX(), m_selection.x)) / TILE_SIZE);
+		int gridY2 = ceil(float(std::max(input.GetMouseY(), m_selection.y)) / TILE_SIZE);
+		if (m_selectedChunk) {
+			// Draw over the selected chunk
+			m_selectedChunk->SetRegion(gridX, gridY, gridX2, gridY2);
 		}
+		else {
+			m_selectedChunk = m_level_ref->BuildChunk(gridX * TILE_SIZE, gridY * TILE_SIZE, gridX2 - gridX, gridY2 - gridY);
+		}
+
+		// Reset the selection
+		m_selection.x = m_selection.y = m_selection.w = m_selection.h = 0;
 	}
+	if (input.IsMouseButtonHeld(SDL_BUTTON_LEFT)) {
+		m_selection.w = input.GetMouseX() - m_selection.x;
+		m_selection.h = input.GetMouseY() - m_selection.y;
+	}
+	
+	if (input.WasKeyPressed(SDL_SCANCODE_DELETE)) {
+		//m_level_ref->DeleteChunk(m_selectedChunk);
+	}
+}
+
+void Editor::Draw(Graphics& graphics) {
+	SDL_SetRenderDrawColor(graphics.m_renderer, 255, 0, 0, 255);
+	SDL_RenderDrawRect(graphics.m_renderer, &m_selection);
 }
 
 void Editor::Save() {

@@ -10,6 +10,7 @@ public:
 	void KeyDownEvent(const SDL_Event& event);
 	void MouseButtonUpEvent(const SDL_MouseButtonEvent& event);
 	void MouseButtonDownEvent(const SDL_MouseButtonEvent& event);
+	void MouseMotionEvent(const SDL_MouseMotionEvent& event);
 	bool WasKeyPressed(SDL_Scancode key);
 	bool WasKeyReleased(SDL_Scancode key);
 	bool IsKeyHeld(SDL_Scancode key);

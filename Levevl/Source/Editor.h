@@ -13,6 +13,7 @@ public:
 	Editor(Level* level);
 	~Editor();
 	void Update(Input& input);
+	void Draw(Graphics& graphics);
 private:
 	void Save();
 	void Load();
@@ -22,4 +23,5 @@ private:
 	char m_brushValue;
 	Chunk* m_selectedChunk;
 	Level* m_level_ref;
+	SDL_Rect m_selection;
 };

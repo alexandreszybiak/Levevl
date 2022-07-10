@@ -29,6 +29,13 @@ void Input::MouseButtonDownEvent(const SDL_MouseButtonEvent& event) {
 void Input::MouseButtonUpEvent(const SDL_MouseButtonEvent& event) {
 	m_releasedMouseButtons[event.button] = true;
 	m_heldMouseButtons[event.button] = false;
+	m_mouseX = event.x;
+	m_mouseY = event.y;
+}
+
+void Input::MouseMotionEvent(const SDL_MouseMotionEvent& event) {
+	m_mouseX = event.x;
+	m_mouseY = event.y;
 }
 
 // Function to actually call in update functions
