@@ -14,7 +14,8 @@ public:
 	~Editor();
 	void Update(Input& input);
 private:
-	//
+	void Save();
+	void Load();
 public:
 	//
 private:

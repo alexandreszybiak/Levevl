@@ -111,7 +111,7 @@ void Game::render(Graphics& graphics) {
 	SDL_RenderClear(graphics.m_renderer);
 
 	//Draw world map
-	level->worldMap->DrawMap(graphics);
+	level->worldMap->Draw(graphics);
 
 	// Draw mask
 	SDL_SetTextureBlendMode(graphics.chunkMaskTexture, bm);
@@ -122,7 +122,7 @@ void Game::render(Graphics& graphics) {
 	// Draw everything else
 	SDL_SetTextureBlendMode(graphics.chunkTexture, bm2);
 	for (Chunk& chunk : level->v_chunks) {
-		chunk.DrawMap(graphics);
+		chunk.Draw(graphics);
 	}
 
 

@@ -62,3 +62,30 @@ void Editor::Update(Input& input) {
 		}
 	}
 }
+
+void Editor::Save() {
+	/*std::ofstream myFile("level.txt");
+	for (int row = 0; row < MAP_HEIGHT; row++) {
+		for (int column = 0; column < MAP_WIDTH; column++) {
+			myFile << map[row][column];
+			if (column == MAP_WIDTH - 1) continue;
+			myFile << ",";
+		}
+		myFile << std::endl;
+	}
+	myFile.close();*/
+}
+
+void Editor::Load() {
+	/*char tile;
+	std::fstream in_level;
+	in_level.open("level.txt");
+	if (!in_level.is_open()) return;
+	for (int row = 0; row < MAP_HEIGHT; row++) {
+		for (int column = 0; column < MAP_WIDTH; column++) {
+			tile = in_level.get();
+			m_data[row][column] = atoi(&tile);
+			in_level.ignore();
+		}
+	}*/
+}

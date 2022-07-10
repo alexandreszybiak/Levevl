@@ -9,18 +9,27 @@ class Graphics;
 
 class Map {
 public:
-	Map();
-	~Map();
-	void LoadMap();
-	void DrawMap(Graphics& graphics);
-	void Update(Input& input);
-	void Save();
-	int Edit(int mouseX, int mouseY, char value);
+	//
+
+protected:
+	SDL_Rect m_destinationRect;
 
 private:
-	SDL_Rect brickRect, destinationRect;
+	static const int m_mapWidth = 27;
+	static const int m_mapHeight = 15;
+	int m_data[m_mapWidth][m_mapHeight];
 
-	Uint8 brushValue = 1;
-	int map[MAP_WIDTH][MAP_HEIGHT];
+public:
+	Map();
+	~Map();
+	virtual void Draw(Graphics& graphics);
+	void Update(Input& input);
+	int Edit(int mouseX, int mouseY, char value);
+
+protected:
+	//
+
+private:
+	//
 };
 

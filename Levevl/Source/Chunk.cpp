@@ -7,12 +7,10 @@
 
 
 
-Chunk::Chunk(int x, int y) : m_x(0), m_y(0) {
+Chunk::Chunk(int x, int y) : m_x(0), m_y(0), m_data() {
 	Fill(2);
 	m_x = x;
 	m_y = y;
-	//m_texture = Graphics::chunkTexture;
-	//m_maskTexture = Graphics::chunkMaskTexture;
 	m_emptyRect = { 0,0,TILE_SIZE,TILE_SIZE };
 	m_brickRect = { TILE_SIZE,0,TILE_SIZE,TILE_SIZE };
 	m_destinationRect = { 0,0,TILE_SIZE,TILE_SIZE };
@@ -21,6 +19,7 @@ Chunk::Chunk(int x, int y) : m_x(0), m_y(0) {
 Chunk::~Chunk() {
 
 }
+
 void Chunk::Fill(char value) {
 	for (int x = 0; x < m_width; x++) {
 		for (int y = 0; y < m_height; y++) {
@@ -28,7 +27,8 @@ void Chunk::Fill(char value) {
 		}
 	}
 }
-void Chunk::DrawMap(Graphics& graphics) {
+
+void Chunk::Draw(Graphics& graphics) {
 	for (int column = 0; column < m_width; column++) {
 		for (int row = 0; row < m_height; row++) {
 			m_destinationRect.x = column * TILE_SIZE + m_x;
