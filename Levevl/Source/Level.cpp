@@ -22,6 +22,4 @@ Chunk* Level::BuildChunk(int x, int y, int width, int height) {
 
 void Level::DeleteChunk(int index) {
 	v_chunks.erase(v_chunks.begin() + index);
-	v_chunks.shrink_to_fit();
-	std::vector<Chunk>().swap(v_chunks);
 }
