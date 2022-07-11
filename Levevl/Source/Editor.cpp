@@ -11,7 +11,8 @@
 
 Editor::Editor(Level* level) : m_brushValue(1), m_selection({0,0,0,0}) {
 	m_level_ref = level;
-	m_selectedChunk = &m_level_ref->v_chunks[0];
+	m_selectedChunk = nullptr;
+	m_selectedChunkIndex = 0;
 }
 
 Editor::~Editor() {
@@ -20,16 +21,20 @@ Editor::~Editor() {
 
 void Editor::Update(Input& input) {
 	if (input.WasKeyPressed(SDL_SCANCODE_LEFT)) {
-		m_selectedChunk->Move(-1, 0);
+		if(m_selectedChunk)
+			m_selectedChunk->Move(-1, 0);
 	}
 	if (input.WasKeyPressed(SDL_SCANCODE_RIGHT)) {
-		m_selectedChunk->Move(1, 0);
+		if (m_selectedChunk)
+			m_selectedChunk->Move(1, 0);
 	}
 	if (input.WasKeyPressed(SDL_SCANCODE_UP)) {
-		m_selectedChunk->Move(0, -1);
+		if (m_selectedChunk)
+			m_selectedChunk->Move(0, -1);
 	}
 	if (input.WasKeyPressed(SDL_SCANCODE_DOWN)) {
-		m_selectedChunk->Move(0, 1);
+		if (m_selectedChunk)
+			m_selectedChunk->Move(0, 1);
 	}
 
 	if (input.WasMouseButtonPressed(SDL_BUTTON_LEFT)) {
@@ -41,12 +46,15 @@ void Editor::Update(Input& input) {
 		m_selectedChunk = nullptr;
 
 		// Look for the first chunk
+		int index = m_level_ref->v_chunks.size() - 1;
 		for (std::vector<Chunk>::reverse_iterator i = m_level_ref->v_chunks.rbegin();
 			i != m_level_ref->v_chunks.rend(); ++i) {
 			if (i->OverlapsPoint(input.GetMouseX(), input.GetMouseY())) {
 				m_selectedChunk = &*i;
+				m_selectedChunkIndex = index;
 				break;
 			}
+			index--;
 		}	
 	}
 	if (input.WasMouseButtonReleased(SDL_BUTTON_LEFT)) {
@@ -62,6 +70,7 @@ void Editor::Update(Input& input) {
 		}
 		else {
 			m_selectedChunk = m_level_ref->BuildChunk(gridX * TILE_SIZE, gridY * TILE_SIZE, gridX2 - gridX, gridY2 - gridY);
+			m_selectedChunkIndex = m_level_ref->v_chunks.size() - 1;
 		}
 
 		// Reset the selection
@@ -73,7 +82,11 @@ void Editor::Update(Input& input) {
 	}
 	
 	if (input.WasKeyPressed(SDL_SCANCODE_DELETE)) {
-		//m_level_ref->DeleteChunk(m_selectedChunk);
+		if (m_selectedChunk) {
+			m_level_ref->DeleteChunk(m_selectedChunkIndex);
+			m_selectedChunk = nullptr;
+			m_selectedChunkIndex = 0;
+		}
 	}
 }
 

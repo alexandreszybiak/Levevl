@@ -22,6 +22,7 @@ public:
 private:
 	char m_brushValue;
 	Chunk* m_selectedChunk;
+	int m_selectedChunkIndex;
 	Level* m_level_ref;
 	SDL_Rect m_selection;
 };
