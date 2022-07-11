@@ -6,8 +6,11 @@
 
 Level::Level() {
 	worldMap = new Map();
-	v_chunks.push_back({ 24,24, 8, 8 });
-	v_chunks.push_back({ 10 * 24,2 * 24, 8, 8 });
+	v_chunks.reserve(2);
+	v_chunks.emplace_back(24,24, 8, 8 );
+	v_chunks.emplace_back(10 * 24,2 * 24, 8, 8);
+	int s = sizeof(v_chunks[0]);
+	int s2 = sizeof(v_chunks[1]);
 }
 
 Level::~Level() {

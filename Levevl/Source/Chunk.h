@@ -15,13 +15,14 @@ private:
 	int m_width;
 	int m_height;
 	//char m_data[m_width][m_height];
-	std::vector<char> m_data;
+	std::vector<char>* m_data;
 	
 	SDL_Rect m_emptyRect, m_brickRect;
 	SDL_Rect m_destinationRect;
 	
 public:
 	Chunk(int x, int y, int width, int height);
+	Chunk(const Chunk& chunkCopy);
 	~Chunk();
 	void Draw(Graphics& graphics);
 	void DrawMask(Graphics& graphics);
