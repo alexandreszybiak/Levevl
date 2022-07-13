@@ -30,7 +30,7 @@ public:
 	int GetX();
 	int GetY();
 	bool OverlapsPoint(int x, int y);
-	void SetRegion(int x1, int y1, int x2, int y2);
+	void SetRegion(char value, int x1, int y1, int x2, int y2);
 
 private:
 	void Fill(char value);

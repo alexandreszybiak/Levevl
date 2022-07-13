@@ -71,6 +71,9 @@ void Game::Loop() {
 			else if (event.type == SDL_MOUSEMOTION) {
 				input.MouseMotionEvent(event.motion);
 			}
+			else if (event.type == SDL_MOUSEWHEEL) {
+				input.MouseWheelEvent(event.wheel);
+			}
 			else if (event.type == SDL_QUIT) {
 				isRunning = false;
 				return;
@@ -109,8 +112,8 @@ void Game::render(Graphics& graphics) {
 
 	// Pre-draw
 	SDL_SetRenderDrawBlendMode(graphics.m_renderer, SDL_BLENDMODE_NONE);
-	SDL_SetRenderDrawColor(graphics.m_renderer, 0, 0, 0, 0);
-	SDL_RenderClear(graphics.m_renderer);
+	//SDL_SetRenderDrawColor(graphics.m_renderer, 0, 0, 0, 0);
+	//SDL_RenderClear(graphics.m_renderer);
 
 	// Begin render in texture
 	SDL_SetRenderTarget(graphics.m_renderer, graphics.gameTexture);

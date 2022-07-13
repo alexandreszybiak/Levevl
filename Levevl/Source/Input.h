@@ -11,6 +11,7 @@ public:
 	void MouseButtonUpEvent(const SDL_MouseButtonEvent& event);
 	void MouseButtonDownEvent(const SDL_MouseButtonEvent& event);
 	void MouseMotionEvent(const SDL_MouseMotionEvent& event);
+	void MouseWheelEvent(const SDL_MouseWheelEvent& event);
 	bool WasKeyPressed(SDL_Scancode key);
 	bool WasKeyReleased(SDL_Scancode key);
 	bool IsKeyHeld(SDL_Scancode key);
@@ -19,6 +20,7 @@ public:
 	bool IsMouseButtonHeld(Uint8 button);
 	int GetMouseX();
 	int GetMouseY();
+	int GetMouseWheel();
 
 private:
 	//
@@ -35,4 +37,5 @@ private:
 	std::map<Uint8, bool> m_releasedMouseButtons;
 	int m_mouseX;
 	int m_mouseY;
+	int m_mouseWheel;
 };

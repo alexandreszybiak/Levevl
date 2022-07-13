@@ -122,7 +122,7 @@ bool Chunk::OverlapsPoint(int x, int y) {
 	return true;
 }
 
-void Chunk::SetRegion(int x1, int y1, int x2, int y2) {
+void Chunk::SetRegion(char value, int x1, int y1, int x2, int y2) {
 	x1 -= m_x / TILE_SIZE;
 	y1 -= m_y / TILE_SIZE;
 	x2 -= m_x / TILE_SIZE;
@@ -132,7 +132,7 @@ void Chunk::SetRegion(int x1, int y1, int x2, int y2) {
 		for (int y = y1; y < y2; y++) {
 			if (x < 0 || x >= m_width || y < 0 || y >= m_height)
 				continue;
-			m_data[x + y * m_width] = 1;
+			m_data[x + y * m_width] = value;
 		}
 	}
 }

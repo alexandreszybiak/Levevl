@@ -5,6 +5,7 @@ void Input::BeginNewFrame() {
 	m_releasedKeys.clear();
 	m_pressedMouseButtons.clear();
 	m_releasedMouseButtons.clear();
+	m_mouseWheel = 0;
 }
 
 // Store keyboard event key code
@@ -36,6 +37,10 @@ void Input::MouseButtonUpEvent(const SDL_MouseButtonEvent& event) {
 void Input::MouseMotionEvent(const SDL_MouseMotionEvent& event) {
 	m_mouseX = event.x;
 	m_mouseY = event.y;
+}
+
+void Input::MouseWheelEvent(const SDL_MouseWheelEvent& event) {
+	m_mouseWheel = event.y;
 }
 
 // Function to actually call in update functions
@@ -70,4 +75,11 @@ int Input::GetMouseX() {
 
 int Input::GetMouseY() {
 	return m_mouseY;
+}
+
+// Get mouse wheel
+int Input::GetMouseWheel() {
+	if (m_mouseWheel == 0) return 0;
+	if (m_mouseWheel > 0) return 1;
+	if (m_mouseWheel < 0) return -1;
 }

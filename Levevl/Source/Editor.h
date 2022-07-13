@@ -7,6 +7,11 @@ class Map;
 class Chunk;
 class Level;
 
+enum BrushModes {
+	BRUSH_MODE_ERASE,
+	BRUSH_MODE_DRAW
+};
+
 class Editor {
 public:
 	Editor();
@@ -20,6 +25,7 @@ private:
 public:
 	//
 private:
+	int m_x, m_y;
 	char m_brushValue;
 	Chunk* m_selectedChunk;
 	int m_selectedChunkIndex;

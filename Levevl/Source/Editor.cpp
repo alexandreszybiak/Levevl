@@ -9,7 +9,7 @@
 #include "Chunk.h"
 #include "Level.h"
 
-Editor::Editor(Level* level) : m_brushValue(1), m_selection({0,0,0,0}) {
+Editor::Editor(Level* level) : m_brushValue(1), m_selection({0,0,0,0}), m_x(0), m_y(0) {
 	m_level_ref = level;
 	m_selectedChunk = nullptr;
 	m_selectedChunkIndex = 0;
@@ -20,6 +20,9 @@ Editor::~Editor() {
 }
 
 void Editor::Update(Input& input) {
+	m_x = input.GetMouseX();
+	m_y = input.GetMouseY();
+
 	if (input.WasKeyPressed(SDL_SCANCODE_LEFT)) {
 		if(m_selectedChunk)
 			m_selectedChunk->Move(-1, 0);
@@ -37,7 +40,7 @@ void Editor::Update(Input& input) {
 			m_selectedChunk->Move(0, 1);
 	}
 
-	if (input.WasMouseButtonPressed(SDL_BUTTON_LEFT)) {
+	if (input.WasMouseButtonPressed(SDL_BUTTON_LEFT) || input.WasMouseButtonPressed(SDL_BUTTON_RIGHT)) {
 		// Initialize the selection
 		m_selection.x = input.GetMouseX();
 		m_selection.y = input.GetMouseY();
@@ -55,9 +58,12 @@ void Editor::Update(Input& input) {
 				break;
 			}
 			index--;
-		}	
+		}
+
+		//
+		m_brushValue *= !input.WasMouseButtonPressed(SDL_BUTTON_RIGHT);
 	}
-	if (input.WasMouseButtonReleased(SDL_BUTTON_LEFT)) {
+	if (input.WasMouseButtonReleased(SDL_BUTTON_LEFT) || input.WasMouseButtonReleased(SDL_BUTTON_RIGHT)) {
 		//
 		int gridX = std::min(input.GetMouseX(), m_selection.x) / TILE_SIZE;
 		int gridY = std::min(input.GetMouseY(), m_selection.y) / TILE_SIZE;
@@ -66,9 +72,9 @@ void Editor::Update(Input& input) {
 		int gridY2 = ceil(float(std::max(input.GetMouseY(), m_selection.y)) / TILE_SIZE);
 		if (m_selectedChunk) {
 			// Draw over the selected chunk
-			m_selectedChunk->SetRegion(gridX, gridY, gridX2, gridY2);
+			m_selectedChunk->SetRegion(m_brushValue + 1, gridX, gridY, gridX2, gridY2);
 		}
-		else {
+		else if(m_brushValue) {
 			m_selectedChunk = m_level_ref->BuildChunk(gridX * TILE_SIZE, gridY * TILE_SIZE, gridX2 - gridX, gridY2 - gridY);
 			m_selectedChunkIndex = m_level_ref->v_chunks.size() - 1;
 		}
@@ -76,11 +82,14 @@ void Editor::Update(Input& input) {
 		// Reset the selection
 		m_selection.x = m_selection.y = m_selection.w = m_selection.h = 0;
 	}
-	if (input.IsMouseButtonHeld(SDL_BUTTON_LEFT)) {
+	if (input.IsMouseButtonHeld(SDL_BUTTON_LEFT) || input.IsMouseButtonHeld(SDL_BUTTON_RIGHT)) {
 		m_selection.w = input.GetMouseX() - m_selection.x;
 		m_selection.h = input.GetMouseY() - m_selection.y;
 	}
 	
+	if (int y = input.GetMouseWheel()) {
+		m_brushValue = (m_brushValue + 2 + y) % 2;
+	}
 	if (input.WasKeyPressed(SDL_SCANCODE_DELETE)) {
 		if (m_selectedChunk) {
 			m_level_ref->DeleteChunk(m_selectedChunkIndex);
@@ -91,8 +100,11 @@ void Editor::Update(Input& input) {
 }
 
 void Editor::Draw(Graphics& graphics) {
+	SDL_Rect srcRect = { TILE_SIZE * m_brushValue,0,TILE_SIZE, TILE_SIZE };
+	SDL_Rect dstRect = { m_x + 8,m_y + 12,TILE_SIZE, TILE_SIZE };
 	SDL_SetRenderDrawColor(graphics.m_renderer, 255, 0, 0, 255);
 	SDL_RenderDrawRect(graphics.m_renderer, &m_selection);
+	SDL_RenderCopy(graphics.m_renderer, graphics.chunkTexture, &srcRect, &dstRect);
 }
 
 void Editor::Save() {
