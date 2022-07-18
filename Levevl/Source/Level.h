@@ -15,7 +15,7 @@ private:
 public:
 	Level();
 	~Level();
-	Chunk* BuildChunk(int x, int y, int width, int height);
+	Chunk* BuildChunk(int x, int y, int width, int height, char initValue);
 	void DeleteChunk(int index);
 
 private:

@@ -17,7 +17,7 @@ protected:
 private:
 	static const int m_mapWidth = 27;
 	static const int m_mapHeight = 15;
-	int m_data[m_mapWidth][m_mapHeight];
+	int m_data[m_mapWidth * m_mapHeight];
 
 public:
 	Map();
@@ -25,6 +25,7 @@ public:
 	virtual void Draw(Graphics& graphics);
 	void Update(Input& input);
 	int Edit(int mouseX, int mouseY, char value);
+	virtual void SetRegion(char value, int x1, int y1, int x2, int y2);
 
 protected:
 	//

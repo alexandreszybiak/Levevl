@@ -20,7 +20,7 @@ private:
 	SDL_Rect m_destinationRect;
 	
 public:
-	Chunk(int x, int y, int width, int height);
+	Chunk(int x, int y, int width, int height, char initValue);
 	Chunk(const Chunk& chunkCopy);
 	~Chunk();
 	void Draw(Graphics& graphics);

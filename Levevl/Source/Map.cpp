@@ -17,33 +17,32 @@ void Map::Draw(Graphics& graphics) {
 			SDL_Rect rect = { 0,0,TILE_SIZE,TILE_SIZE };
 
 			// Look at neighbours horizontal
-			if (column + 1 < MAP_WIDTH && m_data[column + 1][row] || column + 1 == MAP_WIDTH)
+			if (column + 1 < MAP_WIDTH && m_data[(column + 1) + row * m_mapWidth] || column + 1 == MAP_WIDTH)
 				rect.x += TILE_SIZE;
-			if (column > 0 && m_data[column - 1][row] || column == 0)
+			if (column > 0 && m_data[(column - 1) + row * m_mapWidth] || column == 0)
 				rect.x += TILE_SIZE * 2;
 
 			// Look at neighbours vertical
-			if (row + 1 < MAP_HEIGHT && m_data[column][row + 1] || row + 1 == MAP_HEIGHT)
+			if (row + 1 < MAP_HEIGHT && m_data[column + (row + 1) * m_mapWidth] || row + 1 == MAP_HEIGHT)
 				rect.y += TILE_SIZE;
-			if (row > 0 && m_data[column][row - 1] || row == 0)
+			if (row > 0 && m_data[column + (row - 1) * m_mapWidth] || row == 0)
 				rect.y += TILE_SIZE * 2;
 
 			m_destinationRect.x = column * TILE_SIZE;
 			m_destinationRect.y = row * TILE_SIZE;
-			if (m_data[column][row]) {
+			if (m_data[column + row * m_mapWidth]) {
 				graphics.Draw(graphics.worldTexture, rect, m_destinationRect);
 			}
 		}
 	}
 }
 
-
-
-int Map::Edit(int mouseX, int mouseY, char value) {
-	int tile_x = floor(float(mouseX - 0) / TILE_SIZE);
-	int tile_y = floor(float(mouseY - 0) / TILE_SIZE);
-	if (tile_x < 0 || tile_x >= MAP_WIDTH || tile_y < 0 || tile_y >= MAP_HEIGHT)
-		return 0;
-	m_data[tile_x][tile_y] = value;
-	return 1;
+void Map::SetRegion(char value, int x1, int y1, int x2, int y2) {
+	for (int x = x1; x < x2; x++) {
+		for (int y = y1; y < y2; y++) {
+			if (x < 0 || x >= m_mapWidth || y < 0 || y >= m_mapHeight)
+				continue;
+			m_data[x + y * m_mapWidth] = value;
+		}
+	}
 }

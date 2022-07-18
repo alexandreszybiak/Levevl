@@ -8,7 +8,7 @@
 
 
 
-Chunk::Chunk(int x, int y, int width, int height) :
+Chunk::Chunk(int x, int y, int width, int height, char initValue) :
 		m_x(x),
 		m_y(y),
 		m_width(width),
@@ -18,9 +18,8 @@ Chunk::Chunk(int x, int y, int width, int height) :
 		m_destinationRect({ 0,0,TILE_SIZE,TILE_SIZE }) {
 	m_data.reserve(m_width * m_height);
 	for (int i = 0; i < m_width * m_height; i++) {
-		m_data.push_back(1);
+		m_data.push_back(initValue);
 	}
-	Fill(2);
 	std::cout << "Chunk created." << std::endl;
 }
 
