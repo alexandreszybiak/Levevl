@@ -20,6 +20,7 @@ Editor::Editor(Level* level) :
 	m_level_ref = level;
 	m_selectedChunk = nullptr;
 	m_selectedChunkIndex = 0;
+	Load();
 }
 
 Editor::~Editor() {
@@ -141,9 +142,10 @@ void Editor::Draw(Graphics& graphics) {
 }
 
 void Editor::Save() {
+	int worldMapLength = m_level_ref->worldMap->m_mapWidth * m_level_ref->worldMap->m_mapHeight;
 	SDL_RWops* levelFile = SDL_RWFromFile("level.bin", "w+b");
 	if (levelFile) {
-		for (int i = 0; i < (m_level_ref->worldMap->m_mapWidth * m_level_ref->worldMap->m_mapHeight); i++) {
+		for (int i = 0; i < worldMapLength; i++) {
 			SDL_RWwrite(levelFile, &m_level_ref->worldMap->m_data[i], sizeof(Uint8), 1);
 		}
 		
@@ -152,5 +154,12 @@ void Editor::Save() {
 }
 
 void Editor::Load() {
-	
+	int worldMapLength = m_level_ref->worldMap->m_mapWidth * m_level_ref->worldMap->m_mapHeight;
+	SDL_RWops* levelFile = SDL_RWFromFile("level.bin", "r+b");
+	if (levelFile) {
+		for (int i = 0; i < worldMapLength; i++) {
+			SDL_RWread(levelFile, &m_level_ref->worldMap->m_data[i], sizeof(Uint8), 1);
+		}
+		SDL_RWclose(levelFile);
+	}
 }
