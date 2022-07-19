@@ -17,7 +17,8 @@ public:
 	};
 	
 private:
-	int m_x, m_y;
+	int m_cursorX, m_cursorY;
+	int m_selectionOriginX, m_selectionOriginY;
 	char m_brushValue;
 	BrushMode m_brushMode;
 	Chunk* m_selectedChunk;

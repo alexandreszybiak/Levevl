@@ -9,7 +9,14 @@
 #include "Chunk.h"
 #include "Level.h"
 
-Editor::Editor(Level* level) : m_brushValue(1), m_selection({0,0,0,0}), m_x(0), m_y(0), m_brushMode(BRUSH_MODE_DRAW) {
+Editor::Editor(Level* level) :
+		m_brushValue(1),
+		m_selection({0,0,0,0}),
+		m_cursorX(0),
+		m_cursorY(0),
+		m_brushMode(BRUSH_MODE_DRAW),
+		m_selectionOriginX(0),
+		m_selectionOriginY(0) {
 	m_level_ref = level;
 	m_selectedChunk = nullptr;
 	m_selectedChunkIndex = 0;
@@ -20,8 +27,8 @@ Editor::~Editor() {
 }
 
 void Editor::Update(Input& input) {
-	m_x = input.GetMouseX();
-	m_y = input.GetMouseY();
+	m_cursorX = input.GetMouseX();
+	m_cursorY = input.GetMouseY();
 
 	if (input.WasKeyPressed(SDL_SCANCODE_LEFT)) {
 		if(m_selectedChunk)
@@ -42,8 +49,8 @@ void Editor::Update(Input& input) {
 
 	if (input.WasMouseButtonPressed(SDL_BUTTON_LEFT) || input.WasMouseButtonPressed(SDL_BUTTON_RIGHT)) {
 		// Initialize the selection
-		m_selection.x = input.GetMouseX() / TILE_SIZE * TILE_SIZE;
-		m_selection.y = input.GetMouseY() / TILE_SIZE * TILE_SIZE;
+		m_selectionOriginX = input.GetMouseX();
+		m_selectionOriginY = input.GetMouseY();
 
 		// Reset the selected chunk
 		m_selectedChunk = nullptr;
@@ -66,13 +73,20 @@ void Editor::Update(Input& input) {
 			m_brushMode = BRUSH_MODE_ERASE;
 
 	}
-	if (input.WasMouseButtonReleased(SDL_BUTTON_LEFT) || input.WasMouseButtonReleased(SDL_BUTTON_RIGHT)) {
-		//
-		int gridX = std::min(input.GetMouseX(), m_selection.x) / TILE_SIZE;
-		int gridY = std::min(input.GetMouseY(), m_selection.y) / TILE_SIZE;
+	if (input.IsMouseButtonHeld(SDL_BUTTON_LEFT) || input.IsMouseButtonHeld(SDL_BUTTON_RIGHT)) {
 
-		int gridX2 = ceil(float(std::max(input.GetMouseX(), m_selection.x)) / TILE_SIZE);
-		int gridY2 = ceil(float(std::max(input.GetMouseY(), m_selection.y)) / TILE_SIZE);
+		m_selection.x = std::min(input.GetMouseX(), m_selectionOriginX) / TILE_SIZE * TILE_SIZE;
+		m_selection.y = std::min(input.GetMouseY(), m_selectionOriginY) / TILE_SIZE * TILE_SIZE;
+		m_selection.w = abs(m_selection.x - std::max(input.GetMouseX(), m_selectionOriginX)) / TILE_SIZE * TILE_SIZE + TILE_SIZE;
+		m_selection.h = abs(m_selection.y - std::max(input.GetMouseY(), m_selectionOriginY)) / TILE_SIZE * TILE_SIZE + TILE_SIZE;
+	}
+	else if (input.WasMouseButtonReleased(SDL_BUTTON_LEFT) || input.WasMouseButtonReleased(SDL_BUTTON_RIGHT)) {
+		//
+		int gridX = m_selection.x / TILE_SIZE;
+		int gridY = m_selection.y / TILE_SIZE;
+
+		int gridX2 = (m_selection.x + m_selection.w) / TILE_SIZE;
+		int gridY2 = (m_selection.y + m_selection.h) / TILE_SIZE;
 		if (m_selectedChunk) {
 			// Draw over the selected chunk
 			m_selectedChunk->SetRegion((m_brushValue + 1) * m_brushMode, gridX, gridY, gridX2, gridY2);
@@ -88,14 +102,7 @@ void Editor::Update(Input& input) {
 		// Reset the selection
 		m_selection.x = m_selection.y = m_selection.w = m_selection.h = 0;
 	}
-	if (input.IsMouseButtonHeld(SDL_BUTTON_LEFT) || input.IsMouseButtonHeld(SDL_BUTTON_RIGHT)) {
-		int dx = input.GetMouseX() - m_selection.x;
-		int dy = input.GetMouseY() - m_selection.y;
-		int signX = (dx > 0) - (dx < 0);
-		int signY = (dy > 0) - (dy < 0);
-		m_selection.w = ceil(float(abs(dx)) / TILE_SIZE) * TILE_SIZE * signX;
-		m_selection.h = ceil(float(abs(dy)) / TILE_SIZE) * TILE_SIZE * signY;
-	}
+	
 	
 	if (int y = input.GetMouseWheel()) {
 		int maxValue = 3;
@@ -111,17 +118,22 @@ void Editor::Update(Input& input) {
 }
 
 void Editor::Draw(Graphics& graphics) {
+	
+	// Draw the selection rectangle
+	if (m_selection.w && m_selection.h) {
+		SDL_SetRenderDrawColor(graphics.m_renderer, 255, 0, 0, 255);
+		SDL_RenderDrawRect(graphics.m_renderer, &m_selection);
+	}
+	
+	// Draw the current brush value
 	SDL_Texture* cursorTexture = graphics.chunkTexture;
 	SDL_Rect srcRect = { TILE_SIZE * m_brushValue,0,TILE_SIZE, TILE_SIZE };
-	SDL_Rect dstRect = { m_x + 8,m_y + 12,TILE_SIZE, TILE_SIZE };
+	SDL_Rect dstRect = { m_cursorX + 8,m_cursorY + 12,TILE_SIZE, TILE_SIZE };
 
-	if(m_brushValue > 1){
+	if (m_brushValue > 1) {
 		cursorTexture = graphics.worldTexture;
 		srcRect = { 0, 0, TILE_SIZE, TILE_SIZE };
 	}
-	
-	SDL_SetRenderDrawColor(graphics.m_renderer, 255, 0, 0, 255);
-	SDL_RenderDrawRect(graphics.m_renderer, &m_selection);
 	SDL_RenderCopy(graphics.m_renderer, cursorTexture, &srcRect, &dstRect);
 }
 
