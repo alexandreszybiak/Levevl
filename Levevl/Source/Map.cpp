@@ -37,7 +37,7 @@ void Map::Draw(Graphics& graphics) {
 	}
 }
 
-void Map::SetRegion(char value, int x1, int y1, int x2, int y2) {
+void Map::SetRegion(Uint8 value, int x1, int y1, int x2, int y2) {
 	for (int x = x1; x < x2; x++) {
 		for (int y = y1; y < y2; y++) {
 			if (x < 0 || x >= m_mapWidth || y < 0 || y >= m_mapHeight)

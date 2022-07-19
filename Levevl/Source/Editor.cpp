@@ -101,6 +101,9 @@ void Editor::Update(Input& input) {
 
 		// Reset the selection
 		m_selection.x = m_selection.y = m_selection.w = m_selection.h = 0;
+
+		//Save the level
+		Save();
 	}
 	
 	
@@ -138,28 +141,16 @@ void Editor::Draw(Graphics& graphics) {
 }
 
 void Editor::Save() {
-	/*std::ofstream myFile("level.txt");
-	for (int row = 0; row < MAP_HEIGHT; row++) {
-		for (int column = 0; column < MAP_WIDTH; column++) {
-			myFile << map[row][column];
-			if (column == MAP_WIDTH - 1) continue;
-			myFile << ",";
+	SDL_RWops* levelFile = SDL_RWFromFile("level.bin", "w+b");
+	if (levelFile) {
+		for (int i = 0; i < (m_level_ref->worldMap->m_mapWidth * m_level_ref->worldMap->m_mapHeight); i++) {
+			SDL_RWwrite(levelFile, &m_level_ref->worldMap->m_data[i], sizeof(Uint8), 1);
 		}
-		myFile << std::endl;
+		
+		SDL_RWclose(levelFile);
 	}
-	myFile.close();*/
 }
 
 void Editor::Load() {
-	/*char tile;
-	std::fstream in_level;
-	in_level.open("level.txt");
-	if (!in_level.is_open()) return;
-	for (int row = 0; row < MAP_HEIGHT; row++) {
-		for (int column = 0; column < MAP_WIDTH; column++) {
-			tile = in_level.get();
-			m_data[row][column] = atoi(&tile);
-			in_level.ignore();
-		}
-	}*/
+	
 }
