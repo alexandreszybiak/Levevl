@@ -102,9 +102,6 @@ void Editor::Update(Input& input) {
 
 		// Reset the selection
 		m_selection.x = m_selection.y = m_selection.w = m_selection.h = 0;
-
-		//Save the level
-		Save();
 	}
 	
 	
@@ -117,8 +114,11 @@ void Editor::Update(Input& input) {
 			m_level_ref->DeleteChunk(m_selectedChunkIndex);
 			m_selectedChunk = nullptr;
 			m_selectedChunkIndex = 0;
-			Save();
 		}
+	}
+
+	if (input.WasKeyPressed(SDL_SCANCODE_S) && input.IsKeyHeld(SDL_SCANCODE_LCTRL)) {
+		Save();
 	}
 }
 
@@ -169,6 +169,10 @@ void Editor::Save() {
 			}
 		}
 		SDL_RWclose(levelFile);
+		std::cout << "Level saved!" << std::endl;
+	}
+	else {
+		std::cout << "Level file not found." << std::endl;
 	}
 }
 
