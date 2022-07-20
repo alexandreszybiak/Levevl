@@ -117,6 +117,7 @@ void Editor::Update(Input& input) {
 			m_level_ref->DeleteChunk(m_selectedChunkIndex);
 			m_selectedChunk = nullptr;
 			m_selectedChunkIndex = 0;
+			Save();
 		}
 	}
 }
