@@ -111,6 +111,14 @@ int Chunk::GetY() {
 	return m_y;
 }
 
+int Chunk::GetWidth() {
+	return m_width;
+}
+
+std::vector<char>* Chunk::GetData() {
+	return &m_data;
+}
+
 bool Chunk::OverlapsPoint(int x, int y) {
 	int tile_x = floor(float(x - m_x) / TILE_SIZE);
 	int tile_y = floor(float(y - m_y) / TILE_SIZE);

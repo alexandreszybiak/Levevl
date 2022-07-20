@@ -148,7 +148,25 @@ void Editor::Save() {
 		for (int i = 0; i < worldMapLength; i++) {
 			SDL_RWwrite(levelFile, &m_level_ref->worldMap->m_data[i], sizeof(Uint8), 1);
 		}
-		
+
+		int chunkCount = m_level_ref->v_chunks.size();
+		SDL_RWwrite(levelFile, &chunkCount, sizeof(int), 1);
+
+		for (Chunk& chunk : m_level_ref->v_chunks) {
+			int x = chunk.GetX();
+			int y = chunk.GetY();
+			int width = chunk.GetWidth();
+			int size = chunk.GetData()->size();
+
+			SDL_RWwrite(levelFile, &x, sizeof(int), 1);
+			SDL_RWwrite(levelFile, &y, sizeof(int), 1);
+			SDL_RWwrite(levelFile, &width, sizeof(int), 1);
+			SDL_RWwrite(levelFile, &size, sizeof(int), 1);
+
+			for (char c : *chunk.GetData()) {
+				SDL_RWwrite(levelFile, &c, sizeof(char), 1);
+			}
+		}
 		SDL_RWclose(levelFile);
 	}
 }
@@ -157,8 +175,30 @@ void Editor::Load() {
 	int worldMapLength = m_level_ref->worldMap->m_mapWidth * m_level_ref->worldMap->m_mapHeight;
 	SDL_RWops* levelFile = SDL_RWFromFile("level.bin", "r+b");
 	if (levelFile) {
-		for (int i = 0; i < worldMapLength; i++) {
-			SDL_RWread(levelFile, &m_level_ref->worldMap->m_data[i], sizeof(Uint8), 1);
+		while (1) {
+			for (int i = 0; i < worldMapLength; i++) {
+				if (!SDL_RWread(levelFile, &m_level_ref->worldMap->m_data[i], sizeof(Uint8), 1))
+					break;
+			}
+
+			int numChunk = 0;
+			if (!SDL_RWread(levelFile, &numChunk, sizeof(int), 1))
+				break;
+
+			int x = 0;
+			int y = 0;
+			int width = 0;
+			int size = 0;
+
+			for (int i = 0; i < numChunk; i++) {
+				SDL_RWread(levelFile, &x, sizeof(int), 1);
+				SDL_RWread(levelFile, &y, sizeof(int), 1);
+				SDL_RWread(levelFile, &width, sizeof(int), 1);
+				SDL_RWread(levelFile, &size, sizeof(int), 1);
+				Chunk* newChunk = m_level_ref->BuildChunk(x, y, width, size / width, 1);
+
+				SDL_RWread(levelFile, newChunk->GetData()->data(), sizeof(char) * size, 1);
+			}
 		}
 		SDL_RWclose(levelFile);
 	}

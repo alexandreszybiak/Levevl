@@ -8,7 +8,7 @@ class Graphics;
 //A piece of a level that can be moved around
 class Chunk : public Map {
 public:
-
+	
 private:
 	int m_x;
 	int m_y;
@@ -29,6 +29,8 @@ public:
 	int Edit(int mouseX, int mouseY, char value);
 	int GetX();
 	int GetY();
+	int GetWidth();
+	std::vector<char>* GetData();
 	bool OverlapsPoint(int x, int y);
 	void SetRegion(char value, int x1, int y1, int x2, int y2);
 
