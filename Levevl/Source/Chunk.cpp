@@ -98,16 +98,23 @@ void Chunk::Move(int x, int y) {
 		if (&e == this) continue;
 		otherChunks.push_back(&e);
 	}
+
+	for (Chunk* e : otherChunks) {
+		if (OverlapsChunk(e, x, y)) {
+			e->m_x += x * TILE_SIZE;
+			e->m_y += y * TILE_SIZE;
+		}
+	}
 	m_x += x * TILE_SIZE;
 	m_y += y * TILE_SIZE;
 }
 
 int Chunk::Edit(int mouseX, int mouseY, char value) {
-	int tile_x = floor(float(mouseX - m_x) / TILE_SIZE);
-	int tile_y = floor(float(mouseY - m_y) / TILE_SIZE);
-	if (tile_x < 0 || tile_x >= m_width || tile_y < 0 || tile_y >= m_height)
+	int tileX = floor(float(mouseX - m_x) / TILE_SIZE);
+	int tileY = floor(float(mouseY - m_y) / TILE_SIZE);
+	if (tileX < 0 || tileX >= m_width || tileY < 0 || tileY >= m_height)
 		return 0;
-	m_data[tile_x + tile_y * m_width] = value;
+	m_data[tileX + tileY * m_width] = value;
 	return 1;
 }
 
@@ -128,13 +135,26 @@ std::vector<char>* Chunk::GetData() {
 }
 
 bool Chunk::OverlapsPoint(int x, int y) {
-	int tile_x = floor(float(x - m_x) / TILE_SIZE);
-	int tile_y = floor(float(y - m_y) / TILE_SIZE);
+	int tileX = floor(float(x - m_x) / TILE_SIZE);
+	int tileY = floor(float(y - m_y) / TILE_SIZE);
 
-	if (tile_x < 0 || tile_x >= m_width || tile_y < 0 || tile_y >= m_height)
+	if (tileX < 0 || tileX >= m_width || tileY < 0 || tileY >= m_height || m_data[tileX + tileY * m_width] == 0)
 		return false;
 
 	return true;
+}
+
+bool Chunk::OverlapsChunk(Chunk* otherChunk, int offsetX, int offsetY) {
+	for (int x = 0; x < m_width; x++) {
+		for (int y = 0; y < m_height; y++) {
+			if (m_data[x + y * m_width]) {
+				if (otherChunk->OverlapsPoint((x + offsetX) * TILE_SIZE + m_x, (y + offsetY) * TILE_SIZE + m_y)) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 void Chunk::SetRegion(char value, int x1, int y1, int x2, int y2) {

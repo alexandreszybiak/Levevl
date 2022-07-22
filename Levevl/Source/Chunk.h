@@ -35,6 +35,7 @@ public:
 	int GetWidth();
 	std::vector<char>* GetData();
 	bool OverlapsPoint(int x, int y);
+	bool OverlapsChunk(Chunk* otherChunk, int offsetX, int offsetY);
 	void SetRegion(char value, int x1, int y1, int x2, int y2);
 
 private:
