@@ -4,6 +4,7 @@
 #include "Map.h"
 
 class Graphics;
+class Level;
 
 //A piece of a level that can be moved around
 class Chunk : public Map {
@@ -18,9 +19,11 @@ private:
 	
 	SDL_Rect m_emptyRect, m_brickRect;
 	SDL_Rect m_destinationRect;
+
+	Level* m_levelRef;
 	
 public:
-	Chunk(int x, int y, int width, int height, char initValue);
+	Chunk(int x, int y, int width, int height, char initValue, Level* levelRef);
 	Chunk(const Chunk& chunkCopy);
 	~Chunk();
 	void Draw(Graphics& graphics);

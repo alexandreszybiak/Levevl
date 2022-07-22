@@ -5,17 +5,19 @@
 #include "Graphics.h"
 #include "Chunk.h"
 #include "Game.h"
+#include "Level.h"
 
 
-
-Chunk::Chunk(int x, int y, int width, int height, char initValue) :
+Chunk::Chunk(int x, int y, int width, int height, char initValue, Level* levelRef):
 		m_x(x),
 		m_y(y),
 		m_width(width),
 		m_height(height),
+		m_levelRef(levelRef),
 		m_emptyRect({ 0,0,TILE_SIZE,TILE_SIZE }),
 		m_brickRect({ TILE_SIZE,0,TILE_SIZE,TILE_SIZE }),
-		m_destinationRect({ 0,0,TILE_SIZE,TILE_SIZE }) {
+		m_destinationRect({ 0,0,TILE_SIZE,TILE_SIZE })
+{
 	m_data.reserve(m_width * m_height);
 	for (int i = 0; i < m_width * m_height; i++) {
 		m_data.push_back(initValue);
@@ -28,6 +30,7 @@ Chunk::Chunk(const Chunk& chunkCopy):
 		m_y(chunkCopy.m_y), 
 		m_width(chunkCopy.m_width), 
 		m_height(chunkCopy.m_height),
+		m_levelRef(chunkCopy.m_levelRef),
 		m_emptyRect({ 0,0,TILE_SIZE,TILE_SIZE }),
 		m_brickRect({ TILE_SIZE,0,TILE_SIZE,TILE_SIZE }),
 		m_destinationRect({ 0,0,TILE_SIZE,TILE_SIZE }),
@@ -90,6 +93,11 @@ void Chunk::DrawMask(Graphics& graphics) {
 	}
 }
 void Chunk::Move(int x, int y) {
+	std::vector<Chunk*> otherChunks;
+	for (Chunk& e : m_levelRef->v_chunks) {
+		if (&e == this) continue;
+		otherChunks.push_back(&e);
+	}
 	m_x += x * TILE_SIZE;
 	m_y += y * TILE_SIZE;
 }

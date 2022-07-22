@@ -151,6 +151,7 @@ void Editor::Save() {
 		}
 
 		int chunkCount = m_level_ref->v_chunks.size();
+		
 		SDL_RWwrite(levelFile, &chunkCount, sizeof(int), 1);
 
 		for (Chunk& chunk : m_level_ref->v_chunks) {
@@ -195,6 +196,8 @@ void Editor::Load() {
 			int width = 0;
 			int size = 0;
 
+			m_level_ref->v_chunks.reserve(numChunk);
+
 			for (int i = 0; i < numChunk; i++) {
 				SDL_RWread(levelFile, &x, sizeof(int), 1);
 				SDL_RWread(levelFile, &y, sizeof(int), 1);
@@ -204,6 +207,8 @@ void Editor::Load() {
 
 				SDL_RWread(levelFile, newChunk->GetData()->data(), sizeof(char) * size, 1);
 			}
+
+			break;
 		}
 		SDL_RWclose(levelFile);
 	}
