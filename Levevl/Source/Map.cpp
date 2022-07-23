@@ -46,3 +46,13 @@ void Map::SetRegion(Uint8 value, int x1, int y1, int x2, int y2) {
 		}
 	}
 }
+
+bool Map::OverlapsPoint(int x, int y) {
+	int tileX = x / TILE_SIZE;
+	int tileY = y / TILE_SIZE;
+
+	if (tileX < 0 || tileX >= m_mapWidth || tileY < 0 || tileY >= m_mapHeight || m_data[tileX + tileY * m_mapWidth])
+		return true;
+
+	return false;
+}

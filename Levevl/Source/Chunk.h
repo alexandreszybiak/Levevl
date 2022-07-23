@@ -29,13 +29,13 @@ public:
 	void Draw(Graphics& graphics);
 	void DrawMask(Graphics& graphics);
 	void Move(int x, int y);
-	int Edit(int mouseX, int mouseY, char value);
 	int GetX();
 	int GetY();
 	int GetWidth();
 	std::vector<char>* GetData();
 	bool OverlapsPoint(int x, int y);
 	bool OverlapsChunk(Chunk* otherChunk, int offsetX, int offsetY);
+	bool OverlapsWalls(int offsetX, int offsetY);
 	void SetRegion(char value, int x1, int y1, int x2, int y2);
 
 private:

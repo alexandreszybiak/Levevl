@@ -105,17 +105,12 @@ void Chunk::Move(int x, int y) {
 			e->m_y += y * TILE_SIZE;
 		}
 	}
+
+	if (OverlapsWalls(x, y))
+		return;
+
 	m_x += x * TILE_SIZE;
 	m_y += y * TILE_SIZE;
-}
-
-int Chunk::Edit(int mouseX, int mouseY, char value) {
-	int tileX = floor(float(mouseX - m_x) / TILE_SIZE);
-	int tileY = floor(float(mouseY - m_y) / TILE_SIZE);
-	if (tileX < 0 || tileX >= m_width || tileY < 0 || tileY >= m_height)
-		return 0;
-	m_data[tileX + tileY * m_width] = value;
-	return 1;
 }
 
 int Chunk::GetX() {
@@ -151,6 +146,22 @@ bool Chunk::OverlapsChunk(Chunk* otherChunk, int offsetX, int offsetY) {
 				if (otherChunk->OverlapsPoint((x + offsetX) * TILE_SIZE + m_x, (y + offsetY) * TILE_SIZE + m_y)) {
 					return true;
 				}
+			}
+		}
+	}
+	return false;
+}
+
+bool Chunk::OverlapsWalls(int offsetX, int offsetY) {
+	int px = 0;
+	int py = 0;
+	for (int x = 0; x < m_width; x++) {
+		for (int y = 0; y < m_height; y++) {
+			if (m_data[x + y * m_width]) {
+				px = (x + offsetX) * TILE_SIZE + m_x;
+				py = (y + offsetY) * TILE_SIZE + m_y;
+				if(m_levelRef->worldMap->OverlapsPoint(px, py))
+					return true;
 			}
 		}
 	}
