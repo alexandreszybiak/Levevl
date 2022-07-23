@@ -12,6 +12,8 @@
 Chunk::Chunk(int x, int y, int width, int height, char initValue, Level* levelRef):
 		m_x(x),
 		m_y(y),
+		m_targetX(x),
+		m_targetY(y),
 		m_width(width),
 		m_height(height),
 		m_levelRef(levelRef),
@@ -28,7 +30,9 @@ Chunk::Chunk(int x, int y, int width, int height, char initValue, Level* levelRe
 
 Chunk::Chunk(const Chunk& chunkCopy): 
 		m_x(chunkCopy.m_x), 
-		m_y(chunkCopy.m_y), 
+		m_y(chunkCopy.m_y),
+		m_targetX(chunkCopy.m_targetX),
+		m_targetY(chunkCopy.m_targetY),
 		m_width(chunkCopy.m_width), 
 		m_height(chunkCopy.m_height),
 		m_levelRef(chunkCopy.m_levelRef),
@@ -42,6 +46,18 @@ Chunk::Chunk(const Chunk& chunkCopy):
 Chunk::~Chunk() {
 	m_data.clear();
 	std::cout << "Chunk destroyed." << std::endl;
+}
+
+int Sign(int x) {
+	return (x > 0) - (x < 0);
+}
+
+void Chunk::Update() {
+	int distX = m_x - m_targetX;
+	int distY = m_y - m_targetY;
+
+	m_x -= ceil(abs(distX) * .5f) * Sign(distX);
+	m_y -= ceil(abs(distY) * .5f) * Sign(distY);
 }
 
 void Chunk::Draw(Graphics& graphics) {
@@ -94,8 +110,8 @@ void Chunk::Move(int x, int y) {
 
 	if (CanMove(x, y, otherChunks, freeChunks)) {
 		for (Chunk* e : freeChunks) {
-			e->m_x += x * TILE_SIZE;
-			e->m_y += y * TILE_SIZE;
+			e->m_targetX += x * TILE_SIZE;
+			e->m_targetY += y * TILE_SIZE;
 		}
 	}
 }
@@ -121,11 +137,11 @@ bool Chunk::CanMove(int x, int y, std::vector<Chunk*>& otherChunks, std::vector<
 }
 
 int Chunk::GetX() {
-	return m_x;
+	return m_targetX;
 }
 
 int Chunk::GetY() {
-	return m_y;
+	return m_targetY;
 }
 
 int Chunk::GetWidth() {
@@ -137,8 +153,8 @@ std::vector<char>* Chunk::GetData() {
 }
 
 bool Chunk::OverlapsPoint(int x, int y) {
-	int tileX = floor(float(x - m_x) / TILE_SIZE);
-	int tileY = floor(float(y - m_y) / TILE_SIZE);
+	int tileX = floor(float(x - m_targetX) / TILE_SIZE);
+	int tileY = floor(float(y - m_targetY) / TILE_SIZE);
 
 	if (tileX < 0 || tileX >= m_width || tileY < 0 || tileY >= m_height || m_data[tileX + tileY * m_width] == 0)
 		return false;
@@ -150,7 +166,7 @@ bool Chunk::OverlapsChunk(Chunk* otherChunk, int offsetX = 0, int offsetY = 0) {
 	for (int x = 0; x < m_width; x++) {
 		for (int y = 0; y < m_height; y++) {
 			if (m_data[x + y * m_width]) {
-				if (otherChunk->OverlapsPoint((x + offsetX) * TILE_SIZE + m_x, (y + offsetY) * TILE_SIZE + m_y)) {
+				if (otherChunk->OverlapsPoint((x + offsetX) * TILE_SIZE + m_targetX, (y + offsetY) * TILE_SIZE + m_targetY)) {
 					return true;
 				}
 			}
@@ -165,8 +181,8 @@ bool Chunk::OverlapsWalls(int offsetX = 0, int offsetY = 0) {
 	for (int x = 0; x < m_width; x++) {
 		for (int y = 0; y < m_height; y++) {
 			if (m_data[x + y * m_width]) {
-				px = (x + offsetX) * TILE_SIZE + m_x;
-				py = (y + offsetY) * TILE_SIZE + m_y;
+				px = (x + offsetX) * TILE_SIZE + m_targetX;
+				py = (y + offsetY) * TILE_SIZE + m_targetY;
 				if(m_levelRef->worldMap->OverlapsPoint(px, py))
 					return true;
 			}
@@ -176,10 +192,10 @@ bool Chunk::OverlapsWalls(int offsetX = 0, int offsetY = 0) {
 }
 
 void Chunk::SetRegion(char value, int x1, int y1, int x2, int y2) {
-	x1 -= m_x / TILE_SIZE;
-	y1 -= m_y / TILE_SIZE;
-	x2 -= m_x / TILE_SIZE;
-	y2 -= m_y / TILE_SIZE;
+	x1 -= m_targetX / TILE_SIZE;
+	y1 -= m_targetY / TILE_SIZE;
+	x2 -= m_targetX / TILE_SIZE;
+	y2 -= m_targetY / TILE_SIZE;
 
 	for (int x = x1; x < x2; x++) {
 		for (int y = y1; y < y2; y++) {

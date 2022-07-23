@@ -13,6 +13,10 @@ public:
 private:
 	int m_x;
 	int m_y;
+
+	int m_targetX;
+	int m_targetY;
+
 	int m_width;
 	int m_height;
 	std::vector<char> m_data;
@@ -26,6 +30,7 @@ public:
 	Chunk(int x, int y, int width, int height, char initValue, Level* levelRef);
 	Chunk(const Chunk& chunkCopy);
 	~Chunk();
+	void Update();
 	void Draw(Graphics& graphics);
 	void DrawMask(Graphics& graphics);
 	void Move(int x, int y);
