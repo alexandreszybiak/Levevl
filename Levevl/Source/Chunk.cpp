@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <algorithm>
 #include <iostream>
 #include "SDL.h"
 #include "Graphics.h"
@@ -43,18 +44,6 @@ Chunk::~Chunk() {
 	std::cout << "Chunk destroyed." << std::endl;
 }
 
-void Chunk::Fill(char value) {
-	for (int x = 0; x < m_width; x++) {
-		for (int y = 0; y < m_height; y++) {
-			if ((y * m_width + x) >= m_data.size()) {
-				std::cout << "Value too high in Chunk::Fill" << std::endl;
-				continue;
-			}
-			m_data[y * m_width + x] = value;
-		}
-	}
-}
-
 void Chunk::Draw(Graphics& graphics) {
 	for (int column = 0; column < m_width; column++) {
 		for (int row = 0; row < m_height; row++) {
@@ -94,23 +83,41 @@ void Chunk::DrawMask(Graphics& graphics) {
 }
 void Chunk::Move(int x, int y) {
 	std::vector<Chunk*> otherChunks;
+	std::vector<Chunk*> freeChunks;
+	otherChunks.reserve(m_levelRef->v_chunks.size());
+	freeChunks.reserve(m_levelRef->v_chunks.size());
 	for (Chunk& e : m_levelRef->v_chunks) {
-		if (&e == this) continue;
+		if (&e == this)
+			continue;
 		otherChunks.push_back(&e);
 	}
 
-	for (Chunk* e : otherChunks) {
-		if (OverlapsChunk(e, x, y)) {
+	if (CanMove(x, y, otherChunks, freeChunks)) {
+		for (Chunk* e : freeChunks) {
 			e->m_x += x * TILE_SIZE;
 			e->m_y += y * TILE_SIZE;
 		}
 	}
+}
 
+bool Chunk::CanMove(int x, int y, std::vector<Chunk*>& otherChunks, std::vector<Chunk*>& freeChunks) {
 	if (OverlapsWalls(x, y))
-		return;
+		return false;
 
-	m_x += x * TILE_SIZE;
-	m_y += y * TILE_SIZE;
+	for (int i = otherChunks.size() - 1; i >= 0; i--) {
+		if (i >= otherChunks.size())
+			continue;
+		Chunk* currentChunk = otherChunks[i];
+		if (OverlapsChunk(currentChunk, x, y)) {
+			auto end = std::remove(otherChunks.begin(), otherChunks.end(), currentChunk);
+			otherChunks.erase(end, otherChunks.end());
+			if (!currentChunk->CanMove(x, y, otherChunks, freeChunks))
+				return false;
+		}
+	}
+
+	freeChunks.push_back(this);
+	return true;
 }
 
 int Chunk::GetX() {
@@ -139,7 +146,7 @@ bool Chunk::OverlapsPoint(int x, int y) {
 	return true;
 }
 
-bool Chunk::OverlapsChunk(Chunk* otherChunk, int offsetX, int offsetY) {
+bool Chunk::OverlapsChunk(Chunk* otherChunk, int offsetX = 0, int offsetY = 0) {
 	for (int x = 0; x < m_width; x++) {
 		for (int y = 0; y < m_height; y++) {
 			if (m_data[x + y * m_width]) {
@@ -152,7 +159,7 @@ bool Chunk::OverlapsChunk(Chunk* otherChunk, int offsetX, int offsetY) {
 	return false;
 }
 
-bool Chunk::OverlapsWalls(int offsetX, int offsetY) {
+bool Chunk::OverlapsWalls(int offsetX = 0, int offsetY = 0) {
 	int px = 0;
 	int py = 0;
 	for (int x = 0; x < m_width; x++) {
