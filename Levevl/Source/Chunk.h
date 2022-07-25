@@ -11,11 +11,14 @@ class Chunk : public Map {
 public:
 	
 private:
-	int m_x;
-	int m_y;
+	// Used to compute collisions with entities
+	int m_x, m_y;
 
-	int m_targetX;
-	int m_targetY;
+	// Used to render the chunk only, can be used to add effect like chunk bump
+	int m_renderX, m_renderY;
+
+	// The grid bound position the chunk is reaching for
+	int m_targetX, m_targetY;
 
 	int m_width;
 	int m_height;

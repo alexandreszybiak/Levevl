@@ -23,6 +23,7 @@ public:
 	SDL_Texture* chunkMaskTexture;
 	SDL_Texture* worldTexture;
 	SDL_Texture* gameTexture;
+	SDL_Texture* playerTexture;
 private:
 	//
 };

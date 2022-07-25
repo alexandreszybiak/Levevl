@@ -3,9 +3,11 @@
 #include "Map.h"
 #include "Chunk.h"
 #include "Level.h"
+#include "Player.h"
 
 Level::Level() {
 	worldMap = new Map();
+	player = new Player(0xeeeeeeee, 0xeeeeeeee);
 }
 
 Level::~Level() {

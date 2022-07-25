@@ -8,6 +8,7 @@
 #include "Map"
 #include "Chunk.h"
 #include "Level.h"
+#include "Player.h"
 
 Editor::Editor(Level* level) :
 		m_brushValue(1),
@@ -119,6 +120,10 @@ void Editor::Update(Input& input) {
 
 	if (input.WasKeyPressed(SDL_SCANCODE_S) && input.IsKeyHeld(SDL_SCANCODE_LCTRL)) {
 		Save();
+	}
+
+	if (input.WasKeyPressed(SDL_SCANCODE_P)) {
+		m_level_ref->player->SetPosition(input.GetMouseX(), input.GetMouseY());
 	}
 }
 

@@ -3,11 +3,14 @@
 
 class Map;
 class Chunk;
+class Player;
 
 class Level {
 public:
 	Map* worldMap;
 	std::vector<Chunk> v_chunks;
+
+	Player* player;
 
 private:
 	//

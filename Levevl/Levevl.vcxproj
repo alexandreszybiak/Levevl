@@ -199,6 +199,7 @@
     <ClCompile Include="Source\Level.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Map.cpp" />
+    <ClCompile Include="Source\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chunk.h" />
@@ -208,6 +209,7 @@
     <ClInclude Include="Source\Input.h" />
     <ClInclude Include="Source\Level.h" />
     <ClInclude Include="Source\Map.h" />
+    <ClInclude Include="Source\Player.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\chunk_mask_tileset.tga" />

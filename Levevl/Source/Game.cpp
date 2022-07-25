@@ -8,6 +8,7 @@
 #include "Graphics.h"
 #include "Editor.h"
 #include "Level.h"
+#include "Player.h"
 
 Game::Game() {
 
@@ -136,7 +137,7 @@ void Game::render(Graphics& graphics) {
 	for (Chunk& chunk : level->v_chunks) {
 		chunk.Draw(graphics);
 	}
-
+	level->player->Draw(graphics);
 
 	// End draw
 	SDL_SetRenderTarget(graphics.m_renderer, NULL);
