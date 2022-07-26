@@ -214,6 +214,7 @@
   <ItemGroup>
     <Image Include="Assets\chunk_mask_tileset.tga" />
     <Image Include="Assets\chunk_texture.png" />
+    <Image Include="Assets\player.png" />
     <Image Include="Assets\world_texture.png" />
   </ItemGroup>
   <ItemGroup>

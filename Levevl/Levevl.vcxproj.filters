@@ -77,6 +77,9 @@
     <Image Include="Assets\world_texture.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Assets\player.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="level.bin">
