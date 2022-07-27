@@ -104,9 +104,12 @@ void Game::Loop() {
 }
 
 void Game::update(Input& input) {
+
 	for (Chunk& chunk : level->v_chunks) {
 		chunk.Update();
 	}
+	level->player->Update(input);
+
 }
 
 void Game::render(Graphics& graphics) {

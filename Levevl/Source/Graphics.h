@@ -10,7 +10,7 @@ public:
 	~Graphics();
 	void Update(Input& input);
 	SDL_Texture* LoadTexture(const char* fileName);
-	void Draw(SDL_Texture* texture, SDL_Rect sourceRect, SDL_Rect destinationRect);
+	void Draw(SDL_Texture* texture, SDL_Rect sourceRect, SDL_Rect destinationRect, SDL_RendererFlip flip = SDL_FLIP_NONE);
 private:
 	void ToggleFullscreen();
 public:
