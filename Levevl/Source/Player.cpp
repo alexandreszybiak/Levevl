@@ -19,9 +19,9 @@ Player::Player(int x, int y) : m_x(x), m_y(y), m_direction(DIRECTION_RIGHT), m_d
 }
 
 void Player::Update(Input& input) {
-	int hDir = -input.IsKeyHeld(SDL_SCANCODE_LEFT) + input.IsKeyHeld(SDL_SCANCODE_RIGHT);
+	int hDir = -(input.IsKeyHeld(SDL_SCANCODE_LEFT) || input.IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_LEFT)) + (input.IsKeyHeld(SDL_SCANCODE_RIGHT) || input.IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_RIGHT));
 
-	if (input.WasKeyPressed(SDL_SCANCODE_UP) && m_onFLoor) {
+	if (m_onFLoor && (input.WasKeyPressed(SDL_SCANCODE_UP) || input.WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_A))) {
 		m_velocityY = -8;
 		m_onFLoor = false;
 	}

@@ -55,7 +55,13 @@ void Game::Loop() {
 		input.BeginNewFrame();
 
 		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_KEYDOWN) {
+			if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+				input.ControllerButtonDownEvent(event.cbutton);
+			}
+			else if (event.type == SDL_CONTROLLERBUTTONUP) {
+				input.ControllerButtonUpEvent(event.cbutton);
+			}
+			else if (event.type == SDL_KEYDOWN) {
 				if (event.key.repeat == 0) {
 					input.KeyDownEvent(event);
 				}

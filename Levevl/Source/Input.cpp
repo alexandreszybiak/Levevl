@@ -1,11 +1,45 @@
+#include <iostream>
+#include "SDL.h"
 #include "Input.h"
 
+Input::Input() {
+	if (SDL_NumJoysticks() > 0) {
+		m_gameController = SDL_GameControllerOpen(0);
+
+		if (m_gameController == NULL) {
+			std::cout << "Unable to open joystick" << std::endl;
+		}
+	}
+	else {
+		std::cout << "No joystick found" << std::endl;
+	}
+
+}
+
+Input::~Input() {
+	SDL_GameControllerClose(m_gameController);
+	m_gameController = NULL;
+}
+
+
 void Input::BeginNewFrame() {
+	m_pressedControllerButtons.clear();
+	m_releasedControllerButtons.clear();
 	m_pressedKeys.clear();
 	m_releasedKeys.clear();
 	m_pressedMouseButtons.clear();
 	m_releasedMouseButtons.clear();
 	m_mouseWheel = 0;
+}
+ // Store gamepad event
+void Input::ControllerButtonDownEvent(const SDL_ControllerButtonEvent& event) {
+	m_pressedControllerButtons[event.button] = true;
+	m_heldControllerButtons[event.button] = true;
+}
+
+void Input::ControllerButtonUpEvent(const SDL_ControllerButtonEvent& event) {
+	m_releasedControllerButtons[event.button] = true;
+	m_heldControllerButtons[event.button] = false;
 }
 
 // Store keyboard event key code
@@ -44,6 +78,18 @@ void Input::MouseWheelEvent(const SDL_MouseWheelEvent& event) {
 }
 
 // Function to actually call in update functions
+bool Input::WasControllerButtonPressed(Uint8 button) {
+	return m_pressedControllerButtons[button];
+}
+
+bool Input::WasControllerButtonReleased(Uint8 button) {
+	return m_releasedControllerButtons[button];
+}
+
+bool Input::IsControllerButtonHeld(Uint8 button) {
+	return m_heldControllerButtons[button];
+}
+
 bool Input::WasKeyPressed(SDL_Scancode key) {
 	return m_pressedKeys[key];
 }
