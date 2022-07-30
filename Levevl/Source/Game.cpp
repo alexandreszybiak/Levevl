@@ -105,11 +105,16 @@ void Game::Loop() {
 
 void Game::update(Input& input) {
 
+	// Move chunks
 	for (Chunk& chunk : level->v_chunks) {
 		chunk.Update();
 	}
+
 	level->player->Update(input);
 
+	for (Chunk& chunk : level->v_chunks) {
+		level->player->Collide(chunk);
+	}
 }
 
 void Game::render(Graphics& graphics) {

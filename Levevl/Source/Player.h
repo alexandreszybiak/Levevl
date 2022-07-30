@@ -2,8 +2,11 @@
 #include <vector>
 #include "SDL.h"
 
+#define GRAVITY .5f 
+
 class Graphics;
 class Input;
+class Chunk;
 
 enum Direction {
 	DIRECTION_LEFT = -1,
@@ -14,7 +17,12 @@ class Player {
 public:
 
 private:
-	int m_x, m_y;
+	float m_x, m_y, m_velocityX, m_velocityY;
+
+	const int m_width = 40;
+	const int m_height = 48;
+
+	const SDL_Rect m_boundingBox = { 11,22, 18, 26 };
 
 	Direction m_direction;
 
@@ -43,4 +51,5 @@ public:
 	void Draw(Graphics& graphics);
 	void SetPosition(int x, int y);
 	void PlayAnimation(std::vector<Uint8>* animation);
+	bool Collide(Chunk& chunk);
 };
