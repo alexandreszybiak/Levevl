@@ -209,6 +209,7 @@
     <ClInclude Include="Source\Chunk.h" />
     <ClInclude Include="Source\Editor.h" />
     <ClInclude Include="Source\Game.h" />
+    <ClInclude Include="Source\Globals.h" />
     <ClInclude Include="Source\Graphics.h" />
     <ClInclude Include="Source\Input.h" />
     <ClInclude Include="Source\Level.h" />

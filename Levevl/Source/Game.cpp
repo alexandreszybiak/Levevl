@@ -115,6 +115,8 @@ void Game::update(Input& input) {
 	for (Chunk& chunk : level->v_chunks) {
 		level->player->Collide(chunk);
 	}
+
+	level->player->PostUpdate();
 }
 
 void Game::render(Graphics& graphics) {

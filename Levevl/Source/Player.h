@@ -24,6 +24,8 @@ private:
 
 	const SDL_Rect m_boundingBox = { 11,22, 18, 26 };
 
+	bool m_onFLoor;
+
 	Direction m_direction;
 
 	SDL_Rect m_destinationRect;
@@ -48,6 +50,7 @@ private:
 public:
 	Player(int x, int y);
 	void Update(Input& input);
+	void PostUpdate();
 	void Draw(Graphics& graphics);
 	void SetPosition(int x, int y);
 	void PlayAnimation(std::vector<Uint8>* animation);

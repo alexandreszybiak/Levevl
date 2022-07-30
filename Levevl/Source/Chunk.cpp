@@ -152,14 +152,14 @@ std::vector<char>* Chunk::GetData() {
 	return &m_data;
 }
 
-bool Chunk::OverlapsPoint(int x, int y) {
+int Chunk::OverlapsPoint(int x, int y) {
 	int tileX = floor(float(x - m_targetX) / TILE_SIZE);
 	int tileY = floor(float(y - m_targetY) / TILE_SIZE);
 
-	if (tileX < 0 || tileX >= m_width || tileY < 0 || tileY >= m_height || m_data[tileX + tileY * m_width] == 0)
-		return false;
+	if (tileX < 0 || tileX >= m_width || tileY < 0 || tileY >= m_height)
+		return 0;
 
-	return true;
+	return m_data[tileX + tileY * m_width];
 }
 
 bool Chunk::OverlapsChunk(Chunk* otherChunk, int offsetX = 0, int offsetY = 0) {

@@ -26,7 +26,7 @@ public:
 	void Update(Input& input);
 	int Edit(int mouseX, int mouseY, char value);
 	virtual void SetRegion(Uint8 value, int x1, int y1, int x2, int y2);
-	virtual bool OverlapsPoint(int x, int y);
+	virtual int OverlapsPoint(int x, int y);
 
 protected:
 	//

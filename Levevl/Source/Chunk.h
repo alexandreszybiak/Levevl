@@ -47,8 +47,8 @@ public:
 	// Checks if this chunk can move, this function can be called recursively
 	bool CanMove(int x, int y, std::vector<Chunk*>& otherChunks, std::vector<Chunk*>& freeChunks);
 
-	// Checks if this chunk overlaps the given 2d point
-	bool OverlapsPoint(int x, int y);
+	// Checks if this chunk overlaps the given 2d point and return the value at point
+	int OverlapsPoint(int x, int y);
 
 	// Checks if this chunk overlaps the given chunk, with
 	bool OverlapsChunk(Chunk* otherChunk, int offsetX, int offsetY);
