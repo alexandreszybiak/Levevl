@@ -23,6 +23,7 @@ public:
 	Map();
 	~Map();
 	virtual void Draw(Graphics& graphics);
+	void DrawBackground(Graphics& graphics);
 	void Update(Input& input);
 	int Edit(int mouseX, int mouseY, char value);
 	virtual void SetRegion(Uint8 value, int x1, int y1, int x2, int y2);

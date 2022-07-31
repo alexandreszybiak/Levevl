@@ -54,5 +54,12 @@ public:
 	void Draw(Graphics& graphics);
 	void SetPosition(int x, int y);
 	void PlayAnimation(std::vector<Uint8>* animation);
+	bool Collide();
+	void Collide(std::vector<Chunk>& chunks);
 	bool Collide(Chunk& chunk);
+
+	bool CheckCollisionY(Chunk& chunk);
+
+	void SnapX(int point, int offset);
+	void SnapY(int point);
 };

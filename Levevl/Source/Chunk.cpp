@@ -152,6 +152,10 @@ std::vector<char>* Chunk::GetData() {
 	return &m_data;
 }
 
+int Chunk::ValueAtPoint(int x, int y) {
+	return 0;
+}
+
 int Chunk::OverlapsPoint(int x, int y) {
 	int tileX = floor(float(x - m_targetX) / TILE_SIZE);
 	int tileY = floor(float(y - m_targetY) / TILE_SIZE);

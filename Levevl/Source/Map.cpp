@@ -37,6 +37,17 @@ void Map::Draw(Graphics& graphics) {
 	}
 }
 
+void Map::DrawBackground(Graphics& graphics) {
+	for (int column = 0; column < MAP_WIDTH; column++) {
+		for (int row = 0; row < MAP_HEIGHT; row++) {
+			SDL_Rect rect = { 0,0,TILE_SIZE,TILE_SIZE };
+			m_destinationRect.x = column * TILE_SIZE;
+			m_destinationRect.y = row * TILE_SIZE;
+			graphics.Draw(graphics.backgroundTexture, rect, m_destinationRect);
+		}
+	}
+}
+
 void Map::SetRegion(Uint8 value, int x1, int y1, int x2, int y2) {
 	for (int x = x1; x < x2; x++) {
 		for (int y = y1; y < y2; y++) {
@@ -52,7 +63,7 @@ int Map::OverlapsPoint(int x, int y) {
 	int tileY = y / TILE_SIZE;
 
 	if (tileX < 0 || tileX >= m_mapWidth || tileY < 0 || tileY >= m_mapHeight)
-		return 0;
+		return 1;
 
 	return m_data[tileX + tileY * m_mapWidth];
 }

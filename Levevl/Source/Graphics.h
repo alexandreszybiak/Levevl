@@ -24,6 +24,7 @@ public:
 	SDL_Texture* worldTexture;
 	SDL_Texture* gameTexture;
 	SDL_Texture* playerTexture;
+	SDL_Texture* backgroundTexture;
 private:
 	//
 };

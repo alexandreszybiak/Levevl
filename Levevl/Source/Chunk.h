@@ -59,6 +59,8 @@ public:
 	// Sets a rectangular region of the chunk data
 	void SetRegion(char value, int x1, int y1, int x2, int y2);
 
+	int ValueAtPoint(int x, int y);
+
 private:
 	//
 };

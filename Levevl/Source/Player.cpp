@@ -42,12 +42,109 @@ void Player::Update(Input& input) {
 
 }
 
-bool Player::Collide(Chunk& chunk) {
+bool Player::Collide() {
+	return false;
+}
+
+bool Player::CheckCollisionY(Chunk& chunk) {
+	return false;
+}
+
+void Player::Collide(std::vector<Chunk>& chunks) {
+	
 	int bottom = m_y + m_boundingBox.h + m_velocityY;
-	if (chunk.OverlapsPoint(m_x, bottom) > 1 || chunk.OverlapsPoint(m_x + m_boundingBox.w - 1, bottom) > 1) {
+	
+	int x = 0;
+	while (1) {
+		int unoverlappedChunks = 0;
+		for (Chunk& chunk : chunks) {
+			int valueAtPoint = chunk.OverlapsPoint(m_x + x, bottom);
+			if (valueAtPoint) {
+				if (valueAtPoint == 2) {
+					SnapY(bottom);
+					x = 9999;
+					break;
+				}
+			}
+			else {
+				unoverlappedChunks++;
+			}
+		}
+		;
+		if (unoverlappedChunks == chunks.size()){
+			SnapY(bottom);
+			x = 9999;
+			break;
+		}
+		if (x < m_boundingBox.w - 1) {
+			x += std::min(m_boundingBox.w - 1 - x, TILE_SIZE);
+			continue;
+		}
+		break;
+	}
+
+	
+	// Horizontal
+	int offset = -m_boundingBox.w;
+	int facing;
+	if (m_velocityX < 0) {
+		facing = m_x + m_velocityX;
+		offset = TILE_SIZE;
+	}
+
+	else
+		facing = m_x + m_boundingBox.w + m_velocityX;
+
+	int y = 0;
+	while (1) {
+		int unoverlappedChunks = 0;
+		for (Chunk& chunk : chunks) {
+			int valueAtPoint = chunk.OverlapsPoint(facing, m_y + y);
+			if (valueAtPoint) {
+				if (valueAtPoint == 2) {
+					SnapX(facing, offset);
+					y = 9999;
+					break;
+				}
+			}
+			else {
+				unoverlappedChunks++;
+			}
+		}
+		;
+		if (unoverlappedChunks == chunks.size()) {
+			SnapX(facing, offset);
+			y = 9999;
+			break;
+		}
+		if (y < m_boundingBox.h - 1) {
+			y += std::min(m_boundingBox.h - 1 - y, TILE_SIZE);
+			continue;
+		}
+		break;
+	}
+}
+
+void Player::SnapX(int point, int offset) {
+	m_velocityX = 0.0f;
+	m_x = point / TILE_SIZE * TILE_SIZE + offset;
+}
+
+void Player::SnapY(int point) {
+	m_velocityY = 0.0f;
+	m_y = point / TILE_SIZE * TILE_SIZE - m_boundingBox.h;
+	m_onFLoor = true;
+}
+
+bool Player::Collide(Chunk& chunk) {
+	bool hasCollided = false;
+	int bottom = m_y + m_boundingBox.h + m_velocityY;
+
+	if (chunk.OverlapsPoint(m_x, bottom) != 1 || chunk.OverlapsPoint(m_x + m_boundingBox.w - 1, bottom) != 1) {
 		m_velocityY = 0.0f;
 		m_y = bottom / TILE_SIZE * TILE_SIZE - m_boundingBox.h;
 		m_onFLoor = true;
+		hasCollided = true;
 	}
 
 	int offset = -m_boundingBox.w;
@@ -60,9 +157,10 @@ bool Player::Collide(Chunk& chunk) {
 	else
 		facing = m_x + m_boundingBox.w + m_velocityX;
 
-	if (chunk.OverlapsPoint(facing, m_y) > 1 || chunk.OverlapsPoint(facing, m_y + m_boundingBox.h - 1) > 1) {
+	if (chunk.OverlapsPoint(facing, m_y) != 1 || chunk.OverlapsPoint(facing, m_y + m_boundingBox.h - 1) != 1) {
 		m_velocityX = 0.0f;
 		m_x = facing / TILE_SIZE * TILE_SIZE + offset;
+		hasCollided = true;
 	}
 
 	return false;
@@ -87,13 +185,13 @@ void Player::Draw(Graphics& graphics) {
 	m_destinationRect.x = (int)m_x - m_boundingBox.x;
 	m_destinationRect.y = (int)m_y - m_boundingBox.y;
 
-	m_destinationRect.x = m_x;
+	/*m_destinationRect.x = m_x;
 	m_destinationRect.y = m_y;
 	m_destinationRect.w = m_boundingBox.w;
 	m_destinationRect.h = m_boundingBox.h;
 
 	SDL_RenderFillRect(graphics.m_renderer, &m_destinationRect);
-	return;
+	return;*/
 
 	SDL_RendererFlip flip;
 	if (m_direction == DIRECTION_LEFT)

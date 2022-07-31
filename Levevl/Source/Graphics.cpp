@@ -50,6 +50,7 @@ Graphics::Graphics() {
 	chunkMaskTexture = LoadTexture("Assets/chunk_mask_tileset.tga");
 	worldTexture = LoadTexture("Assets/world_texture.png");
 	playerTexture = LoadTexture("Assets/player.png");
+	backgroundTexture = LoadTexture("Assets/background_texture.png");
 
 	gameTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, 640, 360);
 }
@@ -60,6 +61,7 @@ Graphics::~Graphics() {
 	SDL_DestroyTexture(worldTexture);
 	SDL_DestroyTexture(gameTexture);
 	SDL_DestroyTexture(playerTexture);
+	SDL_DestroyTexture(backgroundTexture);
 	SDL_DestroyWindow(m_window);
 	SDL_DestroyRenderer(m_renderer);
 	std::cout << "Graphics deconstructor" << std::endl;
