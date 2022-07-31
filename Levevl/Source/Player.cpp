@@ -14,6 +14,9 @@ Player::Player(int x, int y) : m_x(x), m_y(y), m_direction(DIRECTION_RIGHT), m_d
 	m_runAnimation.reserve(4);
 	m_runAnimation = { 1, 2, 3, 4 };
 
+	m_jumpAnimation.reserve(1);
+	m_jumpAnimation = { 1 };
+
 	PlayAnimation(&m_idleAnimation);
 
 }
@@ -24,17 +27,20 @@ void Player::Update(Input& input) {
 	if (m_onFLoor && (input.WasKeyPressed(SDL_SCANCODE_UP) || input.WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_A))) {
 		m_velocityY = -8;
 		m_onFLoor = false;
+		PlayAnimation(&m_jumpAnimation);
 	}
 
 	if (hDir != 0) {
-		PlayAnimation(&m_runAnimation);
+		if(m_onFLoor)
+			PlayAnimation(&m_runAnimation);
 		if (hDir > 0)
 			m_direction = DIRECTION_RIGHT;
 		else if (hDir < 0)
 			m_direction = DIRECTION_LEFT;
 	}
 	else {
-		PlayAnimation(&m_idleAnimation);
+		if(m_onFLoor)
+			PlayAnimation(&m_idleAnimation);
 	}
 
 	m_velocityX = hDir * 2;
@@ -133,7 +139,10 @@ void Player::SnapX(int point, int offset) {
 void Player::SnapY(int point) {
 	m_velocityY = 0.0f;
 	m_y = point / TILE_SIZE * TILE_SIZE - m_boundingBox.h;
-	m_onFLoor = true;
+	if (!m_onFLoor) {
+		m_onFLoor = true;
+		PlayAnimation(&m_idleAnimation);
+	}
 }
 
 bool Player::Collide(Chunk& chunk) {

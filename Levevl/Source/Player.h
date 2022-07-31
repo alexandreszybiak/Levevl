@@ -19,10 +19,10 @@ public:
 private:
 	float m_x, m_y, m_velocityX, m_velocityY;
 
-	const int m_width = 40;
+	const int m_width = 48;
 	const int m_height = 48;
 
-	const SDL_Rect m_boundingBox = { 11,22, 18, 26 };
+	const SDL_Rect m_boundingBox = { 13,17, 22, 31 };
 
 	bool m_onFLoor;
 
@@ -46,6 +46,8 @@ private:
 
 	// Run animation
 	std::vector<Uint8> m_runAnimation;
+
+	std::vector<Uint8> m_jumpAnimation;
 
 public:
 	Player(int x, int y);

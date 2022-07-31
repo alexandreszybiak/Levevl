@@ -223,6 +223,7 @@
     <Image Include="Assets\world_texture.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Source\PlayerAnimations.pyxel" />
     <None Include="level.bin" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

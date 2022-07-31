@@ -88,5 +88,6 @@
     <None Include="level.bin">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Assets\Source\PlayerAnimations.pyxel" />
   </ItemGroup>
 </Project>
