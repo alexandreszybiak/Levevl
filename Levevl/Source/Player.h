@@ -19,10 +19,10 @@ public:
 private:
 	float m_x, m_y, m_velocityX, m_velocityY;
 
-	const int m_width = 48;
+	const int m_width = 60;
 	const int m_height = 48;
 
-	const SDL_Rect m_boundingBox = { 13,17, 22, 31 };
+	const SDL_Rect m_boundingBox = { 17,17, 26, 31 };
 
 	bool m_onFLoor;
 

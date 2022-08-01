@@ -43,7 +43,7 @@ void Player::Update(Input& input) {
 			PlayAnimation(&m_idleAnimation);
 	}
 
-	m_velocityX = hDir * 2;
+	m_velocityX = hDir * 2.5f;
 	m_velocityY = std::clamp(m_velocityY + GRAVITY, -12.0f, 12.0f);
 
 }
