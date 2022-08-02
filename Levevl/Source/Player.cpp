@@ -9,13 +9,16 @@
 Player::Player(int x, int y) : m_x(x), m_y(y), m_direction(DIRECTION_RIGHT), m_destinationRect({ 0,0,m_width,m_height }), m_currentFrame(0), m_lastFrameTime(0), m_currentAnimation(nullptr), m_onFLoor(false) {
 
 	m_idleAnimation.reserve(1);
-	m_idleAnimation = { 0 };
+	m_idleAnimation = { 5 };
 
 	m_runAnimation.reserve(4);
 	m_runAnimation = { 1, 2, 3, 4 };
 
 	m_jumpAnimation.reserve(1);
 	m_jumpAnimation = { 1 };
+
+	m_hitAnimation.reserve(1);
+	m_hitAnimation = { 6 };
 
 	PlayAnimation(&m_idleAnimation);
 
@@ -24,14 +27,14 @@ Player::Player(int x, int y) : m_x(x), m_y(y), m_direction(DIRECTION_RIGHT), m_d
 void Player::Update(Input& input) {
 	int hDir = -(input.IsKeyHeld(SDL_SCANCODE_LEFT) || input.IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_LEFT)) + (input.IsKeyHeld(SDL_SCANCODE_RIGHT) || input.IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_RIGHT));
 
-	if (m_onFLoor && (input.WasKeyPressed(SDL_SCANCODE_UP) || input.WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_A))) {
+	if (m_onFLoor && (input.WasKeyPressed(SDL_SCANCODE_SPACE) || input.WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_B))) {
 		m_velocityY = -8;
 		m_onFLoor = false;
 		PlayAnimation(&m_jumpAnimation);
 	}
 
 	if (hDir != 0) {
-		if(m_onFLoor)
+		if (m_onFLoor)
 			PlayAnimation(&m_runAnimation);
 		if (hDir > 0)
 			m_direction = DIRECTION_RIGHT;
@@ -39,12 +42,33 @@ void Player::Update(Input& input) {
 			m_direction = DIRECTION_LEFT;
 	}
 	else {
-		if(m_onFLoor)
+		if (m_onFLoor)
 			PlayAnimation(&m_idleAnimation);
 	}
 
+	if (input.WasKeyPressed(SDL_SCANCODE_LSHIFT) || input.WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_Y)) {
+		PlayAnimation(&m_hitAnimation);
+		m_animationIterator = 0;
+		m_lastFrameTime = SDL_GetTicks();
+		m_currentFrame = (*m_currentAnimation)[m_animationIterator];
+		
+	}
+
+	
+
 	m_velocityX = hDir * 2.5f;
 	m_velocityY = std::clamp(m_velocityY + GRAVITY, -12.0f, 12.0f);
+
+	if (SDL_GetTicks() - m_lastFrameTime > m_frameDuration) {
+		if (m_currentAnimation == &m_hitAnimation && m_animationIterator == m_currentAnimation->size()) {
+			PlayAnimation(&m_idleAnimation);
+		}
+		else {
+			m_animationIterator = (m_animationIterator + 1) % m_currentAnimation->size();
+			m_currentFrame = (*m_currentAnimation)[m_animationIterator];
+			m_lastFrameTime = SDL_GetTicks();
+		}
+	}
 
 }
 
@@ -181,15 +205,8 @@ void Player::PostUpdate() {
 }
 
 void Player::Draw(Graphics& graphics) {
-	
 
-	if (SDL_GetTicks() - m_lastFrameTime > m_frameDuration) {
-		m_animationIterator = (m_animationIterator + 1) % m_currentAnimation->size();
-		m_currentFrame = (*m_currentAnimation)[m_animationIterator];
-		m_lastFrameTime = SDL_GetTicks();
-	}
-
-	SDL_Rect srcRect = { m_width * m_currentFrame,0,m_width,m_height };
+	SDL_Rect srcRect = { m_width * (m_currentFrame % m_numColumn), m_height * (m_currentFrame / m_numColumn),m_width,m_height };
 
 	m_destinationRect.x = (int)m_x - m_boundingBox.x;
 	m_destinationRect.y = (int)m_y - m_boundingBox.y;

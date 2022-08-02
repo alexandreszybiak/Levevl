@@ -22,6 +22,8 @@ private:
 	const int m_width = 60;
 	const int m_height = 48;
 
+	const int m_numColumn = 5;
+
 	const SDL_Rect m_boundingBox = { 17,17, 26, 31 };
 
 	bool m_onFLoor;
@@ -48,6 +50,8 @@ private:
 	std::vector<Uint8> m_runAnimation;
 
 	std::vector<Uint8> m_jumpAnimation;
+
+	std::vector<Uint8> m_hitAnimation;
 
 public:
 	Player(int x, int y);
