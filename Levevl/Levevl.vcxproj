@@ -206,6 +206,7 @@
     <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\PlayerIdleState.cpp" />
     <ClCompile Include="Source\PlayerJumpState.cpp" />
+    <ClCompile Include="Source\Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chunk.h" />
@@ -220,12 +221,15 @@
     <ClInclude Include="Source\PlayerIdleState.h" />
     <ClInclude Include="Source\PlayerJumpState.h" />
     <ClInclude Include="Source\PlayerState.h" />
+    <ClInclude Include="Source\Sprite.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\background_texture.png" />
     <Image Include="Assets\chunk_mask_tileset.tga" />
     <Image Include="Assets\chunk_texture.png" />
     <Image Include="Assets\player.png" />
+    <Image Include="Assets\player_body_texture.png" />
+    <Image Include="Assets\player_stick_texture.png" />
     <Image Include="Assets\world_texture.png" />
   </ItemGroup>
   <ItemGroup>

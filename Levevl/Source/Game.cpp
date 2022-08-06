@@ -145,7 +145,8 @@ void Game::render(Graphics& graphics) {
 
 	// Draw everything else
 	SDL_SetTextureBlendMode(graphics.chunkTexture, blendAndPreserveAlpha);
-	SDL_SetTextureBlendMode(graphics.playerTexture, blendAndPreserveAlpha);
+	SDL_SetTextureBlendMode(graphics.playerBodyTexture, blendAndPreserveAlpha);
+	SDL_SetTextureBlendMode(graphics.playerStickTexture, blendAndPreserveAlpha);
 	for (Chunk& chunk : level->v_chunks) {
 		chunk.Draw(graphics);
 	}

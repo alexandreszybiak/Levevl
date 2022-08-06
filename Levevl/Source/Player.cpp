@@ -7,8 +7,9 @@
 #include "Graphics.h"
 #include "Input.h"
 #include "Chunk.h"
+#include "Sprite.h"
 
-Player::Player(int x, int y) : m_x(x), m_y(y), m_direction(DIRECTION_RIGHT), m_destinationRect({ 0,0,m_width,m_height }), m_currentFrame(0), m_lastFrameTime(0), m_currentAnimation(nullptr), m_onFloor(false) {
+Player::Player(int x, int y) : m_x(x), m_y(y), m_direction(DIRECTION_RIGHT), m_currentFrame(0), m_lastFrameTime(0), m_currentAnimation(nullptr), m_onFloor(false), m_boundingBox({ 0, 0, 26, 31 }) {
 
 	m_idleAnimation.reserve(1);
 	m_idleAnimation = { 5 };
@@ -25,6 +26,9 @@ Player::Player(int x, int y) : m_x(x), m_y(y), m_direction(DIRECTION_RIGHT), m_d
 	PlayAnimation(&m_idleAnimation);
 
 	m_bodyState = new PlayerIdleState();
+
+	m_bodySprite = new Sprite(-17, -17, this, 60, 48, 5);
+	m_stickSprite = new Sprite(-17, -17, this, 60, 48, 5);
 
 }
 
@@ -191,30 +195,17 @@ bool Player::Collide(Chunk& chunk) {
 void Player::PostUpdate() {
 	m_x += m_velocityX;
 	m_y += m_velocityY;
+
+	m_boundingBox.x = m_x;
+	m_boundingBox.y = m_y;
 }
 
 void Player::Draw(Graphics& graphics) {
 
-	SDL_Rect srcRect = { m_width * (m_currentFrame % m_numColumn), m_height * (m_currentFrame / m_numColumn),m_width,m_height };
+	m_bodySprite->Draw(graphics, graphics.playerBodyTexture, m_currentFrame, m_direction);
+	m_stickSprite->Draw(graphics, graphics.playerStickTexture, 5, m_direction);
 
-	m_destinationRect.x = (int)m_x - m_boundingBox.x;
-	m_destinationRect.y = (int)m_y - m_boundingBox.y;
-
-	/*m_destinationRect.x = m_x;
-	m_destinationRect.y = m_y;
-	m_destinationRect.w = m_boundingBox.w;
-	m_destinationRect.h = m_boundingBox.h;
-
-	SDL_RenderFillRect(graphics.m_renderer, &m_destinationRect);
-	return;*/
-
-	SDL_RendererFlip flip;
-	if (m_direction == DIRECTION_LEFT)
-		flip = SDL_FLIP_HORIZONTAL;
-	else if (m_direction == DIRECTION_RIGHT)
-		flip = SDL_FLIP_NONE;
-
-	graphics.Draw(graphics.playerTexture, srcRect, m_destinationRect, flip);
+	SDL_RenderDrawRect(graphics.m_renderer, &m_boundingBox);
 }
 
 void Player::SetPosition(int x, int y) {

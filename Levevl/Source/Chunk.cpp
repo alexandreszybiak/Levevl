@@ -66,10 +66,10 @@ void Chunk::Draw(Graphics& graphics) {
 			m_destinationRect.x = column * TILE_SIZE + m_x;
 			m_destinationRect.y = row * TILE_SIZE + m_y;
 			if (m_data[column + row * m_width]  == 1) {
-				graphics.Draw(graphics.chunkTexture, m_emptyRect, m_destinationRect);
+				graphics.Draw(graphics.chunkTexture, &m_emptyRect, &m_destinationRect);
 			}
 			else if (m_data[column + row * m_width] == 2) {
-				graphics.Draw(graphics.chunkTexture, m_brickRect, m_destinationRect);
+				graphics.Draw(graphics.chunkTexture, &m_brickRect, &m_destinationRect);
 			}
 		}
 	}
@@ -92,7 +92,7 @@ void Chunk::DrawMask(Graphics& graphics) {
 			m_destinationRect.x = column * TILE_SIZE + m_x;
 			m_destinationRect.y = row * TILE_SIZE + m_y;
 			if (m_data[column + row * m_width]) {
-				graphics.Draw(graphics.chunkMaskTexture, rect, m_destinationRect);
+				graphics.Draw(graphics.chunkMaskTexture, &rect, &m_destinationRect);
 			}
 		}
 	}

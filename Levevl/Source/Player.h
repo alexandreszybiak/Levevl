@@ -8,6 +8,7 @@ class Graphics;
 class Input;
 class Chunk;
 class PlayerState;
+class Sprite;
 
 enum Direction {
 	DIRECTION_LEFT = -1,
@@ -30,14 +31,10 @@ public:
 	std::vector<Uint8> m_hitAnimation;
 
 private:
-	
+	Sprite* m_bodySprite;
+	Sprite* m_stickSprite;
 
-	const int m_width = 60;
-	const int m_height = 48;
-
-	const int m_numColumn = 5;
-
-	const SDL_Rect m_boundingBox = { 17,17, 26, 31 };
+	SDL_Rect m_boundingBox;
 
 	bool m_onFloor;
 
@@ -45,8 +42,6 @@ private:
 	PlayerState* m_bodyState;
 
 	Direction m_direction;
-
-	SDL_Rect m_destinationRect;
 
 	int m_animationIterator;
 

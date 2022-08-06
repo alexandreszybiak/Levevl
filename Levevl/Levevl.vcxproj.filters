@@ -48,6 +48,9 @@
     <ClCompile Include="Source\PlayerJumpState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Sprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game.h">
@@ -86,6 +89,9 @@
     <ClInclude Include="Source\PlayerJumpState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Sprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\chunk_texture.png">
@@ -99,6 +105,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Assets\background_texture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\player_body_texture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\player_stick_texture.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
