@@ -204,6 +204,8 @@
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Map.cpp" />
     <ClCompile Include="Source\Player.cpp" />
+    <ClCompile Include="Source\PlayerIdleState.cpp" />
+    <ClCompile Include="Source\PlayerJumpState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chunk.h" />
@@ -215,6 +217,9 @@
     <ClInclude Include="Source\Level.h" />
     <ClInclude Include="Source\Map.h" />
     <ClInclude Include="Source\Player.h" />
+    <ClInclude Include="Source\PlayerIdleState.h" />
+    <ClInclude Include="Source\PlayerJumpState.h" />
+    <ClInclude Include="Source\PlayerState.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\background_texture.png" />

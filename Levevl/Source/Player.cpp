@@ -2,11 +2,13 @@
 #include "SDL.h"
 #include "Game.h"
 #include "Player.h"
+#include "PlayerState.h"
+#include "PlayerIdleState.h"
 #include "Graphics.h"
 #include "Input.h"
 #include "Chunk.h"
 
-Player::Player(int x, int y) : m_x(x), m_y(y), m_direction(DIRECTION_RIGHT), m_destinationRect({ 0,0,m_width,m_height }), m_currentFrame(0), m_lastFrameTime(0), m_currentAnimation(nullptr), m_onFLoor(false) {
+Player::Player(int x, int y) : m_x(x), m_y(y), m_direction(DIRECTION_RIGHT), m_destinationRect({ 0,0,m_width,m_height }), m_currentFrame(0), m_lastFrameTime(0), m_currentAnimation(nullptr), m_onFloor(false) {
 
 	m_idleAnimation.reserve(1);
 	m_idleAnimation = { 5 };
@@ -22,42 +24,31 @@ Player::Player(int x, int y) : m_x(x), m_y(y), m_direction(DIRECTION_RIGHT), m_d
 
 	PlayAnimation(&m_idleAnimation);
 
+	m_bodyState = new PlayerIdleState();
+
 }
 
 void Player::Update(Input& input) {
-	int hDir = -(input.IsKeyHeld(SDL_SCANCODE_LEFT) || input.IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_LEFT)) + (input.IsKeyHeld(SDL_SCANCODE_RIGHT) || input.IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_RIGHT));
-
-	if (m_onFLoor && (input.WasKeyPressed(SDL_SCANCODE_SPACE) || input.WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_B))) {
-		m_velocityY = -8;
-		m_onFLoor = false;
-		PlayAnimation(&m_jumpAnimation);
+	PlayerState* state = nullptr;
+	state = m_bodyState->HandleInput(this, input);
+	if (state != NULL) {
+		delete m_bodyState;
+		m_bodyState = state;
 	}
 
-	if (hDir != 0) {
-		if (m_onFLoor)
-			PlayAnimation(&m_runAnimation);
-		if (hDir > 0)
-			m_direction = DIRECTION_RIGHT;
-		else if (hDir < 0)
-			m_direction = DIRECTION_LEFT;
-	}
-	else {
-		if (m_onFLoor)
-			PlayAnimation(&m_idleAnimation);
+	state = m_bodyState->Update(this);
+	if (state != NULL) {
+		delete m_bodyState;
+		m_bodyState = state;
 	}
 
-	if (input.WasKeyPressed(SDL_SCANCODE_LSHIFT) || input.WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_Y)) {
+	if (input.WasKeyPressed(SDL_SCANCODE_X) || input.WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_Y)) {
 		PlayAnimation(&m_hitAnimation);
 		m_animationIterator = 0;
 		m_lastFrameTime = SDL_GetTicks();
 		m_currentFrame = (*m_currentAnimation)[m_animationIterator];
 		
 	}
-
-	
-
-	m_velocityX = hDir * 2.5f;
-	m_velocityY = std::clamp(m_velocityY + GRAVITY, -12.0f, 12.0f);
 
 	if (SDL_GetTicks() - m_lastFrameTime > m_frameDuration) {
 		if (m_currentAnimation == &m_hitAnimation && m_animationIterator == m_currentAnimation->size()) {
@@ -92,6 +83,7 @@ void Player::Collide(std::vector<Chunk>& chunks) {
 			if (valueAtPoint) {
 				if (valueAtPoint == 2) {
 					SnapY(bottom);
+					m_onFloor = true;
 					x = 9999;
 					break;
 				}
@@ -103,6 +95,7 @@ void Player::Collide(std::vector<Chunk>& chunks) {
 		;
 		if (unoverlappedChunks == chunks.size()){
 			SnapY(bottom);
+			m_onFloor = true;
 			x = 9999;
 			break;
 		}
@@ -163,10 +156,6 @@ void Player::SnapX(int point, int offset) {
 void Player::SnapY(int point) {
 	m_velocityY = 0.0f;
 	m_y = point / TILE_SIZE * TILE_SIZE - m_boundingBox.h;
-	if (!m_onFLoor) {
-		m_onFLoor = true;
-		PlayAnimation(&m_idleAnimation);
-	}
 }
 
 bool Player::Collide(Chunk& chunk) {
@@ -176,7 +165,7 @@ bool Player::Collide(Chunk& chunk) {
 	if (chunk.OverlapsPoint(m_x, bottom) != 1 || chunk.OverlapsPoint(m_x + m_boundingBox.w - 1, bottom) != 1) {
 		m_velocityY = 0.0f;
 		m_y = bottom / TILE_SIZE * TILE_SIZE - m_boundingBox.h;
-		m_onFLoor = true;
+		m_onFloor = true;
 		hasCollided = true;
 	}
 
@@ -236,4 +225,9 @@ void Player::SetPosition(int x, int y) {
 
 void Player::PlayAnimation(std::vector<Uint8>* animation) {
 	m_currentAnimation = animation;
+}
+
+void Player::SetState(PlayerState* state) {
+	m_bodyState = state;
+	m_bodyState->Enter(this);
 }

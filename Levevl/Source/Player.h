@@ -7,6 +7,7 @@
 class Graphics;
 class Input;
 class Chunk;
+class PlayerState;
 
 enum Direction {
 	DIRECTION_LEFT = -1,
@@ -15,9 +16,21 @@ enum Direction {
 
 class Player {
 public:
+	float m_x, m_y, m_velocityX, m_velocityY;
+
+
+	// Idle animation
+	std::vector<Uint8> m_idleAnimation;
+
+	// Run animation
+	std::vector<Uint8> m_runAnimation;
+
+	std::vector<Uint8> m_jumpAnimation;
+
+	std::vector<Uint8> m_hitAnimation;
 
 private:
-	float m_x, m_y, m_velocityX, m_velocityY;
+	
 
 	const int m_width = 60;
 	const int m_height = 48;
@@ -26,7 +39,10 @@ private:
 
 	const SDL_Rect m_boundingBox = { 17,17, 26, 31 };
 
-	bool m_onFLoor;
+	bool m_onFloor;
+
+	// States
+	PlayerState* m_bodyState;
 
 	Direction m_direction;
 
@@ -43,15 +59,6 @@ private:
 
 	int m_lastFrameTime;
 
-	// Idle animation
-	std::vector<Uint8> m_idleAnimation;
-
-	// Run animation
-	std::vector<Uint8> m_runAnimation;
-
-	std::vector<Uint8> m_jumpAnimation;
-
-	std::vector<Uint8> m_hitAnimation;
 
 public:
 	Player(int x, int y);
@@ -59,7 +66,10 @@ public:
 	void PostUpdate();
 	void Draw(Graphics& graphics);
 	void SetPosition(int x, int y);
+
 	void PlayAnimation(std::vector<Uint8>* animation);
+	std::vector<Uint8>* GetAnimation() { return m_currentAnimation; }
+
 	bool Collide();
 	void Collide(std::vector<Chunk>& chunks);
 	bool Collide(Chunk& chunk);
@@ -68,4 +78,12 @@ public:
 
 	void SnapX(int point, int offset);
 	void SnapY(int point);
+
+	void SetDirection(Direction direction) { m_direction = direction; }
+	Direction GetDirection() { return m_direction; }
+
+	void SetState(PlayerState* state);
+
+	bool OnFloor() { return m_onFloor; }
+	void SetOnFloor(bool b) { m_onFloor = b; }
 };
