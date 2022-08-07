@@ -1,16 +1,16 @@
 #include "SDL.h"
 #include "Animation.h"
 
-int Animation::Update() {
+const KeyFrame* Animation::Update() {
 	if (!Playing())
-		return -1;
+		return nullptr;
 
 	if (SDL_GetTicks() - m_lastFrameTime > m_frameDuration) {
 		m_lastFrameTime = SDL_GetTicks();
 
 		if (!m_loop && m_iterator + 1 == GetLength()) {
 			m_playing = false;
-			return -1;
+			return nullptr;
 		}
 		else{
 			m_iterator = (m_iterator + 1) % GetLength();
@@ -19,11 +19,11 @@ int Animation::Update() {
 
 	}
 
-	return -1;
+	return nullptr;
 }
 
-void Animation::PushFrame(int frame) {
-	m_frames.push_back(frame);
+void Animation::PushFrame(int frameIndex, int duration, int socketX, int socketY) {
+	m_frames.emplace_back(frameIndex, duration, socketX, socketY);
 }
 
 void Animation::Reset() {

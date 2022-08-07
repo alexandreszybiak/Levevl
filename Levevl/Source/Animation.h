@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "SDL.h"
+#include "KeyFrame.h"
 
 class Animation {
 private :
@@ -12,19 +13,19 @@ private :
 	// The frame duration in milliseconds
 	const int m_frameDuration = 83;
 
-	std::vector<Uint8> m_frames;
+	std::vector<KeyFrame> m_frames;
 public:
 	Animation(int length, bool loop = true) : m_iterator(0), m_lastFrameTime(0), m_loop(loop), m_playing(false) { m_frames.reserve(length); }
 	
-	int Update();
+	const KeyFrame* Update();
 
-	void PushFrame(int index);
+	void PushFrame(int frameIndex, int duration = 1, int socketX = 0, int socketY = 0);
 	void Reset();
 
-	const int GetLength() { return m_frames.size(); }
-	const int GetFrame() { return m_frames[m_iterator]; }
-	const int GetIterator() { return m_iterator; }
-	const int Playing() { return m_playing; }
+	const int GetLength() const { return m_frames.size(); }
+	const KeyFrame* GetFrame() const { return &m_frames[m_iterator]; }
+	const int GetIterator() const { return m_iterator; }
+	const int Playing() const { return m_playing; }
 
 	void Play() { m_playing = true; }
 

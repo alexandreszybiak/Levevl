@@ -4,11 +4,6 @@
 #include "Player.h"
 #include "Sprite.h"
 
-void Sprite::Update() {
-	m_x = m_parent->X() + m_originX;
-	m_y = m_parent->Y() + m_originY;
-}
-
 void Sprite::Draw(Graphics& graphics, SDL_Texture* texture, Direction direction) {
 	SDL_Rect srcRect;
 	srcRect.x = m_width * (m_currentFrame % m_numColumn);

@@ -219,6 +219,7 @@
     <ClInclude Include="Source\Globals.h" />
     <ClInclude Include="Source\Graphics.h" />
     <ClInclude Include="Source\Input.h" />
+    <ClInclude Include="Source\KeyFrame.h" />
     <ClInclude Include="Source\Level.h" />
     <ClInclude Include="Source\Map.h" />
     <ClInclude Include="Source\Player.h" />

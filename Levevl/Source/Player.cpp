@@ -16,13 +16,13 @@ Player::Player(int x, int y) : Entity(x,y), m_direction(DIRECTION_RIGHT), m_curr
 	m_idleAnimation->PushFrame(5);
 
 	m_runAnimation = new Animation(4);
-	m_runAnimation->PushFrame(1);
-	m_runAnimation->PushFrame(2); 
-	m_runAnimation->PushFrame(3); 
-	m_runAnimation->PushFrame(4);
+	m_runAnimation->PushFrame(1, 1, 0, -2);
+	m_runAnimation->PushFrame(2, 1, -1, -1); 
+	m_runAnimation->PushFrame(3, 1, 0, -2); 
+	m_runAnimation->PushFrame(4, 1, 1, -1);
 
 	m_jumpAnimation = new Animation(1);
-	m_jumpAnimation->PushFrame(1);
+	m_jumpAnimation->PushFrame(1, 1, 0, -2);
 
 	m_stickIdleAnimation = new Animation(1);
 	m_stickIdleAnimation->PushFrame(5);
@@ -38,7 +38,7 @@ Player::Player(int x, int y) : Entity(x,y), m_direction(DIRECTION_RIGHT), m_curr
 
 	m_bodySprite = new Sprite(-17, -17, this, 60, 48, 5);
 
-	m_stickSocket = new Entity(0, 0, this);
+	m_stickSocket = new Entity(0, 0, 0, 0, this);
 
 	m_stickSprite = new Sprite(-17, -17, m_stickSocket, 60, 48, 5);
 
@@ -46,17 +46,18 @@ Player::Player(int x, int y) : Entity(x,y), m_direction(DIRECTION_RIGHT), m_curr
 
 void Player::Update(Input& input) {
 
-	// Updates animations
+	// Receive new animation frame
 
-	int newBodyFrame = m_currentBodyAnimation->Update();
-	int newStickFrame = m_currentStickAnimation->Update();
+	const KeyFrame* newBodyFrame = m_currentBodyAnimation->Update();
+	const KeyFrame* newStickFrame = m_currentStickAnimation->Update();
 
-	if (newBodyFrame > -1) {
-		m_bodySprite->SetFrame(newBodyFrame);
+	if (newBodyFrame) {
+		m_bodySprite->SetFrame(newBodyFrame->GetFrameIndex());
+		m_stickSocket->SetOrigin(newBodyFrame->GetSocketX(), newBodyFrame->GetSocketY());
 	}
 
-	if (newStickFrame > -1) {
-		m_stickSprite->SetFrame(newStickFrame);
+	if (newStickFrame) {
+		m_stickSprite->SetFrame(newStickFrame->GetFrameIndex());
 	}
 
 	if (!m_currentStickAnimation->Playing()) {
@@ -84,7 +85,7 @@ void Player::Update(Input& input) {
 	if (input.WasKeyPressed(SDL_SCANCODE_X) || input.WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_Y)) {
 		SetAnimation(&m_currentStickAnimation, m_stickHitAnimation);
 		m_currentStickAnimation->Reset();
-		m_stickSprite->SetFrame(m_currentStickAnimation->GetFrame());
+		m_stickSprite->SetFrame(m_currentStickAnimation->GetFrame()->GetFrameIndex());
 
 	}
 
