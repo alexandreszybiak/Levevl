@@ -10,7 +10,7 @@
 #include "Sprite.h"
 #include "Animation.h"
 
-Player::Player(int x, int y) : m_x(x), m_y(y), m_direction(DIRECTION_RIGHT), m_currentBodyAnimation(nullptr), m_onFloor(false), m_boundingBox({ 0, 0, 26, 31 }) {
+Player::Player(int x, int y) : Entity(x,y), m_direction(DIRECTION_RIGHT), m_currentBodyAnimation(nullptr), m_onFloor(false), m_boundingBox({0, 0, 26, 31}) {
 
 	m_idleAnimation = new Animation(1);
 	m_idleAnimation->PushFrame(5);
@@ -37,7 +37,10 @@ Player::Player(int x, int y) : m_x(x), m_y(y), m_direction(DIRECTION_RIGHT), m_c
 	m_bodyState = new PlayerIdleState();
 
 	m_bodySprite = new Sprite(-17, -17, this, 60, 48, 5);
-	m_stickSprite = new Sprite(-17, -17, this, 60, 48, 5);
+
+	m_stickSocket = new Entity(0, 0, this);
+
+	m_stickSprite = new Sprite(-17, -17, m_stickSocket, 60, 48, 5);
 
 }
 
@@ -93,6 +96,11 @@ void Player::PostUpdate() {
 
 	m_boundingBox.x = m_x;
 	m_boundingBox.y = m_y;
+
+	// CLEAN - make it a child list
+	m_bodySprite->Update();
+	m_stickSocket->Update();
+	m_stickSprite->Update();
 }
 
 void Player::Draw(Graphics& graphics) {

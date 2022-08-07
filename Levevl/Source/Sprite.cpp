@@ -1,7 +1,13 @@
 #include "SDL.h"
 #include "Graphics.h"
+#include "Entity.h"
 #include "Player.h"
 #include "Sprite.h"
+
+void Sprite::Update() {
+	m_x = m_parent->X() + m_originX;
+	m_y = m_parent->Y() + m_originY;
+}
 
 void Sprite::Draw(Graphics& graphics, SDL_Texture* texture, Direction direction) {
 	SDL_Rect srcRect;
@@ -11,8 +17,8 @@ void Sprite::Draw(Graphics& graphics, SDL_Texture* texture, Direction direction)
 	srcRect.h = m_height;
 
 	SDL_Rect destRect;
-	destRect.x = (int)m_parent->m_x + m_x;
-	destRect.y = (int)m_parent->m_y + m_y;
+	destRect.x = (int)m_x;
+	destRect.y = (int)m_y;
 	destRect.w = m_width;
 	destRect.h = m_height;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "SDL.h"
+#include "Entity.h"
 
 #define GRAVITY .5f 
 
@@ -16,10 +17,10 @@ enum Direction {
 	DIRECTION_RIGHT = 1
 };
 
-class Player {
+class Player : public Entity{
 public:
 
-	float m_x, m_y, m_velocityX, m_velocityY;
+	float m_velocityX, m_velocityY;
 
 	Animation* m_currentBodyAnimation;
 	Animation* m_currentStickAnimation;
@@ -34,6 +35,8 @@ public:
 private:
 	Sprite* m_bodySprite;
 	Sprite* m_stickSprite;
+
+	Entity* m_stickSocket;
 
 	SDL_Rect m_boundingBox;
 
