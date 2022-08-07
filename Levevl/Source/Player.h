@@ -9,6 +9,7 @@ class Input;
 class Chunk;
 class PlayerState;
 class Sprite;
+class Animation;
 
 enum Direction {
 	DIRECTION_LEFT = -1,
@@ -17,18 +18,18 @@ enum Direction {
 
 class Player {
 public:
+
 	float m_x, m_y, m_velocityX, m_velocityY;
 
+	Animation* m_currentBodyAnimation;
+	Animation* m_currentStickAnimation;
 
-	// Idle animation
-	std::vector<Uint8> m_idleAnimation;
+	Animation* m_idleAnimation;
+	Animation* m_stickIdleAnimation;
+	Animation* m_runAnimation;
+	Animation* m_jumpAnimation;
+	Animation* m_stickHitAnimation;
 
-	// Run animation
-	std::vector<Uint8> m_runAnimation;
-
-	std::vector<Uint8> m_jumpAnimation;
-
-	std::vector<Uint8> m_hitAnimation;
 
 private:
 	Sprite* m_bodySprite;
@@ -43,16 +44,6 @@ private:
 
 	Direction m_direction;
 
-	int m_animationIterator;
-
-	int m_currentFrame;
-
-	std::vector<Uint8>* m_currentAnimation;
-
-	// The frame duration in milliseconds
-	const int m_frameDuration = 83;
-
-	int m_lastFrameTime;
 
 
 public:
@@ -62,8 +53,8 @@ public:
 	void Draw(Graphics& graphics);
 	void SetPosition(int x, int y);
 
-	void PlayAnimation(std::vector<Uint8>* animation);
-	std::vector<Uint8>* GetAnimation() { return m_currentAnimation; }
+	void SetAnimation(Animation** target, Animation* animation);
+	const Animation* GetAnimation() { return m_currentBodyAnimation; }
 
 	bool Collide();
 	void Collide(std::vector<Chunk>& chunks);

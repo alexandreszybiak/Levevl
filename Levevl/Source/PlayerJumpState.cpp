@@ -11,7 +11,7 @@ PlayerJumpState::PlayerJumpState() {
 }
 
 void PlayerJumpState::Enter(Player* player) {
-	player->PlayAnimation(&player->m_jumpAnimation);
+	player->SetAnimation(&player->m_currentBodyAnimation, player->m_jumpAnimation);
 }
 
 PlayerState* PlayerJumpState::HandleInput(Player* player, Input& input) {

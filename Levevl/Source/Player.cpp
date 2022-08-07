@@ -8,22 +8,31 @@
 #include "Input.h"
 #include "Chunk.h"
 #include "Sprite.h"
+#include "Animation.h"
 
-Player::Player(int x, int y) : m_x(x), m_y(y), m_direction(DIRECTION_RIGHT), m_currentFrame(0), m_lastFrameTime(0), m_currentAnimation(nullptr), m_onFloor(false), m_boundingBox({ 0, 0, 26, 31 }) {
+Player::Player(int x, int y) : m_x(x), m_y(y), m_direction(DIRECTION_RIGHT), m_currentBodyAnimation(nullptr), m_onFloor(false), m_boundingBox({ 0, 0, 26, 31 }) {
 
-	m_idleAnimation.reserve(1);
-	m_idleAnimation = { 5 };
+	m_idleAnimation = new Animation(1);
+	m_idleAnimation->PushFrame(5);
 
-	m_runAnimation.reserve(4);
-	m_runAnimation = { 1, 2, 3, 4 };
+	m_runAnimation = new Animation(4);
+	m_runAnimation->PushFrame(1);
+	m_runAnimation->PushFrame(2); 
+	m_runAnimation->PushFrame(3); 
+	m_runAnimation->PushFrame(4);
 
-	m_jumpAnimation.reserve(1);
-	m_jumpAnimation = { 1 };
+	m_jumpAnimation = new Animation(1);
+	m_jumpAnimation->PushFrame(1);
 
-	m_hitAnimation.reserve(1);
-	m_hitAnimation = { 6 };
+	m_stickIdleAnimation = new Animation(1);
+	m_stickIdleAnimation->PushFrame(5);
 
-	PlayAnimation(&m_idleAnimation);
+	m_stickHitAnimation = new Animation(1, false);
+	m_stickHitAnimation->PushFrame(6);
+	m_stickHitAnimation->PushFrame(5);
+
+	SetAnimation(&m_currentBodyAnimation, m_idleAnimation);
+	SetAnimation(&m_currentStickAnimation, m_stickIdleAnimation);
 
 	m_bodyState = new PlayerIdleState();
 
@@ -33,38 +42,65 @@ Player::Player(int x, int y) : m_x(x), m_y(y), m_direction(DIRECTION_RIGHT), m_c
 }
 
 void Player::Update(Input& input) {
+
+	// Updates animations
+
+	int newBodyFrame = m_currentBodyAnimation->Update();
+	int newStickFrame = m_currentStickAnimation->Update();
+
+	if (newBodyFrame > -1) {
+		m_bodySprite->SetFrame(newBodyFrame);
+	}
+
+	if (newStickFrame > -1) {
+		m_stickSprite->SetFrame(newStickFrame);
+	}
+
+	if (!m_currentStickAnimation->Playing()) {
+		SetAnimation(&m_currentStickAnimation, m_stickIdleAnimation);
+		m_currentStickAnimation->Reset();
+	}
+
+	// Update states
+
 	PlayerState* state = nullptr;
 	state = m_bodyState->HandleInput(this, input);
 	if (state != NULL) {
 		delete m_bodyState;
 		m_bodyState = state;
+		m_bodyState->Enter(this);
 	}
 
 	state = m_bodyState->Update(this);
 	if (state != NULL) {
 		delete m_bodyState;
 		m_bodyState = state;
+		m_bodyState->Enter(this);
 	}
 
 	if (input.WasKeyPressed(SDL_SCANCODE_X) || input.WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_Y)) {
-		PlayAnimation(&m_hitAnimation);
-		m_animationIterator = 0;
-		m_lastFrameTime = SDL_GetTicks();
-		m_currentFrame = (*m_currentAnimation)[m_animationIterator];
-		
+		SetAnimation(&m_currentStickAnimation, m_stickHitAnimation);
+		m_currentStickAnimation->Reset();
+		m_stickSprite->SetFrame(m_currentStickAnimation->GetFrame());
+
 	}
 
-	if (SDL_GetTicks() - m_lastFrameTime > m_frameDuration) {
-		if (m_currentAnimation == &m_hitAnimation && m_animationIterator == m_currentAnimation->size()) {
-			PlayAnimation(&m_idleAnimation);
-		}
-		else {
-			m_animationIterator = (m_animationIterator + 1) % m_currentAnimation->size();
-			m_currentFrame = (*m_currentAnimation)[m_animationIterator];
-			m_lastFrameTime = SDL_GetTicks();
-		}
-	}
+}
 
+void Player::PostUpdate() {
+	m_x += m_velocityX;
+	m_y += m_velocityY;
+
+	m_boundingBox.x = m_x;
+	m_boundingBox.y = m_y;
+}
+
+void Player::Draw(Graphics& graphics) {
+
+	m_bodySprite->Draw(graphics, graphics.playerBodyTexture, m_direction);
+	m_stickSprite->Draw(graphics, graphics.playerStickTexture, m_direction);
+
+	SDL_RenderDrawRect(graphics.m_renderer, &m_boundingBox);
 }
 
 bool Player::Collide() {
@@ -76,9 +112,9 @@ bool Player::CheckCollisionY(Chunk& chunk) {
 }
 
 void Player::Collide(std::vector<Chunk>& chunks) {
-	
+
 	int bottom = m_y + m_boundingBox.h + m_velocityY;
-	
+
 	int x = 0;
 	while (1) {
 		int unoverlappedChunks = 0;
@@ -97,7 +133,7 @@ void Player::Collide(std::vector<Chunk>& chunks) {
 			}
 		}
 		;
-		if (unoverlappedChunks == chunks.size()){
+		if (unoverlappedChunks == chunks.size()) {
 			SnapY(bottom);
 			m_onFloor = true;
 			x = 9999;
@@ -110,7 +146,7 @@ void Player::Collide(std::vector<Chunk>& chunks) {
 		break;
 	}
 
-	
+
 	// Horizontal
 	int offset = -m_boundingBox.w;
 	int facing;
@@ -179,7 +215,7 @@ bool Player::Collide(Chunk& chunk) {
 		facing = m_x + m_velocityX;
 		offset = TILE_SIZE;
 	}
-		
+
 	else
 		facing = m_x + m_boundingBox.w + m_velocityX;
 
@@ -192,21 +228,6 @@ bool Player::Collide(Chunk& chunk) {
 	return false;
 }
 
-void Player::PostUpdate() {
-	m_x += m_velocityX;
-	m_y += m_velocityY;
-
-	m_boundingBox.x = m_x;
-	m_boundingBox.y = m_y;
-}
-
-void Player::Draw(Graphics& graphics) {
-
-	m_bodySprite->Draw(graphics, graphics.playerBodyTexture, m_currentFrame, m_direction);
-	m_stickSprite->Draw(graphics, graphics.playerStickTexture, 5, m_direction);
-
-	SDL_RenderDrawRect(graphics.m_renderer, &m_boundingBox);
-}
 
 void Player::SetPosition(int x, int y) {
 	m_x = (float)x;
@@ -214,8 +235,9 @@ void Player::SetPosition(int x, int y) {
 	m_velocityY = 0;
 }
 
-void Player::PlayAnimation(std::vector<Uint8>* animation) {
-	m_currentAnimation = animation;
+void Player::SetAnimation(Animation** target, Animation* animation) {
+	*target = animation;
+	(*target)->Play();
 }
 
 void Player::SetState(PlayerState* state) {

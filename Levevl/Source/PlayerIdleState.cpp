@@ -6,7 +6,7 @@
 #include "PlayerJumpState.h"
 
 void PlayerIdleState::Enter(Player* player) {
-	player->PlayAnimation(&player->m_idleAnimation);
+	player->SetAnimation(&player->m_currentBodyAnimation, player->m_idleAnimation);
 }
 
 PlayerState* PlayerIdleState::HandleInput(Player* player, Input& input) {
@@ -31,12 +31,12 @@ PlayerState* PlayerIdleState::HandleInput(Player* player, Input& input) {
 PlayerState* PlayerIdleState::Update(Player* player) {
 
 	if (player->m_velocityX != 0) {
-		if (player->GetAnimation() != &player->m_runAnimation) {
-			player->PlayAnimation(&player->m_runAnimation);
+		if (player->GetAnimation() != player->m_runAnimation) {
+			player->SetAnimation(&player->m_currentBodyAnimation, player->m_runAnimation);
 		}	
 	}
 	else {
-		player->PlayAnimation(&player->m_idleAnimation);
+		player->SetAnimation(&player->m_currentBodyAnimation, player->m_idleAnimation);
 	}
 
 	player->m_velocityY = std::clamp(player->m_velocityY + GRAVITY, -12.0f, 12.0f);
