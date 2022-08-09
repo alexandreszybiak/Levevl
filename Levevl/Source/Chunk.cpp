@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include "SDL.h"
+#include "Utilities.h"
 #include "Graphics.h"
 #include "Chunk.h"
 #include "Game.h"
@@ -46,10 +47,6 @@ Chunk::Chunk(const Chunk& chunkCopy):
 Chunk::~Chunk() {
 	m_data.clear();
 	std::cout << "Chunk destroyed." << std::endl;
-}
-
-int Sign(int x) {
-	return (x > 0) - (x < 0);
 }
 
 void Chunk::Update() {

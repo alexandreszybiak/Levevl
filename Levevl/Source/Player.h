@@ -2,6 +2,7 @@
 #include <vector>
 #include "SDL.h"
 #include "Entity.h"
+#include "Utilities.h"
 
 #define GRAVITY .5f 
 
@@ -37,6 +38,8 @@ private:
 	Sprite* m_stickSprite;
 
 	Entity* m_stickSocket;
+
+	VerticalLine m_stickCollisionLine;
 
 	SDL_Rect m_boundingBox;
 
