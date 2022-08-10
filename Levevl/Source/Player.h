@@ -40,6 +40,7 @@ private:
 	Entity* m_stickSocket;
 
 	VerticalLine m_stickCollisionLine;
+	HorizontalLine m_feetCollisionLine;
 
 	SDL_Rect m_boundingBox;
 
@@ -62,14 +63,10 @@ public:
 	void SetAnimation(Animation** target, Animation* animation);
 	const Animation* GetAnimation() { return m_currentBodyAnimation; }
 
-	bool Collide();
 	void Collide(std::vector<Chunk>& chunks);
-	bool Collide(Chunk& chunk);
-
-	bool CheckCollisionY(Chunk& chunk);
 
 	void SnapX(int point, int offset);
-	void SnapY(int point);
+	void SnapY(int point, int offset);
 
 	void SetDirection(Direction direction) { m_direction = direction; }
 	Direction GetDirection() { return m_direction; }

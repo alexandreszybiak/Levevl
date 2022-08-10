@@ -1,3 +1,4 @@
+#include <iostream>
 #include <algorithm>
 #include "Input.h"
 #include "Player.h"
@@ -6,6 +7,7 @@
 #include "PlayerJumpState.h"
 
 void PlayerIdleState::Enter(Player* player) {
+	std::cout << "PlayerIdleState Created" << std::endl;
 	player->SetAnimation(&player->m_currentBodyAnimation, player->m_idleAnimation);
 }
 

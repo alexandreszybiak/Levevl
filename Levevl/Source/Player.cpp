@@ -10,7 +10,7 @@
 #include "Sprite.h"
 #include "Animation.h"
 
-Player::Player(int x, int y) : Entity(x,y), m_direction(DIRECTION_RIGHT), m_currentBodyAnimation(nullptr), m_onFloor(false), m_stickCollisionLine({25,-13,-10}), m_boundingBox({0,0,25,25}) {
+Player::Player(int x, int y) : Entity(x, y), m_direction(DIRECTION_RIGHT), m_currentBodyAnimation(nullptr), m_onFloor(false), m_stickCollisionLine({ 25,-13,-10 }), m_feetCollisionLine({ 0, -9, 9 }), m_boundingBox({ 0,0,25,25 }) {
 
 	m_idleAnimation = new Animation(1);
 	m_idleAnimation->PushFrame(5);
@@ -89,18 +89,17 @@ void Player::Update(Input& input) {
 
 	}
 
+}
+
+void Player::PostUpdate() {
+
 	m_x += m_velocityX;
-	//m_y += m_velocityY;
+	m_y += m_velocityY;
 
 	// CLEAN - make it a child list
 	m_bodySprite->Update();
 	m_stickSocket->Update();
 	m_stickSprite->Update();
-
-}
-
-void Player::PostUpdate() {
-	
 }
 
 void Player::Draw(Graphics& graphics) {
@@ -109,35 +108,35 @@ void Player::Draw(Graphics& graphics) {
 	m_stickSprite->Draw(graphics, graphics.playerStickTexture, m_direction);
 
 	//SDL_RenderDrawRect(graphics.m_renderer, &m_boundingBox);
-	int x1 = m_stickCollisionLine.X() * m_direction + m_x;
-	int y1 = m_stickCollisionLine.Start() + m_y;
-	int x2 = m_stickCollisionLine.X() * m_direction + m_x;
-	int y2 = m_stickCollisionLine.End() + m_y;
+
+	//int x1 = m_stickCollisionLine.X() * m_direction + m_x;
+	//int y1 = m_stickCollisionLine.Start() + m_y;
+	//int x2 = m_stickCollisionLine.X() * m_direction + m_x;
+	//int y2 = m_stickCollisionLine.End() + m_y;
+
+	int x1 = m_feetCollisionLine.Start() + m_x;
+	int y1 = m_feetCollisionLine.Y() + m_y;
+	int x2 = m_feetCollisionLine.End() + m_x;
+	int y2 = m_feetCollisionLine.Y() + m_y;
+
 	SDL_SetRenderDrawColor(graphics.m_renderer, 255, 0, 0, 255);
 	SDL_RenderDrawLine(graphics.m_renderer, x1, y1, x2, y2);
 }
 
-bool Player::Collide() {
-	return false;
-}
-
-bool Player::CheckCollisionY(Chunk& chunk) {
-	return false;
-}
-
 void Player::Collide(std::vector<Chunk>& chunks) {
+	int offset = 0;
+	int facing = m_y + m_feetCollisionLine.Y() + m_velocityY;
+	if(m_velocityY < 0)
+		facing = m_y - 30;
 
-	//int bottom = m_y + m_boundingBox.h + m_velocityY;
-	int bottom = 0;
-
-	/*int x = 0;
+	int x = 0;
 	while (1) {
 		int unoverlappedChunks = 0;
 		for (Chunk& chunk : chunks) {
-			int valueAtPoint = chunk.OverlapsPoint(m_x + x, bottom);
+			int valueAtPoint = chunk.OverlapsPoint(m_x + m_feetCollisionLine.Start() + x, facing);
 			if (valueAtPoint) {
 				if (valueAtPoint == 2) {
-					SnapY(bottom);
+					SnapY(facing, offset);
 					m_onFloor = true;
 					x = 9999;
 					break;
@@ -149,22 +148,21 @@ void Player::Collide(std::vector<Chunk>& chunks) {
 		}
 		;
 		if (unoverlappedChunks == chunks.size()) {
-			SnapY(bottom);
+			SnapY(facing, offset);
 			m_onFloor = true;
 			x = 9999;
 			break;
 		}
-		if (x < m_boundingBox.w - 1) {
-			x += std::min(m_boundingBox.w - 1 - x, TILE_SIZE);
+		if (x < m_feetCollisionLine.Length() - 1) {
+			x += std::min(m_feetCollisionLine.Length() - 1 - x, TILE_SIZE);
 			continue;
 		}
 		break;
-	}*/
-
+	}
 
 	// Horizontal
-	int offset = 0;
-	int facing = m_x + m_stickCollisionLine.X() * m_direction;
+	offset = 0;
+	facing = m_x + m_stickCollisionLine.X() * m_direction + m_velocityX;
 	if (m_velocityX < 0) {
 		offset = TILE_SIZE;
 	}
@@ -173,7 +171,7 @@ void Player::Collide(std::vector<Chunk>& chunks) {
 	while (1) {
 		int unoverlappedChunks = 0;
 		for (Chunk& chunk : chunks) {
-			int valueAtPoint = chunk.OverlapsPoint(facing, m_y + y);
+			int valueAtPoint = chunk.OverlapsPoint(facing, m_y + m_stickCollisionLine.Start() + y);
 			if (valueAtPoint) {
 				if (valueAtPoint == 2) {
 					SnapX(facing, offset);
@@ -200,48 +198,19 @@ void Player::Collide(std::vector<Chunk>& chunks) {
 }
 
 void Player::SnapX(int point, int offset) {
-	int distance = abs((int)m_x - point);
-	point = (point / TILE_SIZE * TILE_SIZE);
+	int distance = abs(m_x - (point - m_velocityX));
+	point = point / TILE_SIZE * TILE_SIZE;
 	
 	m_x = point + offset + (-distance * m_direction);
-	//m_velocityX = 0.0f;
+	m_velocityX = 0.0f;
 }
 
-void Player::SnapY(int point) {
+void Player::SnapY(int point, int offset) {
+	int distance = abs(m_y - (point - m_velocityY));
+	point = point / TILE_SIZE * TILE_SIZE;
+	m_y = point + offset + distance;
 	m_velocityY = 0.0f;
-	m_y = point / TILE_SIZE * TILE_SIZE - m_boundingBox.h;
 }
-
-bool Player::Collide(Chunk& chunk) {
-	bool hasCollided = false;
-	int bottom = m_y + m_boundingBox.h + m_velocityY;
-
-	if (chunk.OverlapsPoint(m_x, bottom) != 1 || chunk.OverlapsPoint(m_x + m_boundingBox.w - 1, bottom) != 1) {
-		m_velocityY = 0.0f;
-		m_y = bottom / TILE_SIZE * TILE_SIZE - m_boundingBox.h;
-		m_onFloor = true;
-		hasCollided = true;
-	}
-
-	int offset = -m_boundingBox.w;
-	int facing;
-	if (m_velocityX < 0) {
-		facing = m_x + m_velocityX;
-		offset = TILE_SIZE;
-	}
-
-	else
-		facing = m_x + m_boundingBox.w + m_velocityX;
-
-	if (chunk.OverlapsPoint(facing, m_y) != 1 || chunk.OverlapsPoint(facing, m_y + m_boundingBox.h - 1) != 1) {
-		m_velocityX = 0.0f;
-		m_x = facing / TILE_SIZE * TILE_SIZE + offset;
-		hasCollided = true;
-	}
-
-	return false;
-}
-
 
 void Player::SetPosition(int x, int y) {
 	m_x = (float)x;

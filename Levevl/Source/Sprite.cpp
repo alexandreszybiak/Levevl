@@ -1,3 +1,4 @@
+#include <iostream>
 #include "SDL.h"
 #include "Graphics.h"
 #include "Entity.h"
@@ -24,4 +25,5 @@ void Sprite::Draw(Graphics& graphics, SDL_Texture* texture, Direction direction)
 		flip = SDL_FLIP_NONE;
 
 	graphics.Draw(texture, &srcRect, &destRect, flip);
+
 }
