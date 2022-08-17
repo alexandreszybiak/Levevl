@@ -13,8 +13,8 @@ void Sprite::Draw(Graphics& graphics, SDL_Texture* texture, Direction direction)
 	srcRect.h = m_height;
 
 	SDL_Rect destRect;
-	destRect.x = (int)m_x;
-	destRect.y = (int)m_y;
+	destRect.x = m_x;
+	destRect.y = m_y;
 	destRect.w = m_width;
 	destRect.h = m_height;
 

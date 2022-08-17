@@ -1,6 +1,20 @@
 #pragma once
 
 const int Sign(const int i);
+const float Sign(const float f);
+
+class AABB {
+private:
+	int m_x1, m_y1, m_x2, m_y2;
+public:
+	AABB(int x1, int y1, int x2, int y2) : m_x1(x1), m_y1(y1), m_x2(x2), m_y2(y2) {}
+	int X1() { return m_x1; }
+	int Y1() { return m_y1; }
+	int X2() { return m_x2; }
+	int Y2() { return m_y2; }
+	int Width() { return m_x2 - m_x1; }
+	int Height() { return m_y2 - m_y1; }
+};
 
 class StraightLine {
 private:

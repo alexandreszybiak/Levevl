@@ -4,8 +4,9 @@
 #include "Entity.h"
 #include "Utilities.h"
 
-#define GRAVITY .5f 
+#define GRAVITY .45f 
 
+class Level;
 class Graphics;
 class Input;
 class Chunk;
@@ -19,9 +20,33 @@ enum Direction {
 };
 
 class Player : public Entity{
-public:
+	friend class PlayerIdleState;
+	friend class PlayerJumpState;
 
+private:
 	float m_velocityX, m_velocityY;
+	float m_xRemainder, m_yRemainder;
+	const float m_speed = 2.5f;
+
+	Sprite* m_bodySprite;
+	Sprite* m_stickSprite;
+
+	Entity* m_stickSocket;
+
+	VerticalLine m_stickCollisionLine;
+
+	AABB m_boundingBox;
+
+	bool m_onFloor;
+
+	// States
+	PlayerState* m_bodyState;
+
+	Direction m_direction;
+
+	Level* m_levelRef;
+
+public:
 
 	Animation* m_currentBodyAnimation;
 	Animation* m_currentStickAnimation;
@@ -32,41 +57,20 @@ public:
 	Animation* m_jumpAnimation;
 	Animation* m_stickHitAnimation;
 
-
 private:
-	Sprite* m_bodySprite;
-	Sprite* m_stickSprite;
-
-	Entity* m_stickSocket;
-
-	VerticalLine m_stickCollisionLine;
-	HorizontalLine m_feetCollisionLine;
-
-	SDL_Rect m_boundingBox;
-
-	bool m_onFloor;
-
-	// States
-	PlayerState* m_bodyState;
-
-	Direction m_direction;
-
-
+	//
 
 public:
-	Player(int x, int y);
-	void Update(Input& input);
+	Player(int x, int y, Level* level);
+	void Update(Input& input, Level* level);
 	void PostUpdate();
 	void Draw(Graphics& graphics);
+	void MoveX(float x);
+	void MoveY(float y);
 	void SetPosition(int x, int y);
 
 	void SetAnimation(Animation** target, Animation* animation);
 	const Animation* GetAnimation() { return m_currentBodyAnimation; }
-
-	void Collide(std::vector<Chunk>& chunks);
-
-	void SnapX(int point, int offset);
-	void SnapY(int point, int offset);
 
 	void SetDirection(Direction direction) { m_direction = direction; }
 	Direction GetDirection() { return m_direction; }
@@ -75,4 +79,5 @@ public:
 
 	bool OnFloor() { return m_onFloor; }
 	void SetOnFloor(bool b) { m_onFloor = b; }
+
 };

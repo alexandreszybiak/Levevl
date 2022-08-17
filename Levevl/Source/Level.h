@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 
+class HorizontalLine;
+class VerticalLine;
 class Map;
 class Chunk;
 class Player;
@@ -20,6 +22,11 @@ public:
 	~Level();
 	Chunk* BuildChunk(int x, int y, int width, int height, char initValue);
 	void DeleteChunk(int index);
+
+	int ValueAtPoint(int x, int y);
+
+	bool OverlapsLine(HorizontalLine& line);
+	bool OverlapsLine(VerticalLine& line);
 
 private:
 	//

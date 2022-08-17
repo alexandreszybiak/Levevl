@@ -116,9 +116,7 @@ void Game::update(Input& input) {
 		chunk.Update();
 	}
 
-	level->player->Update(input);
-
-	level->player->Collide(level->v_chunks);
+	level->player->Update(input, level);
 	
 	level->player->PostUpdate();
 }
