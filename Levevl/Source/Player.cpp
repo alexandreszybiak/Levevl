@@ -10,6 +10,7 @@
 #include "Input.h"
 #include "Sprite.h"
 #include "Animation.h"
+#include "Chunk.h"
 
 Player::Player(int x, int y, Level* level) : Entity(x, y), m_direction(DIRECTION_RIGHT), m_currentBodyAnimation(nullptr), m_onFloor(false), m_stickCollisionLine({ 25,4,5 }), m_boundingBox({ -12,-16,12,16 }), m_xRemainder(.0f), m_yRemainder(.0f), m_levelRef(level) {
 
@@ -190,4 +191,29 @@ void Player::SetAnimation(Animation** target, Animation* animation) {
 void Player::SetState(PlayerState* state) {
 	m_bodyState = state;
 	m_bodyState->Enter(this);
+}
+
+bool Player::IsRiding(Chunk& chunk) {
+	HorizontalLine feetLine = { m_y + m_boundingBox.Y2(), m_x + m_boundingBox.X1(), m_x + m_boundingBox.X2() };
+
+	int y = feetLine.Y();
+	int x = feetLine.Start();
+
+	// Horizontal
+	while (1) {
+		int valueAtFeetPoint = chunk.ValueAtPoint(x, y);
+		int valueAtUnderFeetPoint = chunk.ValueAtPoint(x, y + 1);
+		if (valueAtFeetPoint > 0 && valueAtUnderFeetPoint != 1) {
+			return true;
+		}
+		if (x < feetLine.End() - 1) {
+			x += std::min(feetLine.End() - 1 - x, TILE_SIZE);
+			continue;
+		}
+		break;
+	}
+
+	return false;
+
+
 }

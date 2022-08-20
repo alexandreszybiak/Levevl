@@ -18,9 +18,10 @@ public:
 
 class StraightLine {
 private:
-	int m_start, m_end;
+	int m_position, m_start, m_end;
 public:
 	StraightLine(int start, int end) : m_start(start), m_end(end) {}
+	int Position() { return m_position; }
 	int Start() { return m_start; }
 	int End() { return m_end; }
 	int Length() { return m_end - m_start; }

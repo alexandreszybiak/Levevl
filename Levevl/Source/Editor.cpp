@@ -34,19 +34,19 @@ void Editor::Update(Input& input) {
 
 	if (input.WasKeyPressed(SDL_SCANCODE_LEFT)) {
 		if(m_selectedChunk)
-			m_selectedChunk->Move(-1, 0);
+			m_selectedChunk->Slide(-1, 0);
 	}
 	if (input.WasKeyPressed(SDL_SCANCODE_RIGHT)) {
 		if (m_selectedChunk)
-			m_selectedChunk->Move(1, 0);
+			m_selectedChunk->Slide(1, 0);
 	}
 	if (input.WasKeyPressed(SDL_SCANCODE_UP)) {
 		if (m_selectedChunk)
-			m_selectedChunk->Move(0, -1);
+			m_selectedChunk->Slide(0, -1);
 	}
 	if (input.WasKeyPressed(SDL_SCANCODE_DOWN)) {
 		if (m_selectedChunk)
-			m_selectedChunk->Move(0, 1);
+			m_selectedChunk->Slide(0, 1);
 	}
 
 	if (input.WasMouseButtonPressed(SDL_BUTTON_LEFT) || input.WasMouseButtonPressed(SDL_BUTTON_RIGHT)) {

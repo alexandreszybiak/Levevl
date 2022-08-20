@@ -13,6 +13,10 @@
 Chunk::Chunk(int x, int y, int width, int height, char initValue, Level* levelRef):
 		m_x(x),
 		m_y(y),
+		m_xRemainder(.0f),
+		m_yRemainder(.0f),
+		m_velocityX(.0f),
+		m_velocityY(.0f),
 		m_targetX(x),
 		m_targetY(y),
 		m_width(width),
@@ -53,8 +57,31 @@ void Chunk::Update() {
 	int distX = m_x - m_targetX;
 	int distY = m_y - m_targetY;
 
-	m_x -= ceil(abs(distX) * .5f) * Sign(distX);
-	m_y -= ceil(abs(distY) * .5f) * Sign(distY);
+	m_velocityX = ceil(abs(distX) * .5f) * Sign(distX) * -1;
+	m_velocityY = ceil(abs(distY) * .5f) * Sign(distY) * -1;
+
+	Move(m_velocityX, m_velocityY);
+}
+
+void Chunk::Move(float x, float y) {
+	m_xRemainder += x;
+	m_yRemainder += y;
+
+	int moveX = m_xRemainder;
+	int moveY = m_yRemainder;
+
+	if (moveX == 0 && moveY == 0)
+		return;
+
+	if (moveX != 0) {
+		m_xRemainder -= moveX;
+		m_x += moveX;
+	}
+
+	if (moveY != 0) {
+		m_yRemainder -= moveY;
+		m_y += moveY;
+	}
 }
 
 void Chunk::Draw(Graphics& graphics) {
@@ -94,7 +121,7 @@ void Chunk::DrawMask(Graphics& graphics) {
 		}
 	}
 }
-void Chunk::Move(int x, int y) {
+void Chunk::Slide(int x, int y) {
 	std::vector<Chunk*> otherChunks;
 	std::vector<Chunk*> freeChunks;
 	otherChunks.reserve(m_levelRef->v_chunks.size());
@@ -105,7 +132,7 @@ void Chunk::Move(int x, int y) {
 		otherChunks.push_back(&e);
 	}
 
-	if (CanMove(x, y, otherChunks, freeChunks)) {
+	if (CanSlide(x, y, otherChunks, freeChunks)) {
 		for (Chunk* e : freeChunks) {
 			e->m_targetX += x * TILE_SIZE;
 			e->m_targetY += y * TILE_SIZE;
@@ -113,7 +140,7 @@ void Chunk::Move(int x, int y) {
 	}
 }
 
-bool Chunk::CanMove(int x, int y, std::vector<Chunk*>& otherChunks, std::vector<Chunk*>& freeChunks) {
+bool Chunk::CanSlide(int x, int y, std::vector<Chunk*>& otherChunks, std::vector<Chunk*>& freeChunks) {
 	if (OverlapsWalls(x, y))
 		return false;
 
@@ -124,7 +151,7 @@ bool Chunk::CanMove(int x, int y, std::vector<Chunk*>& otherChunks, std::vector<
 		if (OverlapsChunk(currentChunk, x, y)) {
 			auto end = std::remove(otherChunks.begin(), otherChunks.end(), currentChunk);
 			otherChunks.erase(end, otherChunks.end());
-			if (!currentChunk->CanMove(x, y, otherChunks, freeChunks))
+			if (!currentChunk->CanSlide(x, y, otherChunks, freeChunks))
 				return false;
 		}
 	}

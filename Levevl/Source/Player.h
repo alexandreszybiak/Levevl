@@ -65,9 +65,14 @@ public:
 	void Update(Input& input, Level* level);
 	void PostUpdate();
 	void Draw(Graphics& graphics);
+
+	// Move and handle collisions
 	void MoveX(float x);
 	void MoveY(float y);
+	bool OnFloor() { return m_onFloor; }
+	void SetOnFloor(bool b) { m_onFloor = b; }
 	void SetPosition(int x, int y);
+	bool IsRiding(Chunk& chunk);
 
 	void SetAnimation(Animation** target, Animation* animation);
 	const Animation* GetAnimation() { return m_currentBodyAnimation; }
@@ -77,7 +82,6 @@ public:
 
 	void SetState(PlayerState* state);
 
-	bool OnFloor() { return m_onFloor; }
-	void SetOnFloor(bool b) { m_onFloor = b; }
+	
 
 };

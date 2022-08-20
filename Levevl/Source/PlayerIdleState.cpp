@@ -25,7 +25,7 @@ PlayerState* PlayerIdleState::HandleInput(Player* player, Input& input) {
 		return new PlayerJumpState();
 	}
 
-	player->m_velocityX = hDir * player->m_speed;
+	//player->m_velocityX = hDir * player->m_speed;
 
 	return NULL;
 }
