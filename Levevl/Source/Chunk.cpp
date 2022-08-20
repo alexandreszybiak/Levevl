@@ -8,7 +8,7 @@
 #include "Chunk.h"
 #include "Game.h"
 #include "Level.h"
-
+#include "Player.h"
 
 Chunk::Chunk(int x, int y, int width, int height, char initValue, Level* levelRef):
 		m_x(x),
@@ -74,13 +74,31 @@ void Chunk::Move(float x, float y) {
 		return;
 
 	if (moveX != 0) {
+		bool isPlayerRiding = false;
+		if (m_levelRef->player->IsRiding(*this)) {
+			isPlayerRiding = true;
+		}
 		m_xRemainder -= moveX;
 		m_x += moveX;
+
+		if (isPlayerRiding) {
+			m_levelRef->player->MoveX(moveX);
+		}
+		
 	}
 
 	if (moveY != 0) {
+		bool isPlayerRiding = false;
+		if (m_levelRef->player->IsRiding(*this)) {
+			isPlayerRiding = true;
+		}
+
 		m_yRemainder -= moveY;
 		m_y += moveY;
+
+		if (isPlayerRiding) {
+			m_levelRef->player->MoveY(moveY);
+		}
 	}
 }
 

@@ -120,7 +120,7 @@ void Player::MoveX(float x) {
 
 void Player::MoveY(float y) {
 	m_yRemainder += y;
-	int move = (int)m_yRemainder;
+	int move = round(m_yRemainder);
 
 	if (move == 0)
 		return;
@@ -156,8 +156,8 @@ void Player::PostUpdate() {
 
 void Player::Draw(Graphics& graphics) {
 
-	//m_bodySprite->Draw(graphics, graphics.playerBodyTexture, m_direction);
-	//m_stickSprite->Draw(graphics, graphics.playerStickTexture, m_direction);
+	m_bodySprite->Draw(graphics, graphics.playerBodyTexture, m_direction);
+	m_stickSprite->Draw(graphics, graphics.playerStickTexture, m_direction);
 
 	SDL_Rect rect;
 	rect.x = m_boundingBox.X1() + m_x;
@@ -166,7 +166,7 @@ void Player::Draw(Graphics& graphics) {
 	rect.h = m_boundingBox.Height();
 
 	SDL_SetRenderDrawColor(graphics.m_renderer, 0, 255, 0, 255);
-	SDL_RenderDrawRect(graphics.m_renderer, &rect);
+	//SDL_RenderDrawRect(graphics.m_renderer, &rect);
 
 	int x1 = m_stickCollisionLine.X() * m_direction + m_x;
 	int y1 = m_stickCollisionLine.Start() + m_y;
