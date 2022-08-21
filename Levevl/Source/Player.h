@@ -22,17 +22,23 @@ enum Direction {
 class Player : public Entity{
 	friend class PlayerIdleState;
 	friend class PlayerJumpState;
+	friend class StickIdleState;
+	friend class StickHitState;
+	friend class StickAimingUpState;
+	friend class StickHitUpState;
+	friend class StickAimingDownState;
+	friend class StickHitDownState;
 
 public:
 
-	Animation* m_currentBodyAnimation;
-	Animation* m_currentStickAnimation;
+	// Current animation
+	Animation * m_currentBodyAnimation, * m_currentStickAnimation;
 
-	Animation* m_idleAnimation;
-	Animation* m_stickIdleAnimation;
-	Animation* m_runAnimation;
-	Animation* m_jumpAnimation;
-	Animation* m_stickHitAnimation;
+	// Body animation
+	Animation * m_idleAnimation, * m_runAnimation, * m_jumpAnimation;
+
+	// Stick animation
+	Animation * m_stickIdleAnimation, * m_stickHitAnimation, * m_stickIdleUpAnimation, * m_stickHitUpAnimation, * m_stickIdleDownAnimation, * m_stickHitDownAnimation;
 
 private:
 
@@ -40,9 +46,9 @@ private:
 	float m_xRemainder, m_yRemainder;
 	const float m_speed = 2.5f;
 
-	Sprite* m_bodySprite;
-	Sprite* m_stickSprite;
+	Sprite * m_bodySprite, * m_stickSprite;
 
+	// Dummy entity to bind the stick sprite
 	Entity* m_stickSocket;
 
 	VerticalLine m_stickCollisionLine;
@@ -51,8 +57,8 @@ private:
 
 	bool m_onFloor;
 
-	// States
-	PlayerState* m_bodyState;
+	// State machines
+	PlayerState * m_bodyState, * m_stickState;
 
 	Direction m_direction;
 
@@ -81,6 +87,6 @@ public:
 	void SetState(PlayerState* state);
 
 private:
-	void Hit();
+	void HitAtPoint(int x, int y, int dirX, int dirY);
 
 };

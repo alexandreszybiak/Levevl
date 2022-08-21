@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "PlayerState.h"
 #include "PlayerIdleState.h"
+#include "StickIdleState.h"
 #include "Graphics.h"
 #include "Input.h"
 #include "Sprite.h"
@@ -29,6 +30,18 @@ Player::Player(int x, int y, Level* level) : Entity(x, y), m_direction(DIRECTION
 	m_stickIdleAnimation = new Animation(1);
 	m_stickIdleAnimation->PushFrame(5);
 
+	m_stickIdleUpAnimation = new Animation(1);
+	m_stickIdleUpAnimation->PushFrame(7);
+
+	m_stickHitUpAnimation = new Animation(1, false);
+	m_stickHitUpAnimation->PushFrame(8);
+
+	m_stickIdleDownAnimation = new Animation(1);
+	m_stickIdleDownAnimation->PushFrame(8);
+
+	m_stickHitDownAnimation = new Animation(1, false);
+	m_stickHitDownAnimation->PushFrame(7);
+
 	m_stickHitAnimation = new Animation(1, false);
 	m_stickHitAnimation->PushFrame(6);
 	m_stickHitAnimation->PushFrame(5);
@@ -37,12 +50,13 @@ Player::Player(int x, int y, Level* level) : Entity(x, y), m_direction(DIRECTION
 	SetAnimation(&m_currentStickAnimation, m_stickIdleAnimation);
 
 	m_bodyState = new PlayerIdleState();
+	m_stickState = new StickIdleState();
 
-	m_bodySprite = new Sprite(-30, -32, this, 60, 48, 5);
+	m_bodySprite = new Sprite(-30, -40, this, 60, 56, 5);
 
 	m_stickSocket = new Entity(0, 0, 0, 0, this);
 
-	m_stickSprite = new Sprite(-30, -32, m_stickSocket, 60, 48, 5);
+	m_stickSprite = new Sprite(-30, -40, m_stickSocket, 60, 56, 5);
 
 }
 
@@ -62,19 +76,27 @@ void Player::Update(Input& input, Level* level) {
 		m_stickSprite->SetFrame(newStickFrame->GetFrameIndex());
 	}
 
-	if (!m_currentStickAnimation->Playing()) {
-		SetAnimation(&m_currentStickAnimation, m_stickIdleAnimation);
-		m_currentStickAnimation->Reset();
-	}
+	//if (!m_currentStickAnimation->Playing()) {
+	//	SetAnimation(&m_currentStickAnimation, m_stickIdleAnimation);
+	//	m_currentStickAnimation->Reset();
+	//}
 
 	// Update states
 
 	PlayerState* state = nullptr;
+
 	state = m_bodyState->HandleInput(this, input);
 	if (state != NULL) {
 		delete m_bodyState;
 		m_bodyState = state;
 		m_bodyState->Enter(this);
+	}
+
+	state = m_stickState->HandleInput(this, input);
+	if (state != NULL) {
+		delete m_stickState;
+		m_stickState = state;
+		m_stickState->Enter(this);
 	}
 
 	state = m_bodyState->Update(this);
@@ -84,11 +106,11 @@ void Player::Update(Input& input, Level* level) {
 		m_bodyState->Enter(this);
 	}
 
-	if (input.WasKeyPressed(SDL_SCANCODE_X) || input.WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_Y)) {
-		SetAnimation(&m_currentStickAnimation, m_stickHitAnimation);
-		m_currentStickAnimation->Reset();
-		m_stickSprite->SetFrame(m_currentStickAnimation->GetFrame()->GetFrameIndex());
-		Hit();
+	state = m_stickState->Update(this);
+	if (state != NULL) {
+		delete m_stickState;
+		m_stickState = state;
+		m_stickState->Enter(this);
 	}
 
 	MoveX(m_velocityX);
@@ -218,21 +240,19 @@ bool Player::IsRiding(Chunk& chunk) {
 
 }
 
-void Player::Hit() {
-	int stickPointX = m_x + 25 * m_direction;
-	int stickPointY = m_y + 4;
+void Player::HitAtPoint(int x, int y, int dirX, int dirY) {
 	for (Chunk& chunk : m_levelRef->v_chunks) {
 		int valueAtPoint = chunk.ValueAtPoint(m_x, m_y);
-		int levelValueAtStickPoint = m_levelRef->ValueAtPoint(stickPointX, stickPointY);
-		int chunkValueAtStickPoint = chunk.ValueAtPoint(stickPointX, stickPointY);
+		int levelValueAtStickPoint = m_levelRef->ValueAtPoint(x, y);
+		int chunkValueAtStickPoint = chunk.ValueAtPoint(x, y);
 
 		if (chunkValueAtStickPoint == 2) {
-			chunk.Slide(m_direction, 0);
+			chunk.Slide(dirX, dirY);
 			return;
 		}
 
 		if (levelValueAtStickPoint == 0 && valueAtPoint == 1) {
-			chunk.Slide(m_direction, 0);
+			chunk.Slide(dirX, dirY);
 			return;
 		}
 	}
