@@ -88,7 +88,7 @@ void Player::Update(Input& input, Level* level) {
 		SetAnimation(&m_currentStickAnimation, m_stickHitAnimation);
 		m_currentStickAnimation->Reset();
 		m_stickSprite->SetFrame(m_currentStickAnimation->GetFrame()->GetFrameIndex());
-
+		Hit();
 	}
 
 	MoveX(m_velocityX);
@@ -216,4 +216,24 @@ bool Player::IsRiding(Chunk& chunk) {
 	return false;
 
 
+}
+
+void Player::Hit() {
+	int stickPointX = m_x + 25 * m_direction;
+	int stickPointY = m_y + 4;
+	for (Chunk& chunk : m_levelRef->v_chunks) {
+		int valueAtPoint = chunk.ValueAtPoint(m_x, m_y);
+		int levelValueAtStickPoint = m_levelRef->ValueAtPoint(stickPointX, stickPointY);
+		int chunkValueAtStickPoint = chunk.ValueAtPoint(stickPointX, stickPointY);
+
+		if (chunkValueAtStickPoint == 2) {
+			chunk.Slide(m_direction, 0);
+			return;
+		}
+
+		if (levelValueAtStickPoint == 0 && valueAtPoint == 1) {
+			chunk.Slide(m_direction, 0);
+			return;
+		}
+	}
 }

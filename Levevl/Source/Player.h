@@ -23,7 +23,19 @@ class Player : public Entity{
 	friend class PlayerIdleState;
 	friend class PlayerJumpState;
 
+public:
+
+	Animation* m_currentBodyAnimation;
+	Animation* m_currentStickAnimation;
+
+	Animation* m_idleAnimation;
+	Animation* m_stickIdleAnimation;
+	Animation* m_runAnimation;
+	Animation* m_jumpAnimation;
+	Animation* m_stickHitAnimation;
+
 private:
+
 	float m_velocityX, m_velocityY;
 	float m_xRemainder, m_yRemainder;
 	const float m_speed = 2.5f;
@@ -47,20 +59,6 @@ private:
 	Level* m_levelRef;
 
 public:
-
-	Animation* m_currentBodyAnimation;
-	Animation* m_currentStickAnimation;
-
-	Animation* m_idleAnimation;
-	Animation* m_stickIdleAnimation;
-	Animation* m_runAnimation;
-	Animation* m_jumpAnimation;
-	Animation* m_stickHitAnimation;
-
-private:
-	//
-
-public:
 	Player(int x, int y, Level* level);
 	void Update(Input& input, Level* level);
 	void PostUpdate();
@@ -82,6 +80,7 @@ public:
 
 	void SetState(PlayerState* state);
 
-	
+private:
+	void Hit();
 
 };
