@@ -76,11 +76,6 @@ void Player::Update(Input& input, Level* level) {
 		m_stickSprite->SetFrame(newStickFrame->GetFrameIndex());
 	}
 
-	//if (!m_currentStickAnimation->Playing()) {
-	//	SetAnimation(&m_currentStickAnimation, m_stickIdleAnimation);
-	//	m_currentStickAnimation->Reset();
-	//}
-
 	// Update states
 
 	PlayerState* state = nullptr;
@@ -130,7 +125,10 @@ void Player::MoveX(float x) {
 
 	while (move != 0) {
 		VerticalLine line = { m_x + m_boundingBox.X2() * sign + sign, m_y + m_boundingBox.Y1(), m_y + m_boundingBox.Y2()};
-		if (!m_levelRef->OverlapsLine(line)) {
+
+		VerticalLine stickLine = { m_x + 20 * sign + sign, m_y + 3, m_y + 4 };
+
+		if (!m_levelRef->OverlapsLine(line) && !m_levelRef->OverlapsLine(stickLine)) {
 			m_x += sign;
 			move -= sign;
 		}
