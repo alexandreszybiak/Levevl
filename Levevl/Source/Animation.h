@@ -19,7 +19,7 @@ public:
 	
 	const KeyFrame* Update();
 
-	void PushFrame(int frameIndex, int duration = 1, int socketX = 0, int socketY = 0);
+	void PushFrame(int frameIndex, int duration = 1);
 	void Reset();
 
 	const int GetLength() const { return m_frames.size(); }

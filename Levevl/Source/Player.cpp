@@ -12,6 +12,7 @@
 #include "Sprite.h"
 #include "Animation.h"
 #include "Chunk.h"
+#include "TileHitFx.h"
 
 Player::Player(int x, int y, Level* level) : Entity(x, y), m_direction(DIRECTION_RIGHT), m_currentBodyAnimation(nullptr), m_onFloor(false), m_stickCollisionLine({ 25,4,5 }), m_boundingBox({ -12,-16,12,16 }), m_xRemainder(.0f), m_yRemainder(.0f), m_levelRef(level) {
 
@@ -19,13 +20,13 @@ Player::Player(int x, int y, Level* level) : Entity(x, y), m_direction(DIRECTION
 	m_idleAnimation->PushFrame(5);
 
 	m_runAnimation = new Animation(4);
-	m_runAnimation->PushFrame(1, 1, 0, -2);
-	m_runAnimation->PushFrame(2, 1, -1, -1); 
-	m_runAnimation->PushFrame(3, 1, 0, -2); 
-	m_runAnimation->PushFrame(4, 1, 1, -1);
+	m_runAnimation->PushFrame(1, 1);
+	m_runAnimation->PushFrame(2, 1); 
+	m_runAnimation->PushFrame(3, 1); 
+	m_runAnimation->PushFrame(4, 1);
 
 	m_jumpAnimation = new Animation(1);
-	m_jumpAnimation->PushFrame(1, 1, 0, -2);
+	m_jumpAnimation->PushFrame(1, 1);
 
 	m_stickIdleAnimation = new Animation(1);
 	m_stickIdleAnimation->PushFrame(5);
@@ -52,15 +53,13 @@ Player::Player(int x, int y, Level* level) : Entity(x, y), m_direction(DIRECTION
 	m_bodyState = new PlayerIdleState();
 	m_stickState = new StickIdleState();
 
-	m_bodySprite = new Sprite(-30, -40, this, 60, 56, 5);
+	m_bodySprite = new Sprite(-30, -40, 60, 56, 5);
 
-	m_stickSocket = new Entity(0, 0, 0, 0, this);
-
-	m_stickSprite = new Sprite(-30, -40, m_stickSocket, 60, 56, 5);
+	m_stickSprite = new Sprite(-30, -40, 60, 56, 5);
 
 }
 
-void Player::Update(Input& input, Level* level) {
+void Player::Update(Input& input) {
 
 	// Receive new animation frame
 
@@ -69,7 +68,6 @@ void Player::Update(Input& input, Level* level) {
 
 	if (newBodyFrame) {
 		m_bodySprite->SetFrame(newBodyFrame->GetFrameIndex());
-		m_stickSocket->SetOrigin(newBodyFrame->GetSocketX(), newBodyFrame->GetSocketY());
 	}
 
 	if (newStickFrame) {
@@ -110,6 +108,9 @@ void Player::Update(Input& input, Level* level) {
 
 	MoveX(m_velocityX);
 	MoveY(m_velocityY);
+
+	m_bodySprite->SetPosition(m_x - 30, m_y - 40);
+	m_stickSprite->SetPosition(m_x - 30, m_y - 40);
 
 }
 
@@ -164,36 +165,26 @@ void Player::MoveY(float y) {
 	}
 }
 
-
-
-void Player::PostUpdate() {
-
-	// CLEAN - make it a child list
-	m_bodySprite->Update();
-	m_stickSocket->Update();
-	m_stickSprite->Update();
-}
-
 void Player::Draw(Graphics& graphics) {
 
 	m_bodySprite->Draw(graphics, graphics.playerBodyTexture, m_direction);
 	m_stickSprite->Draw(graphics, graphics.playerStickTexture, m_direction);
 
-	SDL_Rect rect;
-	rect.x = m_boundingBox.X1() + m_x;
-	rect.y = m_boundingBox.Y1() + m_y;
-	rect.w = m_boundingBox.Width();
-	rect.h = m_boundingBox.Height();
+	//SDL_Rect rect;
+	//rect.x = m_boundingBox.X1() + m_x;
+	//rect.y = m_boundingBox.Y1() + m_y;
+	//rect.w = m_boundingBox.Width();
+	//rect.h = m_boundingBox.Height();
 
-	SDL_SetRenderDrawColor(graphics.m_renderer, 0, 255, 0, 255);
+	//SDL_SetRenderDrawColor(graphics.m_renderer, 0, 255, 0, 255);
 	//SDL_RenderDrawRect(graphics.m_renderer, &rect);
 
-	int x1 = m_stickCollisionLine.X() * m_direction + m_x;
-	int y1 = m_stickCollisionLine.Start() + m_y;
-	int x2 = m_stickCollisionLine.X() * m_direction + m_x;
-	int y2 = m_stickCollisionLine.End() + m_y;
+	//int x1 = m_stickCollisionLine.X() * m_direction + m_x;
+	//int y1 = m_stickCollisionLine.Start() + m_y;
+	//int x2 = m_stickCollisionLine.X() * m_direction + m_x;
+	//int y2 = m_stickCollisionLine.End() + m_y;
 
-	SDL_SetRenderDrawColor(graphics.m_renderer, 255, 0, 0, 255);
+	//SDL_SetRenderDrawColor(graphics.m_renderer, 255, 0, 0, 255);
 	//SDL_RenderDrawLine(graphics.m_renderer, x1, y1, x2, y2);
 }
 
@@ -239,6 +230,7 @@ bool Player::IsRiding(Chunk& chunk) {
 }
 
 void Player::HitAtPoint(int x, int y, int dirX, int dirY) {
+	m_levelRef->m_tileHitFx.SetPosition(x, y);
 	for (Chunk& chunk : m_levelRef->v_chunks) {
 		int valueAtPoint = chunk.ValueAtPoint(m_x, m_y);
 		int levelValueAtStickPoint = m_levelRef->ValueAtPoint(x, y);
@@ -254,4 +246,5 @@ void Player::HitAtPoint(int x, int y, int dirX, int dirY) {
 			return;
 		}
 	}
+
 }

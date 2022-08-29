@@ -2,6 +2,8 @@
 
 struct SDL_Window;
 struct SDL_Renderer;
+struct SDL_Texture;
+struct SDL_Rect;
 class Input;
 
 class Graphics {
@@ -10,7 +12,7 @@ public:
 	~Graphics();
 	void Update(Input& input);
 	SDL_Texture* LoadTexture(const char* fileName);
-	void Draw(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	void Draw(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect, SDL_RendererFlip flip = SDL_FLIP_NONE, double angle = 0);
 private:
 	void ToggleFullscreen();
 public:
@@ -27,6 +29,8 @@ public:
 	SDL_Texture* playerBodyTexture;
 	SDL_Texture* playerStickTexture;
 	SDL_Texture* backgroundTexture;
+	SDL_Texture* tileHitFxTexture;
+
 private:
 	//
 };

@@ -1,5 +1,10 @@
 #pragma once
 
+enum Direction {
+	DIRECTION_LEFT = -1,
+	DIRECTION_RIGHT = 1
+};
+
 const int Sign(const int i);
 const float Sign(const float f);
 

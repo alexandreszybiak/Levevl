@@ -5,7 +5,7 @@
 #include "Player.h"
 #include "Sprite.h"
 
-void Sprite::Draw(Graphics& graphics, SDL_Texture* texture, Direction direction) {
+void Sprite::Draw(Graphics& graphics, SDL_Texture* texture, Direction direction, double angle) {
 	SDL_Rect srcRect;
 	srcRect.x = m_width * (m_currentFrame % m_numColumn);
 	srcRect.y = m_height * (m_currentFrame / m_numColumn);
@@ -24,6 +24,6 @@ void Sprite::Draw(Graphics& graphics, SDL_Texture* texture, Direction direction)
 	else if (direction == DIRECTION_RIGHT)
 		flip = SDL_FLIP_NONE;
 
-	graphics.Draw(texture, &srcRect, &destRect, flip);
+	graphics.Draw(texture, &srcRect, &destRect, flip, angle);
 
 }

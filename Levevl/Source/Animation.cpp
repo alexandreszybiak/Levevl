@@ -22,8 +22,8 @@ const KeyFrame* Animation::Update() {
 	return nullptr;
 }
 
-void Animation::PushFrame(int frameIndex, int duration, int socketX, int socketY) {
-	m_frames.emplace_back(frameIndex, duration, socketX, socketY);
+void Animation::PushFrame(int frameIndex, int duration) {
+	m_frames.emplace_back(frameIndex, duration);
 }
 
 void Animation::Reset() {

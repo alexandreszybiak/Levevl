@@ -78,6 +78,9 @@
     <ClCompile Include="Source\StickHitState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\TileHitFx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game.h">
@@ -149,6 +152,9 @@
     <ClInclude Include="Source\StickHitState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\TileHitFx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\chunk_texture.png">
@@ -168,6 +174,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Assets\player_stick_texture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\tile_hit_fx_texture.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

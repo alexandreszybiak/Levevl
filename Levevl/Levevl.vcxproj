@@ -215,6 +215,7 @@
     <ClCompile Include="Source\StickHitState.cpp" />
     <ClCompile Include="Source\StickHitUpState.cpp" />
     <ClCompile Include="Source\StickIdleState.cpp" />
+    <ClCompile Include="Source\TileHitFx.cpp" />
     <ClCompile Include="Source\Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -240,6 +241,7 @@
     <ClInclude Include="Source\StickHitState.h" />
     <ClInclude Include="Source\StickHitUpState.h" />
     <ClInclude Include="Source\StickIdleState.h" />
+    <ClInclude Include="Source\TileHitFx.h" />
     <ClInclude Include="Source\Utilities.h" />
   </ItemGroup>
   <ItemGroup>
@@ -249,6 +251,7 @@
     <Image Include="Assets\player.png" />
     <Image Include="Assets\player_body_texture.png" />
     <Image Include="Assets\player_stick_texture.png" />
+    <Image Include="Assets\tile_hit_fx_texture.png" />
     <Image Include="Assets\world_texture.png" />
   </ItemGroup>
   <ItemGroup>

@@ -6,14 +6,26 @@
 #include "Chunk.h"
 #include "Level.h"
 #include "Player.h"
+#include "TileHitFx.h"
 
-Level::Level() {
+Level::Level() : m_tileHitFx(*(new TileHitFx())) {
 	worldMap = new Map();
 	player = new Player(0xeeeeeeee, 0xeeeeeeee, this);
 }
 
 Level::~Level() {
 
+}
+
+void Level::Update(Input& input) {
+	// Move chunks
+	for (Chunk& chunk : v_chunks) {
+		chunk.Update();
+	}
+
+	player->Update(input);
+
+	m_tileHitFx.Update();
 }
 
 Chunk* Level::BuildChunk(int x, int y, int width, int height, char initValue) {

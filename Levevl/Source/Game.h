@@ -1,15 +1,14 @@
 #pragma once
-#include <vector>
-#include "SDL.h"
-#include "Input.h"
 
 #define MAX_CHUNK 10
 #define TILE_SIZE 24
 
+class Input;
 class Graphics;
 class Map;
 class Chunk;
 class Level;
+class TileHitFx;
 
 class Game {
 public:
@@ -25,8 +24,7 @@ public:
 	Chunk* chunks[10];
 	Chunk* selectedChunk;*/
 
-	Level* level;
-	
+	Level* level;	
 
 private:
 	bool isRunning;

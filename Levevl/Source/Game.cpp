@@ -9,6 +9,7 @@
 #include "Editor.h"
 #include "Level.h"
 #include "Player.h"
+#include "TileHitFx.h"
 
 Game::Game() {
 
@@ -16,6 +17,8 @@ Game::Game() {
 		std::cout << "Subsystems initialized!..." << std::endl;
 	else
 		return;
+
+	//m_tileHitFx = *(new TileHitFx());
 
 	Loop();
 }
@@ -111,14 +114,9 @@ void Game::Loop() {
 
 void Game::update(Input& input) {
 
-	// Move chunks
-	for (Chunk& chunk : level->v_chunks) {
-		chunk.Update();
-	}
+	level->Update(input);
 
-	level->player->Update(input, level);
-	
-	level->player->PostUpdate();
+
 }
 
 void Game::render(Graphics& graphics) {
@@ -149,6 +147,7 @@ void Game::render(Graphics& graphics) {
 		chunk.Draw(graphics);
 	}
 	level->player->Draw(graphics);
+	level->m_tileHitFx.Draw(graphics);
 
 	// Draw the background
 	SDL_SetTextureBlendMode(graphics.backgroundTexture, maskedByAlpha);

@@ -53,6 +53,7 @@ Graphics::Graphics() {
 	playerBodyTexture = LoadTexture("Assets/player_body_texture.png");
 	playerStickTexture = LoadTexture("Assets/player_stick_texture.png");
 	backgroundTexture = LoadTexture("Assets/background_texture.png");
+	tileHitFxTexture = LoadTexture("Assets/tile_hit_fx_texture.png");
 
 	gameTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, 640, 360);
 }
@@ -81,9 +82,9 @@ SDL_Texture* Graphics::LoadTexture(const char* fileName) {
 	SDL_FreeSurface(tmpSurface);
 	return newTexture;
 }
-void Graphics::Draw(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect, SDL_RendererFlip flip)
+void Graphics::Draw(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect, SDL_RendererFlip flip, double angle)
 {
-	SDL_RenderCopyEx(m_renderer, texture, sourceRect, destinationRect, 0, NULL, flip);
+	SDL_RenderCopyEx(m_renderer, texture, sourceRect, destinationRect, angle, NULL, flip);
 }
 
 void Graphics::ToggleFullscreen() {

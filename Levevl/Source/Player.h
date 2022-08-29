@@ -14,11 +14,6 @@ class PlayerState;
 class Sprite;
 class Animation;
 
-enum Direction {
-	DIRECTION_LEFT = -1,
-	DIRECTION_RIGHT = 1
-};
-
 class Player : public Entity{
 	friend class PlayerIdleState;
 	friend class PlayerJumpState;
@@ -48,9 +43,6 @@ private:
 
 	Sprite * m_bodySprite, * m_stickSprite;
 
-	// Dummy entity to bind the stick sprite
-	Entity* m_stickSocket;
-
 	VerticalLine m_stickCollisionLine;
 
 	AABB m_boundingBox;
@@ -66,8 +58,7 @@ private:
 
 public:
 	Player(int x, int y, Level* level);
-	void Update(Input& input, Level* level);
-	void PostUpdate();
+	void Update(Input& input);
 	void Draw(Graphics& graphics);
 
 	// Move and handle collisions
