@@ -82,9 +82,9 @@ SDL_Texture* Graphics::LoadTexture(const char* fileName) {
 	SDL_FreeSurface(tmpSurface);
 	return newTexture;
 }
-void Graphics::Draw(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect, SDL_RendererFlip flip, double angle)
+void Graphics::Draw(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect, SDL_RendererFlip flip, double angle, const SDL_Point* center)
 {
-	SDL_RenderCopyEx(m_renderer, texture, sourceRect, destinationRect, angle, NULL, flip);
+	SDL_RenderCopyEx(m_renderer, texture, sourceRect, destinationRect, angle, center, flip);
 }
 
 void Graphics::ToggleFullscreen() {

@@ -18,9 +18,9 @@ public:
 	Animation(int length, bool loop = true) : m_iterator(0), m_lastFrameTime(0), m_loop(loop), m_playing(false) { m_frames.reserve(length); }
 	
 	const KeyFrame* Update();
+	const KeyFrame* Reset();
 
 	void PushFrame(int frameIndex, int duration = 1);
-	void Reset();
 
 	const int GetLength() const { return m_frames.size(); }
 	const KeyFrame* GetFrame() const { return &m_frames[m_iterator]; }

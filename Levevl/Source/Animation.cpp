@@ -1,3 +1,4 @@
+#include <iostream>
 #include "SDL.h"
 #include "Animation.h"
 
@@ -26,8 +27,9 @@ void Animation::PushFrame(int frameIndex, int duration) {
 	m_frames.emplace_back(frameIndex, duration);
 }
 
-void Animation::Reset() {
+const KeyFrame* Animation::Reset() {
 	m_playing = true;
 	m_iterator = 0;
 	m_lastFrameTime = SDL_GetTicks();
+	return GetFrame();
 }

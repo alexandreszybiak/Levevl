@@ -230,7 +230,7 @@ bool Player::IsRiding(Chunk& chunk) {
 }
 
 void Player::HitAtPoint(int x, int y, int dirX, int dirY) {
-	m_levelRef->m_tileHitFx.SetPosition(x, y);
+	
 	for (Chunk& chunk : m_levelRef->v_chunks) {
 		int valueAtPoint = chunk.ValueAtPoint(m_x, m_y);
 		int levelValueAtStickPoint = m_levelRef->ValueAtPoint(x, y);
@@ -238,11 +238,13 @@ void Player::HitAtPoint(int x, int y, int dirX, int dirY) {
 
 		if (chunkValueAtStickPoint == 2) {
 			chunk.Slide(dirX, dirY);
+			m_levelRef->m_tileHitFx.Reset(x, y, dirX, dirY);
 			return;
 		}
 
 		if (levelValueAtStickPoint == 0 && valueAtPoint == 1) {
 			chunk.Slide(dirX, dirY);
+			m_levelRef->m_tileHitFx.Reset(x, y, dirX, dirY);
 			return;
 		}
 	}
