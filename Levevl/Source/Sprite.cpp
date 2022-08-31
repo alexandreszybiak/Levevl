@@ -22,11 +22,9 @@ void Sprite::Draw(Graphics& graphics, SDL_Texture* texture, Direction direction)
 	destRect.w = m_width;
 	destRect.h = m_height;
 
-	SDL_RendererFlip flip;
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	if (direction == DIRECTION_LEFT)
 		flip = SDL_FLIP_HORIZONTAL;
-	else if (direction == DIRECTION_RIGHT)
-		flip = SDL_FLIP_NONE;
 
 	SDL_Point center;
 	center.x = m_pivotX;
