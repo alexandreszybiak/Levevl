@@ -112,8 +112,8 @@ void Chunk::Move(float x, float y) {
 void Chunk::Draw(Graphics& graphics) {
 	for (int column = 0; column < m_width; column++) {
 		for (int row = 0; row < m_height; row++) {
-			m_destinationRect.x = column * TILE_SIZE + m_x - graphics.m_camera.m_x;
-			m_destinationRect.y = row * TILE_SIZE + m_y - graphics.m_camera.m_y;
+			m_destinationRect.x = column * TILE_SIZE + m_x;
+			m_destinationRect.y = row * TILE_SIZE + m_y;
 			if (m_data[column + row * m_width]  == 1) {
 				graphics.Draw(graphics.chunkTexture, &m_emptyRect, &m_destinationRect);
 			}
@@ -138,8 +138,8 @@ void Chunk::DrawMask(Graphics& graphics) {
 				rect.y += TILE_SIZE;
 			if (row > 0 && m_data[column + (row - 1) * m_width])
 				rect.y += TILE_SIZE * 2;
-			m_destinationRect.x = column * TILE_SIZE + m_x - graphics.m_camera.m_x;
-			m_destinationRect.y = row * TILE_SIZE + m_y - graphics.m_camera.m_y;
+			m_destinationRect.x = column * TILE_SIZE + m_x;
+			m_destinationRect.y = row * TILE_SIZE + m_y;
 			if (m_data[column + row * m_width]) {
 				graphics.Draw(graphics.chunkMaskTexture, &rect, &m_destinationRect);
 			}

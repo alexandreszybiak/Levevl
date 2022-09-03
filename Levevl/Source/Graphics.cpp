@@ -88,9 +88,18 @@ SDL_Texture* Graphics::LoadTexture(const char* fileName) {
 	SDL_FreeSurface(tmpSurface);
 	return newTexture;
 }
-void Graphics::Draw(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect, SDL_RendererFlip flip, double angle, const SDL_Point* center)
+void Graphics::Draw(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect, SDL_RendererFlip flip, double angle, const SDL_Point* center, bool ignoreCamera)
 {
-	SDL_RenderCopyEx(m_renderer, texture, sourceRect, destinationRect, angle, center, flip);
+
+	SDL_Rect dstRect = *destinationRect;
+	dstRect.x -= m_camera.m_x;
+	dstRect.y -= m_camera.m_y;
+
+	SDL_RenderCopyEx(m_renderer, texture, sourceRect, &dstRect, angle, center, flip);
+}
+
+void Graphics::Draw(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destRect, bool ignoreCamera) {
+	SDL_RenderCopy(m_renderer, texture, sourceRect, destRect);
 }
 
 void Graphics::ToggleFullscreen() {

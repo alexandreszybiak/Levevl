@@ -13,7 +13,8 @@ public:
 	~Graphics();
 	void Update(Input& input);
 	SDL_Texture* LoadTexture(const char* fileName);
-	void Draw(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect, SDL_RendererFlip flip = SDL_FLIP_NONE, double angle = 0, const SDL_Point* center = NULL);
+	void Draw(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect, SDL_RendererFlip flip = SDL_FLIP_NONE, double angle = 0, const SDL_Point* center = NULL, bool ignoreCamera = false);
+	void Draw(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect, bool ignoreCamera);
 private:
 	void ToggleFullscreen();
 public:

@@ -18,8 +18,8 @@ void Sprite::Draw(Graphics& graphics, SDL_Texture* texture, Direction direction)
 	srcRect.h = m_height;
 
 	SDL_Rect destRect;
-	destRect.x = m_x - m_pivotX - graphics.m_camera.m_x;
-	destRect.y = m_y - m_pivotY - graphics.m_camera.m_y;
+	destRect.x = m_x - m_pivotX;
+	destRect.y = m_y - m_pivotY;
 	destRect.w = m_width;
 	destRect.h = m_height;
 

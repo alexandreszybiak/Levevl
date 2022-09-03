@@ -29,8 +29,8 @@ void Map::Draw(Graphics& graphics) {
 			if (row > 0 && m_data[column + (row - 1) * m_mapWidth] || row == 0)
 				rect.y += TILE_SIZE * 2;
 
-			m_destinationRect.x = column * TILE_SIZE - graphics.m_camera.m_x;
-			m_destinationRect.y = row * TILE_SIZE - graphics.m_camera.m_y;
+			m_destinationRect.x = column * TILE_SIZE;
+			m_destinationRect.y = row * TILE_SIZE;
 			if (m_data[column + row * m_mapWidth]) {
 				graphics.Draw(graphics.worldTexture, &rect, &m_destinationRect);
 			}
@@ -44,7 +44,7 @@ void Map::DrawBackground(Graphics& graphics) {
 			SDL_Rect rect = { 0,0,TILE_SIZE,TILE_SIZE };
 			m_destinationRect.x = column * TILE_SIZE;
 			m_destinationRect.y = row * TILE_SIZE;
-			graphics.Draw(graphics.backgroundTexture, &rect, &m_destinationRect);
+			graphics.Draw(graphics.backgroundTexture, &rect, &m_destinationRect, true);
 		}
 	}
 }
