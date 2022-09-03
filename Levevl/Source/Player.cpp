@@ -194,6 +194,11 @@ void Player::SetPosition(int x, int y) {
 	m_velocityY = 0;
 }
 
+void Player::Move(int x, int y) {
+	m_x += x;
+	m_y += y;
+}
+
 void Player::SetAnimation(Animation** target, Animation* animation) {
 	*target = animation;
 	(*target)->Play();

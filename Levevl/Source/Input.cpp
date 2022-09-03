@@ -1,6 +1,8 @@
 #include <iostream>
 #include "SDL.h"
 #include "Input.h"
+#include "Level.h"
+#include "Camera.h"
 
 Input::Input() {
 	if (SDL_NumJoysticks() > 0) {
@@ -115,12 +117,20 @@ bool Input::IsMouseButtonHeld(Uint8 mouseButton) {
 }
 
 // Get mouse position
-int Input::GetMouseX() {
+int Input::GetMouseWindowX() {
 	return m_mouseX;
 }
 
-int Input::GetMouseY() {
+int Input::GetMouseWindowY() {
 	return m_mouseY;
+}
+
+int Input::GetMouseWorldX(Level& world) {
+	return m_mouseX + world.m_camera.m_x;
+}
+
+int Input::GetMouseWorldY(Level& world) {
+	return m_mouseY + world.m_camera.m_y;
 }
 
 // Get mouse wheel

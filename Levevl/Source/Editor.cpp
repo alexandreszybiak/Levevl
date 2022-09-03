@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "Input.h"
 #include "Graphics.h"
+#include "Camera.h"
 #include "Editor.h"
 #include "Map"
 #include "Chunk.h"
@@ -29,30 +30,40 @@ Editor::~Editor() {
 }
 
 void Editor::Update(Input& input) {
-	m_cursorX = input.GetMouseX();
-	m_cursorY = input.GetMouseY();
+	m_cursorX = input.GetMouseWorldX(*m_level_ref);
+	m_cursorY = input.GetMouseWorldY(*m_level_ref);
 
-	if (input.WasKeyPressed(SDL_SCANCODE_LEFT)) {
-		if(m_selectedChunk)
-			m_selectedChunk->Slide(-1, 0);
+	if (input.IsKeyHeld(SDL_SCANCODE_LSHIFT)) {
+		int teleportX = -input.WasKeyPressed(SDL_SCANCODE_LEFT) + input.WasKeyPressed(SDL_SCANCODE_RIGHT);
+		int teleportY = -input.WasKeyPressed(SDL_SCANCODE_UP) + input.WasKeyPressed(SDL_SCANCODE_DOWN);
+
+		if (teleportX != 0 || teleportY != 0) {
+			m_level_ref->player->Move(teleportX * 640, teleportY * 360);
+		}
 	}
-	if (input.WasKeyPressed(SDL_SCANCODE_RIGHT)) {
-		if (m_selectedChunk)
-			m_selectedChunk->Slide(1, 0);
-	}
-	if (input.WasKeyPressed(SDL_SCANCODE_UP)) {
-		if (m_selectedChunk)
-			m_selectedChunk->Slide(0, -1);
-	}
-	if (input.WasKeyPressed(SDL_SCANCODE_DOWN)) {
-		if (m_selectedChunk)
-			m_selectedChunk->Slide(0, 1);
+	else {
+		if (input.WasKeyPressed(SDL_SCANCODE_LEFT)) {
+			if(m_selectedChunk)
+				m_selectedChunk->Slide(-1, 0);
+		}
+		if (input.WasKeyPressed(SDL_SCANCODE_RIGHT)) {
+			if (m_selectedChunk)
+				m_selectedChunk->Slide(1, 0);
+		}
+		if (input.WasKeyPressed(SDL_SCANCODE_UP)) {
+			if (m_selectedChunk)
+				m_selectedChunk->Slide(0, -1);
+		}
+		if (input.WasKeyPressed(SDL_SCANCODE_DOWN)) {
+			if (m_selectedChunk)
+				m_selectedChunk->Slide(0, 1);
+		}
 	}
 
 	if (input.WasMouseButtonPressed(SDL_BUTTON_LEFT) || input.WasMouseButtonPressed(SDL_BUTTON_RIGHT)) {
 		// Initialize the selection
-		m_selectionOriginX = input.GetMouseX();
-		m_selectionOriginY = input.GetMouseY();
+		m_selectionOriginX = m_cursorX;
+		m_selectionOriginY = m_cursorY;
 
 		// Reset the selected chunk
 		m_selectedChunk = nullptr;
@@ -61,7 +72,7 @@ void Editor::Update(Input& input) {
 		int index = m_level_ref->v_chunks.size() - 1;
 		for (std::vector<Chunk>::reverse_iterator i = m_level_ref->v_chunks.rbegin();
 			i != m_level_ref->v_chunks.rend(); ++i) {
-			if (i->OverlapsPoint(input.GetMouseX(), input.GetMouseY())) {
+			if (i->OverlapsPoint(m_cursorX, m_cursorY)) {
 				m_selectedChunk = &*i;
 				m_selectedChunkIndex = index;
 				break;
@@ -77,10 +88,10 @@ void Editor::Update(Input& input) {
 	}
 	if (input.IsMouseButtonHeld(SDL_BUTTON_LEFT) || input.IsMouseButtonHeld(SDL_BUTTON_RIGHT)) {
 
-		m_selection.x = std::min(input.GetMouseX(), m_selectionOriginX) / TILE_SIZE * TILE_SIZE;
-		m_selection.y = std::min(input.GetMouseY(), m_selectionOriginY) / TILE_SIZE * TILE_SIZE;
-		m_selection.w = abs(m_selection.x - std::max(input.GetMouseX(), m_selectionOriginX)) / TILE_SIZE * TILE_SIZE + TILE_SIZE;
-		m_selection.h = abs(m_selection.y - std::max(input.GetMouseY(), m_selectionOriginY)) / TILE_SIZE * TILE_SIZE + TILE_SIZE;
+		m_selection.x = std::min(m_cursorX, m_selectionOriginX) / TILE_SIZE * TILE_SIZE;
+		m_selection.y = std::min(m_cursorY, m_selectionOriginY) / TILE_SIZE * TILE_SIZE;
+		m_selection.w = abs(m_selection.x - std::max(m_cursorX, m_selectionOriginX)) / TILE_SIZE * TILE_SIZE + TILE_SIZE;
+		m_selection.h = abs(m_selection.y - std::max(m_cursorY, m_selectionOriginY)) / TILE_SIZE * TILE_SIZE + TILE_SIZE;
 	}
 	else if (input.WasMouseButtonReleased(SDL_BUTTON_LEFT) || input.WasMouseButtonReleased(SDL_BUTTON_RIGHT)) {
 		//
@@ -97,7 +108,7 @@ void Editor::Update(Input& input) {
 			m_level_ref->worldMap->SetRegion(1 * m_brushMode, gridX, gridY, gridX2, gridY2);
 		}
 		else if(m_brushMode) {
-			m_selectedChunk = m_level_ref->BuildChunk(gridX * TILE_SIZE, gridY * TILE_SIZE, gridX2 - gridX, gridY2 - gridY, m_brushValue + 1);
+			m_selectedChunk = m_level_ref->BuildChunk(m_selection.x, m_selection.y, gridX2 - gridX, gridY2 - gridY, m_brushValue + 1);
 			m_selectedChunkIndex = m_level_ref->v_chunks.size() - 1;
 		}
 
@@ -123,7 +134,7 @@ void Editor::Update(Input& input) {
 	}
 
 	if (input.WasKeyPressed(SDL_SCANCODE_P)) {
-		m_level_ref->player->SetPosition(input.GetMouseX(), input.GetMouseY());
+		m_level_ref->player->SetPosition(m_cursorX, m_cursorY);
 	}
 }
 
@@ -131,14 +142,15 @@ void Editor::Draw(Graphics& graphics) {
 	
 	// Draw the selection rectangle
 	if (m_selection.w && m_selection.h) {
+		SDL_Rect rect = { m_selection.x - m_level_ref->m_camera.m_x, m_selection.y - m_level_ref->m_camera.m_y, m_selection.w, m_selection.h };
 		SDL_SetRenderDrawColor(graphics.m_renderer, 255, 0, 0, 255);
-		SDL_RenderDrawRect(graphics.m_renderer, &m_selection);
+		SDL_RenderDrawRect(graphics.m_renderer, &rect);
 	}
 	
 	// Draw the current brush value
 	SDL_Texture* cursorTexture = graphics.chunkTexture;
 	SDL_Rect srcRect = { TILE_SIZE * m_brushValue,0,TILE_SIZE, TILE_SIZE };
-	SDL_Rect dstRect = { m_cursorX + 8,m_cursorY + 12,TILE_SIZE, TILE_SIZE };
+	SDL_Rect dstRect = { m_cursorX + 8 - m_level_ref->m_camera.m_x,m_cursorY + 12 - m_level_ref->m_camera.m_y,TILE_SIZE, TILE_SIZE };
 
 	if (m_brushValue > 1) {
 		cursorTexture = graphics.worldTexture;

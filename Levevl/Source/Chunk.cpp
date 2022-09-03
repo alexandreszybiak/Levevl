@@ -36,20 +36,20 @@ Chunk::Chunk(int x, int y, int width, int height, char initValue, Level* levelRe
 	std::cout << "Chunk created." << std::endl;
 }
 
-Chunk::Chunk(const Chunk& chunkCopy): 
-		m_x(chunkCopy.m_x), 
-		m_y(chunkCopy.m_y),
-		m_targetX(chunkCopy.m_targetX),
-		m_targetY(chunkCopy.m_targetY),
-		m_width(chunkCopy.m_width), 
-		m_height(chunkCopy.m_height),
-		m_levelRef(chunkCopy.m_levelRef),
-		m_emptyRect({ 0,0,TILE_SIZE,TILE_SIZE }),
-		m_brickRect({ TILE_SIZE,0,TILE_SIZE,TILE_SIZE }),
-		m_destinationRect({ 0,0,TILE_SIZE,TILE_SIZE }),
-		m_data(chunkCopy.m_data) {
-	std::cout << "Chunk copied." << std::endl;
-}
+//Chunk::Chunk(const Chunk& chunkCopy): 
+//		m_x(chunkCopy.m_x), 
+//		m_y(chunkCopy.m_y),
+//		m_targetX(chunkCopy.m_targetX),
+//		m_targetY(chunkCopy.m_targetY),
+//		m_width(chunkCopy.m_width), 
+//		m_height(chunkCopy.m_height),
+//		m_levelRef(chunkCopy.m_levelRef),
+//		m_emptyRect({ 0,0,TILE_SIZE,TILE_SIZE }),
+//		m_brickRect({ TILE_SIZE,0,TILE_SIZE,TILE_SIZE }),
+//		m_destinationRect({ 0,0,TILE_SIZE,TILE_SIZE }),
+//		m_data(chunkCopy.m_data) {
+//	std::cout << "Chunk copied." << std::endl;
+//}
 
 Chunk::~Chunk() {
 	m_data.clear();

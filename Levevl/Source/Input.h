@@ -3,6 +3,8 @@
 
 #include <map>
 
+class Level;
+
 class Input {
 public:
 	SDL_GameController* m_gameController;
@@ -48,8 +50,10 @@ public:
 	bool WasMouseButtonPressed(Uint8 button);
 	bool WasMouseButtonReleased(Uint8 button);
 	bool IsMouseButtonHeld(Uint8 button);
-	int GetMouseX();
-	int GetMouseY();
+	int GetMouseWindowX();
+	int GetMouseWindowY();
+	int GetMouseWorldX(Level& world);
+	int GetMouseWorldY(Level& world);
 	int GetMouseWheel();
 
 private:

@@ -4,7 +4,7 @@
 #include "Entity.h"
 #include "Utilities.h"
 
-#define GRAVITY .45f 
+#define GRAVITY .38f 
 
 class Level;
 class Graphics;
@@ -67,6 +67,7 @@ public:
 	bool OnFloor() { return m_onFloor; }
 	void SetOnFloor(bool b) { m_onFloor = b; }
 	void SetPosition(int x, int y);
+	void Move(int x, int y);
 	bool IsRiding(Chunk& chunk);
 
 	void SetAnimation(Animation** target, Animation* animation);

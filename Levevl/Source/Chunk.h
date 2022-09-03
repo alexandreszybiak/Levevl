@@ -43,7 +43,7 @@ private:
 	
 public:
 	Chunk(int x, int y, int width, int height, char initValue, Level* levelRef);
-	Chunk(const Chunk& chunkCopy);
+	//Chunk(const Chunk& chunkCopy);
 	~Chunk();
 	void Update();
 	void Draw(Graphics& graphics);
