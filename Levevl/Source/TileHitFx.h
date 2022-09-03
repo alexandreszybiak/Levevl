@@ -19,4 +19,5 @@ public:
 	void Draw(Graphics& graphics);
 	void SetPosition(int x, int y);
 	void Reset(int x, int y, int dirX, int dirY);
+	void Move(int x, int y);
 };

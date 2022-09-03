@@ -9,6 +9,7 @@
 #include "Game.h"
 #include "Level.h"
 #include "Player.h"
+#include "TileHitFx.h"
 
 Chunk::Chunk(int x, int y, int width, int height, char initValue, Level* levelRef):
 		m_x(x),
@@ -24,7 +25,8 @@ Chunk::Chunk(int x, int y, int width, int height, char initValue, Level* levelRe
 		m_levelRef(levelRef),
 		m_emptyRect({ 0,0,TILE_SIZE,TILE_SIZE }),
 		m_brickRect({ TILE_SIZE,0,TILE_SIZE,TILE_SIZE }),
-		m_destinationRect({ 0,0,TILE_SIZE,TILE_SIZE })
+		m_destinationRect({ 0,0,TILE_SIZE,TILE_SIZE }),
+		m_tileHitFx(nullptr)
 {
 	m_data.reserve(m_width * m_height);
 	for (int i = 0; i < m_width * m_height; i++) {
@@ -80,6 +82,8 @@ void Chunk::Move(float x, float y) {
 		}
 		m_xRemainder -= moveX;
 		m_x += moveX;
+		if (m_tileHitFx)
+			m_tileHitFx->Move(moveX, 0);
 
 		if (isPlayerRiding) {
 			m_levelRef->player->MoveX(moveX);
@@ -95,6 +99,8 @@ void Chunk::Move(float x, float y) {
 
 		m_yRemainder -= moveY;
 		m_y += moveY;
+		if(m_tileHitFx)
+			m_tileHitFx->Move(0, moveY);
 
 		if (isPlayerRiding) {
 			m_levelRef->player->MoveY(moveY);

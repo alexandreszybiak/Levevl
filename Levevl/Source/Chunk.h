@@ -7,11 +7,14 @@ class HorizontalLine;
 class VerticalLine;
 class Graphics;
 class Level;
+class TileHitFx;
 
 //A piece of a level that can be moved around
 class Chunk : public Map {
 public:
 	
+	TileHitFx* m_tileHitFx;
+
 private:
 	// Used to compute collisions with entities
 	int m_x, m_y;

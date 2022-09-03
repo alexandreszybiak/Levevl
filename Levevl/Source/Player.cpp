@@ -239,12 +239,14 @@ void Player::HitAtPoint(int x, int y, int dirX, int dirY) {
 		if (chunkValueAtStickPoint == 2) {
 			chunk.Slide(dirX, dirY);
 			m_levelRef->m_tileHitFx.Reset(x, y, dirX, dirY);
+			chunk.m_tileHitFx = &m_levelRef->m_tileHitFx;
 			return;
 		}
 
 		if (levelValueAtStickPoint == 0 && valueAtPoint == 1) {
 			chunk.Slide(dirX, dirY);
 			m_levelRef->m_tileHitFx.Reset(x, y, dirX, dirY);
+			chunk.m_tileHitFx = &m_levelRef->m_tileHitFx;
 			return;
 		}
 	}

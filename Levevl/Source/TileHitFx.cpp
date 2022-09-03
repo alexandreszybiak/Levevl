@@ -82,3 +82,7 @@ void TileHitFx::Reset(int x, int y, int dirX, int dirY) {
 
 	m_sprite.SetAngle(newAngle);
 }
+
+void TileHitFx::Move(int x, int y) {
+	m_sprite.Move(x, y);
+}

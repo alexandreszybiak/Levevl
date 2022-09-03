@@ -18,4 +18,5 @@ public:
 	void SetPosition(int x, int y) { m_x = x, m_y = y; }
 	void SetVisible(bool visible) { m_visible = visible; }
 	void SetAngle(double angle) { m_angle = angle; }
+	void Move(int x, int y) { m_x += x; m_y += y; }
 };
