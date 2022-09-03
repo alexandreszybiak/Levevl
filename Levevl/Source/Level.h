@@ -2,6 +2,7 @@
 #include <vector>
 
 class Input;
+class Camera;
 class HorizontalLine;
 class VerticalLine;
 class Map;
@@ -14,6 +15,8 @@ public:
 	Map* worldMap;
 	std::vector<Chunk> v_chunks;
 
+	Camera& m_camera;
+
 	Player* player;
 
 	TileHitFx& m_tileHitFx;
@@ -22,7 +25,7 @@ private:
 	//
 
 public:
-	Level();
+	Level(Camera& camera);
 	~Level();
 
 	void Update(Input& input);

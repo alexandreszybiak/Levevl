@@ -3,8 +3,9 @@
 #include "SDL_image.h"
 #include "Graphics.h"
 #include "Input.h"
+#include "Camera.h"
 
-Graphics::Graphics() {
+Graphics::Graphics() : m_camera(*(new Camera(0, 0, 640, 360))) {
 	int flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
 	flags = 0;
 	m_window = SDL_CreateWindow("Levevl", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1920, 1080, flags);
@@ -40,9 +41,10 @@ Graphics::Graphics() {
 			std::cout << "Max Texture Height: " << info.max_texture_height << std::endl;
 		}
 
-		SDL_RenderSetLogicalSize(m_renderer, 640, 360);
+		SDL_RenderSetLogicalSize(m_renderer, m_camera.m_width, m_camera.m_height);
 		SDL_RenderSetIntegerScale(m_renderer, SDL_TRUE);
 	}
+
 	m_viewportRect = { 0,0,640,360 };
 
 	//Load textures
@@ -55,7 +57,7 @@ Graphics::Graphics() {
 	backgroundTexture = LoadTexture("Assets/background_texture.png");
 	tileHitFxTexture = LoadTexture("Assets/tile_hit_fx_texture.png");
 
-	gameTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, 640, 360);
+	gameTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, m_camera.m_width, m_camera.m_height);
 }
 
 Graphics::~Graphics() {
@@ -64,7 +66,11 @@ Graphics::~Graphics() {
 	SDL_DestroyTexture(worldTexture);
 	SDL_DestroyTexture(gameTexture);
 	SDL_DestroyTexture(playerTexture);
+	SDL_DestroyTexture(playerBodyTexture);
+	SDL_DestroyTexture(playerStickTexture);
 	SDL_DestroyTexture(backgroundTexture);
+	SDL_DestroyTexture(tileHitFxTexture);
+
 	SDL_DestroyWindow(m_window);
 	SDL_DestroyRenderer(m_renderer);
 	std::cout << "Graphics deconstructor" << std::endl;

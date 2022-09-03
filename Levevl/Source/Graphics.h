@@ -5,6 +5,7 @@ struct SDL_Renderer;
 struct SDL_Texture;
 struct SDL_Rect;
 class Input;
+class Camera;
 
 class Graphics {
 public:
@@ -19,6 +20,7 @@ public:
 	SDL_Window* m_window;
 	SDL_Renderer* m_renderer;
 
+	Camera& m_camera;
 	SDL_Rect m_viewportRect;
 
 	SDL_Texture* chunkTexture;

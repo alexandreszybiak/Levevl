@@ -44,7 +44,7 @@ void Game::Loop() {
 
 	isRunning = true;
 
-	level = new Level();
+	level = new Level(graphics.m_camera);
 
 	//std::cout << "v_chunks address is : " << &v_chunks << std::endl;
 

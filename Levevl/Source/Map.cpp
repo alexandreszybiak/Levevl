@@ -1,6 +1,7 @@
 #include <fstream>
 #include "SDL.h"
 #include "Graphics.h"
+#include "Camera.h"
 #include "Map.h"
 #include "Game.h"
 #include "math.h"
@@ -28,8 +29,8 @@ void Map::Draw(Graphics& graphics) {
 			if (row > 0 && m_data[column + (row - 1) * m_mapWidth] || row == 0)
 				rect.y += TILE_SIZE * 2;
 
-			m_destinationRect.x = column * TILE_SIZE;
-			m_destinationRect.y = row * TILE_SIZE;
+			m_destinationRect.x = column * TILE_SIZE - graphics.m_camera.m_x;
+			m_destinationRect.y = row * TILE_SIZE - graphics.m_camera.m_y;
 			if (m_data[column + row * m_mapWidth]) {
 				graphics.Draw(graphics.worldTexture, &rect, &m_destinationRect);
 			}
@@ -63,7 +64,7 @@ int Map::OverlapsPoint(int x, int y) {
 	int tileY = y / TILE_SIZE;
 
 	if (tileX < 0 || tileX >= m_mapWidth || tileY < 0 || tileY >= m_mapHeight)
-		return 1;
+		return 0;
 
 	return m_data[tileX + tileY * m_mapWidth];
 }

@@ -2,13 +2,14 @@
 #include "SDL.h"
 #include "Utilities.h"
 #include "Game.h"
+#include "Camera.h"
 #include "Map.h"
 #include "Chunk.h"
 #include "Level.h"
 #include "Player.h"
 #include "TileHitFx.h"
 
-Level::Level() : m_tileHitFx(*(new TileHitFx())) {
+Level::Level(Camera& camera) : m_camera(camera), m_tileHitFx(*(new TileHitFx())) {
 	worldMap = new Map();
 	player = new Player(0xeeeeeeee, 0xeeeeeeee, this);
 }
@@ -26,6 +27,9 @@ void Level::Update(Input& input) {
 	player->Update(input);
 
 	m_tileHitFx.Update();
+
+	m_camera.m_x = player->X() / m_camera.m_width * m_camera.m_width;
+	m_camera.m_y = player->Y() / m_camera.m_height * m_camera.m_height;
 }
 
 Chunk* Level::BuildChunk(int x, int y, int width, int height, char initValue) {
