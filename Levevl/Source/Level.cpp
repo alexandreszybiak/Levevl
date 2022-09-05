@@ -28,7 +28,7 @@ void Level::Update(Input& input) {
 
 	m_tileHitFx.Update();
 
-	m_camera.m_x = player->X() / m_camera.m_width * m_camera.m_width;
+	m_camera.m_x = (player->X() - 24) / (m_camera.m_width - 16) * (m_camera.m_width -16) + 16;
 	m_camera.m_y = player->Y() / m_camera.m_height * m_camera.m_height;
 }
 

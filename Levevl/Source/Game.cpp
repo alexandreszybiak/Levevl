@@ -162,4 +162,7 @@ void Game::render(Graphics& graphics) {
 	SDL_SetRenderTarget(graphics.m_renderer, NULL);
 	SDL_RenderCopy(graphics.m_renderer, graphics.gameTexture, &graphics.m_viewportRect, &graphics.m_viewportRect);
 
+	//SDL_SetRenderDrawColor(graphics.m_renderer, 255, 0, 0, 255);
+	//SDL_RenderDrawLine(graphics.m_renderer, 640 / 2, 0, 640 / 2, 360);
+
 }
