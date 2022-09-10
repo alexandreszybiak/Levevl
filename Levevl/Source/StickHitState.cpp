@@ -11,7 +11,6 @@
 #include "StickAimingDownState.h"
 
 void StickHitState::Enter(Player* player) {
-	std::cout << "StickHitState Created" << std::endl;
 	player->SetAnimation(&player->m_currentStickAnimation, player->m_stickHitAnimation);
 	player->m_currentStickAnimation->Reset();
 	player->m_stickSprite->SetFrame(player->m_currentStickAnimation->GetFrame()->GetFrameIndex());
@@ -19,6 +18,10 @@ void StickHitState::Enter(Player* player) {
 }
 
 PlayerState* StickHitState::HandleInput(Player* player, Input& input) {
+
+	if (input.WasKeyPressed(SDL_SCANCODE_X)) {
+		Enter(player);
+	}
 
 	if (!player->m_currentStickAnimation->Playing()) {
 		if (input.IsKeyHeld(SDL_SCANCODE_UP)) {
