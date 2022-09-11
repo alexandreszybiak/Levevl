@@ -59,6 +59,33 @@ public:
 	int GetMouseWorldY(Level& world);
 	int GetMouseWheel();
 
+	bool HoldingLeft() {
+		return IsKeyHeld(SDL_SCANCODE_LEFT) || IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+	}
+	bool HoldingRight() {
+		return IsKeyHeld(SDL_SCANCODE_RIGHT) || IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+	}
+	bool HoldingUp() {
+		return IsKeyHeld(SDL_SCANCODE_UP) || IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_UP);
+	}
+
+	bool HoldingDown() {
+		return IsKeyHeld(SDL_SCANCODE_DOWN) || IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+	}
+
+	bool PressedUp() {
+		return WasKeyPressed(SDL_SCANCODE_UP) || WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_DPAD_UP);
+	}
+	bool PressedDown() {
+		return WasKeyPressed(SDL_SCANCODE_DOWN) || WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+	}
+	bool PressedJump() {
+		return WasKeyPressed(SDL_SCANCODE_SPACE) || WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_B);
+	}
+	bool PressedHit() {
+		return WasKeyPressed(SDL_SCANCODE_X) || WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_Y);
+	}
+	
 private:
 	
 };

@@ -78,6 +78,8 @@ public:
 
 	void SetState(PlayerState* state);
 
+	
+
 private:
 	void HitAtPoint(int x, int y, int dirX, int dirY);
 
