@@ -58,6 +58,7 @@ void Game::Loop() {
 		input.BeginNewFrame();
 
 		while (SDL_PollEvent(&event)) {
+			
 			if (event.type == SDL_CONTROLLERBUTTONDOWN) {
 				input.ControllerButtonDownEvent(event.cbutton);
 			}
@@ -83,6 +84,12 @@ void Game::Loop() {
 			}
 			else if (event.type == SDL_MOUSEWHEEL) {
 				input.MouseWheelEvent(event.wheel);
+			}
+			else if (event.type == SDL_CONTROLLERDEVICEADDED) {
+				input.ControllerDeviceAddedEvent(event.cdevice);
+			}
+			else if (event.type == SDL_CONTROLLERDEVICEREMOVED) {
+				input.ControllerDeviceRemovedEvent(event.cdevice);
 			}
 			else if (event.type == SDL_QUIT) {
 				isRunning = false;

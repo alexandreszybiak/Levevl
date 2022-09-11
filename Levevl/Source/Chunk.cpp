@@ -33,7 +33,7 @@ Chunk::Chunk(int x, int y, int width, int height, char initValue, Level* levelRe
 	for (int i = 0; i < m_width * m_height; i++) {
 		m_data.push_back(initValue);
 	}
-	std::cout << "Chunk created." << std::endl;
+	//std::cout << "Chunk created." << std::endl;
 }
 
 //Chunk::Chunk(const Chunk& chunkCopy): 

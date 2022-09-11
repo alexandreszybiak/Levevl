@@ -4,7 +4,7 @@
 #include "Level.h"
 #include "Camera.h"
 
-Input::Input() {
+Input::Input() : m_gameController(NULL) {
 	if (SDL_NumJoysticks() > 0) {
 		m_gameController = SDL_GameControllerOpen(0);
 
@@ -138,4 +138,19 @@ int Input::GetMouseWheel() {
 	if (m_mouseWheel == 0) return 0;
 	if (m_mouseWheel > 0) return 1;
 	if (m_mouseWheel < 0) return -1;
+}
+
+void Input::ControllerDeviceAddedEvent(const SDL_ControllerDeviceEvent& event) {
+	if (m_gameController == NULL) {
+		m_gameController = SDL_GameControllerOpen(event.which);
+		std::cout << "New controller device added" << std::endl;
+	}
+}
+
+void Input::ControllerDeviceRemovedEvent(const SDL_ControllerDeviceEvent& event) {
+	if (m_gameController == SDL_GameControllerFromInstanceID(event.which)) {
+		SDL_GameControllerClose(m_gameController);
+		m_gameController = NULL;
+		std::cout << "Current controller device removed" << std::endl;
+	}
 }

@@ -28,6 +28,9 @@ public:
 	~Input();
 	void BeginNewFrame();
 
+	void ControllerDeviceAddedEvent(const SDL_ControllerDeviceEvent& event);
+	void ControllerDeviceRemovedEvent(const SDL_ControllerDeviceEvent& event);
+
 	void ControllerButtonUpEvent(const SDL_ControllerButtonEvent& event);
 	void ControllerButtonDownEvent(const SDL_ControllerButtonEvent& event);
 
