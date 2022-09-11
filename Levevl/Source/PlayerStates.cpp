@@ -89,10 +89,10 @@ void StickIdleState::Enter(Player* player) {
 }
 
 PlayerState* StickIdleState::HandleInput(Player* player, Input& input) {
-	if (input.WasKeyPressed(SDL_SCANCODE_UP)) {
+	if (input.WasKeyPressed(SDL_SCANCODE_UP) || input.WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_DPAD_UP)) {
 		return new StickAimingUpState();
 	}
-	else if (input.WasKeyPressed(SDL_SCANCODE_DOWN)) {
+	else if (input.WasKeyPressed(SDL_SCANCODE_DOWN) || input.WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
 		return new StickAimingDownState();
 	}
 
@@ -120,7 +120,7 @@ PlayerState* StickAimingDownState::HandleInput(Player* player, Input& input) {
 		return new StickHitDownState();
 	}
 
-	if (input.WasKeyReleased(SDL_SCANCODE_DOWN)) {
+	if (!input.IsKeyHeld(SDL_SCANCODE_DOWN) && !input.IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
 		return new StickIdleState();
 	}
 
@@ -144,7 +144,7 @@ PlayerState* StickAimingUpState::HandleInput(Player* player, Input& input) {
 		return new StickHitUpState();
 	}
 
-	if (input.WasKeyReleased(SDL_SCANCODE_UP)) {
+	if (!input.IsKeyHeld(SDL_SCANCODE_UP) && !input.IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_UP)) {
 		return new StickIdleState();
 	}
 
@@ -166,15 +166,23 @@ void StickHitState::Enter(Player* player) {
 
 PlayerState* StickHitState::HandleInput(Player* player, Input& input) {
 
-	if (input.WasKeyPressed(SDL_SCANCODE_X)) {
-		Enter(player);
+	if (input.WasKeyPressed(SDL_SCANCODE_X) || input.WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_Y)) {
+		if (input.IsKeyHeld(SDL_SCANCODE_UP) || input.IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_UP)) {
+			return new StickHitUpState();
+		}
+		else if (input.IsKeyHeld(SDL_SCANCODE_DOWN) || input.IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
+			return new StickHitDownState();
+		}
+		else {
+			Enter(player);
+		}
 	}
 
 	if (!player->m_currentStickAnimation->Playing()) {
-		if (input.IsKeyHeld(SDL_SCANCODE_UP)) {
+		if (input.IsKeyHeld(SDL_SCANCODE_UP) || input.IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_UP)) {
 			return new StickAimingUpState();
 		}
-		else if (input.IsKeyHeld(SDL_SCANCODE_DOWN)) {
+		else if (input.IsKeyHeld(SDL_SCANCODE_DOWN) || input.IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
 			return new StickAimingDownState();
 		}
 		else {
@@ -202,7 +210,7 @@ void StickHitDownState::Enter(Player* player) {
 PlayerState* StickHitDownState::HandleInput(Player* player, Input& input) {
 
 	if (!player->m_currentStickAnimation->Playing()) {
-		if (input.IsKeyHeld(SDL_SCANCODE_DOWN)) {
+		if (input.IsKeyHeld(SDL_SCANCODE_DOWN) || input.IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
 			return new StickAimingDownState();
 		}
 		else {
@@ -230,7 +238,7 @@ void StickHitUpState::Enter(Player* player) {
 PlayerState* StickHitUpState::HandleInput(Player* player, Input& input) {
 
 	if (!player->m_currentStickAnimation->Playing()) {
-		if (input.IsKeyHeld(SDL_SCANCODE_UP)) {
+		if (input.IsKeyHeld(SDL_SCANCODE_UP) || input.IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_UP)) {
 			return new StickAimingUpState();
 		}
 		else {
