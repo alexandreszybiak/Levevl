@@ -206,16 +206,8 @@
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Map.cpp" />
     <ClCompile Include="Source\Player.cpp" />
-    <ClCompile Include="Source\PlayerIdleState.cpp" />
-    <ClCompile Include="Source\PlayerJumpState.cpp" />
     <ClCompile Include="Source\PlayerStates.cpp" />
     <ClCompile Include="Source\Sprite.cpp" />
-    <ClCompile Include="Source\StickAimingDownState.cpp" />
-    <ClCompile Include="Source\StickAimingUpState.cpp" />
-    <ClCompile Include="Source\StickHitDown.cpp" />
-    <ClCompile Include="Source\StickHitState.cpp" />
-    <ClCompile Include="Source\StickHitUpState.cpp" />
-    <ClCompile Include="Source\StickIdleState.cpp" />
     <ClCompile Include="Source\TileHitFx.cpp" />
     <ClCompile Include="Source\Utilities.cpp" />
   </ItemGroup>
@@ -233,17 +225,8 @@
     <ClInclude Include="Source\Level.h" />
     <ClInclude Include="Source\Map.h" />
     <ClInclude Include="Source\Player.h" />
-    <ClInclude Include="Source\PlayerIdleState.h" />
-    <ClInclude Include="Source\PlayerJumpState.h" />
-    <ClInclude Include="Source\PlayerState.h" />
     <ClInclude Include="Source\PlayerStates.h" />
     <ClInclude Include="Source\Sprite.h" />
-    <ClInclude Include="Source\StickAimingDownState.h" />
-    <ClInclude Include="Source\StickAimingUpState.h" />
-    <ClInclude Include="Source\StickHitDownState.h" />
-    <ClInclude Include="Source\StickHitState.h" />
-    <ClInclude Include="Source\StickHitUpState.h" />
-    <ClInclude Include="Source\StickIdleState.h" />
     <ClInclude Include="Source\TileHitFx.h" />
     <ClInclude Include="Source\Utilities.h" />
   </ItemGroup>
