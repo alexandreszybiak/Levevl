@@ -208,6 +208,7 @@
     <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\PlayerIdleState.cpp" />
     <ClCompile Include="Source\PlayerJumpState.cpp" />
+    <ClCompile Include="Source\PlayerStates.cpp" />
     <ClCompile Include="Source\Sprite.cpp" />
     <ClCompile Include="Source\StickAimingDownState.cpp" />
     <ClCompile Include="Source\StickAimingUpState.cpp" />
@@ -235,6 +236,7 @@
     <ClInclude Include="Source\PlayerIdleState.h" />
     <ClInclude Include="Source\PlayerJumpState.h" />
     <ClInclude Include="Source\PlayerState.h" />
+    <ClInclude Include="Source\PlayerStates.h" />
     <ClInclude Include="Source\Sprite.h" />
     <ClInclude Include="Source\StickAimingDownState.h" />
     <ClInclude Include="Source\StickAimingUpState.h" />
