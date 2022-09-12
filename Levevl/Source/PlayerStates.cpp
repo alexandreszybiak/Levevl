@@ -68,6 +68,10 @@ PlayerState* PlayerJumpState::HandleInput(Player* player, Input& input) {
 
 	player->m_velocityX = hDir * 2.5f;
 
+	if (player->m_velocityY < 0 && input.ReleasedJump()) {
+		player->m_velocityY *= 0.5;
+	}
+
 	return NULL;
 }
 

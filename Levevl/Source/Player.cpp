@@ -154,8 +154,8 @@ void Player::MoveY(float y) {
 			move -= sign;
 		}
 		else {
+			m_velocityY = .0f;
 			if (move > 0) {
-				m_velocityY = .0f;
 				m_onFloor = true;
 			}
 			break;

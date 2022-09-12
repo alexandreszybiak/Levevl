@@ -89,6 +89,9 @@ public:
 	bool PressedHit() {
 		return WasKeyPressed(SDL_SCANCODE_X) || WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_Y);
 	}
+	bool ReleasedJump() {
+		return WasKeyReleased(SDL_SCANCODE_SPACE) || WasControllerButtonReleased(SDL_CONTROLLER_BUTTON_B);
+	}
 	
 private:
 	
