@@ -32,6 +32,8 @@ void Input::BeginNewFrame() {
 	m_pressedMouseButtons.clear();
 	m_releasedMouseButtons.clear();
 	m_mouseWheel = 0;
+	m_mouseDeltaX = 0;
+	m_mouseDeltaY = 0;
 }
  // Store gamepad event
 void Input::ControllerButtonDownEvent(const SDL_ControllerButtonEvent& event) {
@@ -71,6 +73,8 @@ void Input::MouseButtonUpEvent(const SDL_MouseButtonEvent& event) {
 }
 
 void Input::MouseMotionEvent(const SDL_MouseMotionEvent& event) {
+	m_mouseDeltaX = m_mouseX - event.x;
+	m_mouseDeltaY = m_mouseY - event.y;
 	m_mouseX = event.x;
 	m_mouseY = event.y;
 }
@@ -131,6 +135,14 @@ int Input::GetMouseWorldX(Level& world) {
 
 int Input::GetMouseWorldY(Level& world) {
 	return m_mouseY + world.m_camera.m_y;
+}
+
+int Input::GetMouseDeltaX() {
+	return m_mouseDeltaX;
+}
+
+int Input::GetMouseDeltaY() {
+	return m_mouseDeltaY;
 }
 
 // Get mouse wheel

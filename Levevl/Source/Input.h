@@ -21,6 +21,8 @@ private:
 	std::map<Uint8, bool> m_releasedMouseButtons;
 	int m_mouseX;
 	int m_mouseY;
+	int m_mouseDeltaX;
+	int m_mouseDeltaY;
 	int m_mouseWheel;
 
 public:
@@ -57,6 +59,8 @@ public:
 	int GetMouseWindowY();
 	int GetMouseWorldX(Level& world);
 	int GetMouseWorldY(Level& world);
+	int GetMouseDeltaX();
+	int GetMouseDeltaY();
 	int GetMouseWheel();
 
 	bool HoldingLeft() {

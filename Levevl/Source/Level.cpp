@@ -12,6 +12,7 @@
 Level::Level(Camera& camera) : m_camera(camera), m_tileHitFx(*(new TileHitFx())) {
 	worldMap = new Map();
 	player = new Player(0, 0, this);
+	m_camera.m_target = player;
 }
 
 Level::~Level() {
@@ -28,12 +29,9 @@ void Level::Update(Input& input) {
 
 	m_tileHitFx.Update();
 
-	int playerOffset = -12;
-	int camSizeOffset = 8;
-	int camOffset = 16;
+	m_camera.Update();
 
-	m_camera.m_x = (player->X() + playerOffset) / (m_camera.m_width + camSizeOffset) * (m_camera.m_width + camSizeOffset) + camOffset;
-	m_camera.m_y = player->Y() / m_camera.m_height * m_camera.m_height;
+	
 }
 
 Chunk* Level::BuildChunk(int x, int y, int width, int height, char initValue) {

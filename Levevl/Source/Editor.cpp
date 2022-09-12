@@ -144,6 +144,15 @@ void Editor::Update(Input& input) {
 
 	m_drawGuides = input.IsKeyHeld(SDL_SCANCODE_TAB);
 
+	if (input.IsMouseButtonHeld(SDL_BUTTON_MIDDLE)) {
+		m_level_ref->m_camera.m_mode = CameraMode::Free;
+		m_level_ref->m_camera.m_x += input.GetMouseDeltaX();
+		m_level_ref->m_camera.m_y += input.GetMouseDeltaY();
+	}
+
+	if (input.WasKeyPressed(SDL_SCANCODE_F)) {
+		m_level_ref->m_camera.m_mode = CameraMode::FollowTarget;
+	}
 }
 
 void Editor::Draw(Graphics& graphics) {
