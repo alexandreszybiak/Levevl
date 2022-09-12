@@ -25,6 +25,7 @@ private:
 	int m_selectedChunkIndex;
 	Level* m_level_ref;
 	SDL_Rect m_selection;
+	bool m_drawGuides;
 	
 public:
 	Editor();

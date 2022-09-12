@@ -18,7 +18,8 @@ Editor::Editor(Level* level) :
 		m_cursorY(0),
 		m_brushMode(BRUSH_MODE_DRAW),
 		m_selectionOriginX(0),
-		m_selectionOriginY(0) {
+		m_selectionOriginY(0),
+		m_drawGuides(false) {
 	m_level_ref = level;
 	m_selectedChunk = nullptr;
 	m_selectedChunkIndex = 0;
@@ -128,14 +129,21 @@ void Editor::Update(Input& input) {
 			m_selectedChunkIndex = 0;
 		}
 	}
-
-	if (input.WasKeyPressed(SDL_SCANCODE_S) && input.IsKeyHeld(SDL_SCANCODE_LCTRL)) {
-		Save();
+	if (input.IsKeyHeld(SDL_SCANCODE_LCTRL)) {
+		if (input.WasKeyPressed(SDL_SCANCODE_S)) {
+			Save();
+		}
+		else if (input.WasKeyPressed(SDL_SCANCODE_D)) {
+			m_selectedChunk = nullptr;
+		}
 	}
-
+	
 	if (input.WasKeyPressed(SDL_SCANCODE_P)) {
 		m_level_ref->player->SetPosition(m_cursorX, m_cursorY);
 	}
+
+	m_drawGuides = input.IsKeyHeld(SDL_SCANCODE_TAB);
+
 }
 
 void Editor::Draw(Graphics& graphics) {
@@ -145,6 +153,12 @@ void Editor::Draw(Graphics& graphics) {
 		SDL_Rect rect = { m_selection.x - m_level_ref->m_camera.m_x, m_selection.y - m_level_ref->m_camera.m_y, m_selection.w, m_selection.h };
 		SDL_SetRenderDrawColor(graphics.m_renderer, 255, 0, 0, 255);
 		SDL_RenderDrawRect(graphics.m_renderer, &rect);
+	}
+
+	// Draw Guides
+	if (m_drawGuides) {
+		SDL_SetRenderDrawColor(graphics.m_renderer, 255, 0, 0, 255);
+		SDL_RenderDrawLine(graphics.m_renderer, 640 / 2, 0, 640 / 2, 360);
 	}
 	
 	// Draw the current brush value
