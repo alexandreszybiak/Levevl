@@ -11,7 +11,7 @@
 
 Level::Level(Camera& camera) : m_camera(camera), m_tileHitFx(*(new TileHitFx())) {
 	worldMap = new Map();
-	player = new Player(0, 0, this);
+	player = new Player(13 * TILE_SIZE, 7 * TILE_SIZE, this);
 	m_camera.m_target = player;
 }
 

@@ -149,6 +149,9 @@ void Player::MoveY(float y) {
 
 	while (move != 0) {
 		HorizontalLine line = { m_y + m_boundingBox.Y2() * sign + sign, m_x + m_boundingBox.X1(), m_x + m_boundingBox.X2() };
+
+		VerticalLine stickLine = { m_x + 20 * sign + sign, m_y + 3, m_y + 4 };
+
 		if (!m_levelRef->OverlapsLine(line)) {
 			m_y += sign;
 			move -= sign;
@@ -161,6 +164,14 @@ void Player::MoveY(float y) {
 			break;
 		}
 	}
+
+	// Offset the player if the stick tip is overlapping the world
+	VerticalLine stickLine = { m_x + 20 * m_direction, m_y + 3, m_y + 4 };
+	for (int i = 0; i < 16 && m_levelRef->OverlapsLine(stickLine); i++) {
+		m_x += -m_direction;
+		stickLine = { m_x + 20 * m_direction, m_y + 3, m_y + 4 };
+	}
+
 }
 
 void Player::Draw(Graphics& graphics) {

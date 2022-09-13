@@ -9,7 +9,6 @@
 // Body Idle
 
 void PlayerIdleState::Enter(Player* player) {
-	std::cout << "PlayerIdleState Created" << std::endl;
 	player->SetAnimation(&player->m_currentBodyAnimation, player->m_idleAnimation);
 }
 
@@ -50,10 +49,6 @@ PlayerState* PlayerIdleState::Update(Player* player) {
 
 // Jump
 
-PlayerJumpState::PlayerJumpState() {
-	std::cout << "PlayerJumpState Created" << std::endl;
-}
-
 void PlayerJumpState::Enter(Player* player) {
 	player->SetAnimation(&player->m_currentBodyAnimation, player->m_jumpAnimation);
 }
@@ -88,7 +83,6 @@ PlayerState* PlayerJumpState::Update(Player* player) {
 // Stick Idle
 
 void StickIdleState::Enter(Player* player) {
-	std::cout << "StickHorizontalState Created" << std::endl;
 	player->SetAnimation(&player->m_currentStickAnimation, player->m_stickIdleAnimation);
 }
 
@@ -114,7 +108,6 @@ PlayerState* StickIdleState::Update(Player* player) {
 // Stick Aiming Down
 
 void StickAimingDownState::Enter(Player* player) {
-	std::cout << "StickAimingDownState Created" << std::endl;
 	player->SetAnimation(&player->m_currentStickAnimation, player->m_stickIdleDownAnimation);
 }
 
@@ -141,7 +134,6 @@ PlayerState* StickAimingDownState::Update(Player* player) {
 // Stick Aiming Up
 
 void StickAimingUpState::Enter(Player* player) {
-	std::cout << "StickAimingUpState Created" << std::endl;
 	player->SetAnimation(&player->m_currentStickAnimation, player->m_stickIdleUpAnimation);
 }
 
@@ -210,7 +202,6 @@ PlayerState* StickHitState::Update(Player* player) {
 // Stick Hit Down
 
 void StickHitDownState::Enter(Player* player) {
-	std::cout << "StickHitDownState Created" << std::endl;
 	player->SetAnimation(&player->m_currentStickAnimation, player->m_stickHitDownAnimation);
 	player->m_currentStickAnimation->Reset();
 	player->m_stickSprite->SetFrame(player->m_currentStickAnimation->GetFrame()->GetFrameIndex());
@@ -238,7 +229,6 @@ PlayerState* StickHitDownState::Update(Player* player) {
 // Stick Hit Up
 
 void StickHitUpState::Enter(Player* player) {
-	std::cout << "StickHitUpState Created" << std::endl;
 	player->SetAnimation(&player->m_currentStickAnimation, player->m_stickHitUpAnimation);
 	player->m_currentStickAnimation->Reset();
 	player->m_stickSprite->SetFrame(player->m_currentStickAnimation->GetFrame()->GetFrameIndex());
