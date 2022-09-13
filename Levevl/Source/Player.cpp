@@ -48,7 +48,7 @@ Player::Player(int x, int y, Level* level) : Entity(x, y), m_direction(DIRECTION
 	SetAnimation(&m_currentBodyAnimation, m_idleAnimation);
 	SetAnimation(&m_currentStickAnimation, m_stickIdleAnimation);
 
-	m_bodyState = new PlayerIdleState();
+	m_bodyState = new PlayerFallState();
 	m_stickState = new StickIdleState();
 
 	m_bodySprite = new Sprite(-30, -40, 60, 56, 5);
@@ -125,7 +125,7 @@ void Player::MoveX(float x) {
 	while (move != 0) {
 		VerticalLine line = { m_x + m_boundingBox.X2() * sign + sign, m_y + m_boundingBox.Y1(), m_y + m_boundingBox.Y2()};
 
-		VerticalLine stickLine = { m_x + 20 * sign + sign, m_y + 3, m_y + 4 };
+		VerticalLine stickLine = { m_x + STICK_TIP_X * m_direction + m_direction, m_y + 3, m_y + 4 };
 
 		if (!m_levelRef->OverlapsLine(line) && !m_levelRef->OverlapsLine(stickLine)) {
 			m_x += sign;
@@ -203,7 +203,7 @@ void Player::SetPosition(int x, int y) {
 	m_velocityY = 0;
 }
 
-void Player::Move(int x, int y) {
+void Player::MoveInstant(int x, int y) {
 	m_x += x;
 	m_y += y;
 }

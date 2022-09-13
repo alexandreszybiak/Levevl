@@ -2,6 +2,7 @@
 #include <algorithm>
 #include "Input.h"
 #include "Animation.h"
+#include "Level.h"
 #include "Player.h"
 #include "Sprite.h"
 #include "PlayerStates.h"
@@ -27,6 +28,10 @@ PlayerState* PlayerIdleState::HandleInput(Player* player, Input& input) {
 	}
 
 	player->m_velocityX = hDir * player->m_speed;
+
+	if (player->m_velocityY >= 1.0f) {
+		return new PlayerFallState();
+	}
 
 	return NULL;
 }
@@ -63,7 +68,7 @@ PlayerState* PlayerJumpState::HandleInput(Player* player, Input& input) {
 
 	player->m_velocityX = hDir * 2.5f;
 
-	if (player->m_velocityY < 0 && input.ReleasedJump()) {
+	if (input.ReleasedJump()) {
 		player->m_velocityY *= 0.5;
 	}
 
@@ -71,6 +76,42 @@ PlayerState* PlayerJumpState::HandleInput(Player* player, Input& input) {
 }
 
 PlayerState* PlayerJumpState::Update(Player* player) {
+
+	player->m_velocityY = std::clamp(player->m_velocityY + GRAVITY, -12.0f, 12.0f);
+
+	if (player->m_velocityY >= 0) {
+		return new PlayerFallState();
+	}
+
+	return NULL;
+}
+
+// Fall
+
+void PlayerFallState::Enter(Player* player) {
+	player->SetOnFloor(false);
+}
+
+PlayerState* PlayerFallState::HandleInput(Player* player, Input& input) {
+	int hDir = -input.HoldingLeft() + input.HoldingRight();
+
+	if (hDir > 0)
+		player->SetDirection(DIRECTION_RIGHT);
+	else if (hDir < 0)
+		player->SetDirection(DIRECTION_LEFT);
+
+	player->m_velocityX = hDir * 2.5f;
+
+	if (player->m_levelRef->ValueAtPoint(player->m_x + STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 4) != 1) {
+		if ((input.HoldingLeft() && player->m_direction == DIRECTION_LEFT) || (input.HoldingRight() && player->m_direction == DIRECTION_RIGHT)) {
+			return new PlayerWallSlideState();
+		}
+	}
+
+	return NULL;
+}
+
+PlayerState* PlayerFallState::Update(Player* player) {
 	if (player->OnFloor()) {
 		return new PlayerIdleState();
 	}
@@ -79,6 +120,35 @@ PlayerState* PlayerJumpState::Update(Player* player) {
 
 	return NULL;
 }
+
+// Wall Slide
+void PlayerWallSlideState::Enter(Player* player) {
+
+}
+PlayerState* PlayerWallSlideState::HandleInput(Player* player, Input& input) {
+	if (player->m_direction == DIRECTION_LEFT && !input.HoldingLeft()) {
+		return new PlayerJumpState();
+	}
+	if (player->m_direction == DIRECTION_RIGHT && !input.HoldingRight()) {
+		return new PlayerJumpState();
+	}
+
+	return NULL;
+}
+PlayerState* PlayerWallSlideState::Update(Player* player) {
+	if (player->OnFloor()) {
+		return new PlayerIdleState();
+	}
+
+	if (player->m_levelRef->ValueAtPoint(player->m_x + STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 4) == 1) {
+		return new PlayerFallState();
+	}
+
+	player->m_velocityY = std::clamp(player->m_velocityY + GRAVITY, -3.0f, 3.0f);
+
+	return NULL;
+}
+
 
 // Stick Idle
 

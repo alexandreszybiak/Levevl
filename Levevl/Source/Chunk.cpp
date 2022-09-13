@@ -83,7 +83,7 @@ void Chunk::Move(float x, float y) {
 		}
 		m_xRemainder -= moveX;
 		m_x += moveX;
-		if (m_tileHitFx)
+		if (m_tileHitFx) // Need Clean
 			m_tileHitFx->Move(moveX, 0);
 
 		if (isPlayerRiding) {

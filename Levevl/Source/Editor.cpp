@@ -39,7 +39,7 @@ void Editor::Update(Input& input) {
 		int teleportY = -input.WasKeyPressed(SDL_SCANCODE_UP) + input.WasKeyPressed(SDL_SCANCODE_DOWN);
 
 		if (teleportX != 0 || teleportY != 0) {
-			m_level_ref->player->Move(teleportX * 640, teleportY * 360);
+			m_level_ref->player->MoveInstant(teleportX * 640, teleportY * 360);
 		}
 	}
 	else {

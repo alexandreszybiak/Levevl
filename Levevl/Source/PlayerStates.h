@@ -33,6 +33,21 @@ public:
 	PlayerState* Update(Player* player);
 };
 
+class PlayerFallState : public PlayerState {
+private:
+	//float m_coyoteTimer;
+public:
+	void Enter(Player* player) override;
+	PlayerState* HandleInput(Player* player, Input& input);
+	PlayerState* Update(Player* player);
+};
+
+class PlayerWallSlideState : public PlayerState {
+public:
+	void Enter(Player* player) override;
+	PlayerState* HandleInput(Player* player, Input& input);
+	PlayerState* Update(Player* player);
+};
 
 // Stick States
 

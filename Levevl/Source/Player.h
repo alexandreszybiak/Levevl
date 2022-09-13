@@ -4,7 +4,8 @@
 #include "Entity.h"
 #include "Utilities.h"
 
-#define GRAVITY .38f 
+#define GRAVITY .38f
+#define STICK_TIP_X 20
 
 class Level;
 class Graphics;
@@ -17,6 +18,8 @@ class Animation;
 class Player : public Entity{
 	friend class PlayerIdleState;
 	friend class PlayerJumpState;
+	friend class PlayerFallState;
+	friend class PlayerWallSlideState;
 	friend class StickIdleState;
 	friend class StickHitState;
 	friend class StickAimingUpState;
@@ -67,7 +70,7 @@ public:
 	bool OnFloor() { return m_onFloor; }
 	void SetOnFloor(bool b) { m_onFloor = b; }
 	void SetPosition(int x, int y);
-	void Move(int x, int y);
+	void MoveInstant(int x, int y);
 	bool IsRiding(Chunk& chunk);
 
 	void SetAnimation(Animation** target, Animation* animation);
