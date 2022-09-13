@@ -246,7 +246,7 @@ bool Player::IsRiding(Chunk& chunk) {
 void Player::HitAtPoint(int x, int y, int dirX, int dirY) {
 	
 	for (Chunk& chunk : m_levelRef->v_chunks) {
-		int valueAtPoint = chunk.ValueAtPoint(m_x, m_y);
+		int ValueAtOrigin = chunk.ValueAtPoint(x + 24 * -dirX, y + 24 * -dirY);
 		int levelValueAtStickPoint = m_levelRef->ValueAtPoint(x, y);
 		int chunkValueAtStickPoint = chunk.ValueAtPoint(x, y);
 
@@ -257,7 +257,10 @@ void Player::HitAtPoint(int x, int y, int dirX, int dirY) {
 			return;
 		}
 
-		if (levelValueAtStickPoint == 0 && valueAtPoint == 1) {
+		if (levelValueAtStickPoint == 0 && ValueAtOrigin == 1) {
+			if (chunk.m_mapWidth == 23) {
+				std::cout << "bug" << std::endl;
+			}
 			chunk.Slide(dirX, dirY);
 			m_levelRef->m_tileHitFx.Reset(x, y, dirX, dirY);
 			chunk.m_tileHitFx = &m_levelRef->m_tileHitFx;
