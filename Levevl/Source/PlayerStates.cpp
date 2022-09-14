@@ -122,15 +122,19 @@ PlayerState* PlayerFallState::Update(Player* player) {
 }
 
 // Wall Slide
+
 void PlayerWallSlideState::Enter(Player* player) {
 
 }
 PlayerState* PlayerWallSlideState::HandleInput(Player* player, Input& input) {
 	if (player->m_direction == DIRECTION_LEFT && !input.HoldingLeft()) {
-		return new PlayerJumpState();
+		return new PlayerFallState();
 	}
 	if (player->m_direction == DIRECTION_RIGHT && !input.HoldingRight()) {
-		return new PlayerJumpState();
+		return new PlayerFallState();
+	}
+	if (input.PressedJump()) {
+		return new PlayerWallJumpState((Direction)-player->m_direction);
 	}
 
 	return NULL;
@@ -149,6 +153,37 @@ PlayerState* PlayerWallSlideState::Update(Player* player) {
 	return NULL;
 }
 
+// Wall Jump
+
+void PlayerWallJumpState::Enter(Player* player) {
+	player->SetAnimation(&player->m_currentBodyAnimation, player->m_jumpAnimation);
+	player->SetDirection(m_direction);
+	player->m_velocityY = player->m_wallJumpStrength;
+}
+
+PlayerState* PlayerWallJumpState::HandleInput(Player* player, Input& input) {
+
+	if (input.ReleasedJump()) {
+		//player->m_velocityY *= 0.5;
+	}
+
+	return NULL;
+}
+
+PlayerState* PlayerWallJumpState::Update(Player* player) {
+	player->m_velocityX = m_direction * 3.5f;
+	player->m_velocityY = std::clamp(player->m_velocityY + GRAVITY * .5f, -12.0f, 12.0f);
+
+	if (player->OnFloor()) {
+		return new PlayerIdleState();
+	}
+
+	if (player->m_velocityY >= .0f) {
+		return new PlayerFallState();
+	}
+
+	return NULL;
+}
 
 // Stick Idle
 

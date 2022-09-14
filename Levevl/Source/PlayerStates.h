@@ -49,6 +49,18 @@ public:
 	PlayerState* Update(Player* player);
 };
 
+class PlayerWallJumpState : public PlayerState {
+private:
+	const float m_wallJumpTimer = 500.0f;
+	float m_startTime;
+	Direction m_direction;
+public:
+	PlayerWallJumpState(Direction direction) : m_startTime(.0f), m_direction(direction) {}
+	void Enter(Player* player) override;
+	PlayerState* HandleInput(Player* player, Input& input);
+	PlayerState* Update(Player* player);
+};
+
 // Stick States
 
 class StickIdleState : public PlayerState {

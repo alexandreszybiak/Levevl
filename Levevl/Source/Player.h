@@ -20,6 +20,7 @@ class Player : public Entity{
 	friend class PlayerJumpState;
 	friend class PlayerFallState;
 	friend class PlayerWallSlideState;
+	friend class PlayerWallJumpState;
 	friend class StickIdleState;
 	friend class StickHitState;
 	friend class StickAimingUpState;
@@ -43,6 +44,8 @@ private:
 	float m_velocityX, m_velocityY;
 	float m_xRemainder, m_yRemainder;
 	const float m_speed = 2.5f;
+	const float m_jumpStrength = -8.0f;
+	const float m_wallJumpStrength = -4.0f;
 
 	Sprite * m_bodySprite, * m_stickSprite;
 

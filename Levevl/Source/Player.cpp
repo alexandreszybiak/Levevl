@@ -127,13 +127,14 @@ void Player::MoveX(float x) {
 
 		VerticalLine stickLine = { m_x + STICK_TIP_X * m_direction + m_direction, m_y + 3, m_y + 4 };
 
-		if (!m_levelRef->OverlapsLine(line) && !m_levelRef->OverlapsLine(stickLine)) {
-			m_x += sign;
-			move -= sign;
-		}
-		else {
+		if (m_levelRef->OverlapsLine(line))
 			break;
-		}
+		if (m_direction == sign && m_levelRef->OverlapsLine(stickLine))
+			break;
+
+		m_x += sign;
+		move -= sign;
+
 	}
 }
 
