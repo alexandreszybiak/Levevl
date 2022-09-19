@@ -77,6 +77,14 @@ public:
 		return IsKeyHeld(SDL_SCANCODE_DOWN) || IsControllerButtonHeld(SDL_CONTROLLER_BUTTON_DPAD_DOWN);
 	}
 
+	bool PressedLeft() {
+		return WasKeyPressed(SDL_SCANCODE_LEFT) || WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+	}
+
+	bool PressedRight() {
+		return WasKeyPressed(SDL_SCANCODE_RIGHT) || WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+	}
+
 	bool PressedUp() {
 		return WasKeyPressed(SDL_SCANCODE_UP) || WasControllerButtonPressed(SDL_CONTROLLER_BUTTON_DPAD_UP);
 	}

@@ -45,7 +45,9 @@ private:
 	float m_xRemainder, m_yRemainder;
 	const float m_speed = 2.5f;
 	const float m_jumpStrength = -8.0f;
-	const float m_wallJumpStrength = -4.0f;
+	const float m_wallJumpStrength = -4.5f;
+	const float m_WallSlideSpeed = 2.0f;
+	const float m_WallJumpGravityMultiplier = .45f;
 
 	Sprite * m_bodySprite, * m_stickSprite;
 

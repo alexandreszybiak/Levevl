@@ -127,10 +127,10 @@ void PlayerWallSlideState::Enter(Player* player) {
 
 }
 PlayerState* PlayerWallSlideState::HandleInput(Player* player, Input& input) {
-	if (player->m_direction == DIRECTION_LEFT && !input.HoldingLeft()) {
+	if (player->m_direction == DIRECTION_LEFT && input.PressedRight()) {
 		return new PlayerFallState();
 	}
-	if (player->m_direction == DIRECTION_RIGHT && !input.HoldingRight()) {
+	if (player->m_direction == DIRECTION_RIGHT && input.PressedLeft()) {
 		return new PlayerFallState();
 	}
 	if (input.PressedJump()) {
@@ -148,7 +148,7 @@ PlayerState* PlayerWallSlideState::Update(Player* player) {
 		return new PlayerFallState();
 	}
 
-	player->m_velocityY = std::clamp(player->m_velocityY + GRAVITY, -3.0f, 3.0f);
+	player->m_velocityY = std::clamp(player->m_velocityY + GRAVITY, -player->m_WallSlideSpeed, player->m_WallSlideSpeed);
 
 	return NULL;
 }
@@ -171,8 +171,8 @@ PlayerState* PlayerWallJumpState::HandleInput(Player* player, Input& input) {
 }
 
 PlayerState* PlayerWallJumpState::Update(Player* player) {
-	player->m_velocityX = m_direction * 3.5f;
-	player->m_velocityY = std::clamp(player->m_velocityY + GRAVITY * .5f, -12.0f, 12.0f);
+	player->m_velocityX = m_direction * 2.5f;
+	player->m_velocityY = std::clamp(player->m_velocityY + GRAVITY * player->m_WallJumpGravityMultiplier, -12.0f, 12.0f);
 
 	if (player->OnFloor()) {
 		return new PlayerIdleState();
