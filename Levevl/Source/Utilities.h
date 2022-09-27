@@ -48,3 +48,22 @@ public:
 	int X() { return m_x; }
 
 };
+
+class CollisionBox {
+private:
+	//
+public:
+	VerticalLine m_left;
+	VerticalLine m_right;
+	HorizontalLine m_top;
+	HorizontalLine m_bottom;
+private:
+	//
+public:
+	bool IsTouchingLeft();
+	bool IsTouchingRight();
+	bool IsTouchingTop();
+	bool IsTouchingBottom();
+	bool IsOverlapingLeft();
+	bool IsOverlapingRight();
+};

@@ -48,7 +48,7 @@ Player::Player(int x, int y, Level* level) : Entity(x, y), m_direction(DIRECTION
 	SetAnimation(&m_currentBodyAnimation, m_idleAnimation);
 	SetAnimation(&m_currentStickAnimation, m_stickIdleAnimation);
 
-	m_bodyState = new PlayerFallState();
+	m_bodyState = new PlayerIdleState();
 	m_stickState = new StickIdleState();
 
 	m_bodySprite = new Sprite(-30, -40, 60, 56, 5);
@@ -127,10 +127,14 @@ void Player::MoveX(float x) {
 
 		VerticalLine stickLine = { m_x + STICK_TIP_X * m_direction + m_direction, m_y + 3, m_y + 4 };
 
-		if (m_levelRef->OverlapsLine(line))
+		if (m_levelRef->OverlapsLine(line)) {
+			m_velocityX = 0.0f;
 			break;
-		if (m_direction == sign && m_levelRef->OverlapsLine(stickLine))
+		}
+		if (m_direction == sign && m_levelRef->OverlapsLine(stickLine)) {
+			m_velocityX = 0.0f;
 			break;
+		}
 
 		m_x += sign;
 		move -= sign;
@@ -214,11 +218,6 @@ void Player::SetAnimation(Animation** target, Animation* animation) {
 	(*target)->Play();
 }
 
-void Player::SetState(PlayerState* state) {
-	m_bodyState = state;
-	m_bodyState->Enter(this);
-}
-
 bool Player::IsRiding(Chunk& chunk) {
 	HorizontalLine feetLine = { m_y + m_boundingBox.Y2(), m_x + m_boundingBox.X1(), m_x + m_boundingBox.X2() };
 
@@ -244,7 +243,7 @@ bool Player::IsRiding(Chunk& chunk) {
 
 }
 
-void Player::HitAtPoint(int x, int y, int dirX, int dirY) {
+bool Player::HitAtPoint(int x, int y, int dirX, int dirY) {
 	
 	for (Chunk& chunk : m_levelRef->v_chunks) {
 		int ValueAtOrigin = chunk.ValueAtPoint(x + 24 * -dirX, y + 24 * -dirY);
@@ -252,21 +251,27 @@ void Player::HitAtPoint(int x, int y, int dirX, int dirY) {
 		int chunkValueAtStickPoint = chunk.ValueAtPoint(x, y);
 
 		if (chunkValueAtStickPoint == 2) {
-			chunk.Slide(dirX, dirY);
 			m_levelRef->m_tileHitFx.Reset(x, y, dirX, dirY);
 			chunk.m_tileHitFx = &m_levelRef->m_tileHitFx;
-			return;
+			return chunk.Slide(dirX, dirY);
 		}
 
 		if (levelValueAtStickPoint == 0 && ValueAtOrigin == 1) {
-			if (chunk.m_mapWidth == 23) {
-				std::cout << "bug" << std::endl;
-			}
-			chunk.Slide(dirX, dirY);
 			m_levelRef->m_tileHitFx.Reset(x, y, dirX, dirY);
 			chunk.m_tileHitFx = &m_levelRef->m_tileHitFx;
-			return;
+			return chunk.Slide(dirX, dirY);
 		}
 	}
 
+	return true;
+
+}
+
+void Player::InvertDirection() {
+	if (m_direction == DIRECTION_LEFT) {
+		m_direction = DIRECTION_RIGHT;
+	}
+	else {
+		m_direction = DIRECTION_LEFT;
+	}
 }

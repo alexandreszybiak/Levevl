@@ -146,7 +146,7 @@ void Chunk::DrawMask(Graphics& graphics) {
 		}
 	}
 }
-void Chunk::Slide(int x, int y) {
+bool Chunk::Slide(int x, int y) {
 	std::vector<Chunk*> otherChunks;
 	std::vector<Chunk*> freeChunks;
 	otherChunks.reserve(m_levelRef->v_chunks.size());
@@ -162,7 +162,10 @@ void Chunk::Slide(int x, int y) {
 			e->m_targetX += x * TILE_SIZE;
 			e->m_targetY += y * TILE_SIZE;
 		}
+		return true;
 	}
+
+	return false;
 }
 
 bool Chunk::CanSlide(int x, int y, std::vector<Chunk*>& otherChunks, std::vector<Chunk*>& freeChunks) {

@@ -16,18 +16,39 @@ void PlayerIdleState::Enter(Player* player) {
 PlayerState* PlayerIdleState::HandleInput(Player* player, Input& input) {
 	int hDir = -input.HoldingLeft() + input.HoldingRight();
 
-	if (hDir > 0)
+	if (hDir == 0) {
+		if (abs(player->m_velocityX) > 0.0f) {
+			player->m_velocityX -= Sign(player->m_velocityX) * player->m_groundDeceleration;
+			if (abs(player->m_velocityX) < player->m_groundDeceleration) {
+				player->m_velocityX = 0.0f;
+			}
+		}
+	}
+	else if (hDir > 0) {
 		player->SetDirection(DIRECTION_RIGHT);
-	else if (hDir < 0)
+		if (player->m_velocityX < player->m_speed) {
+			player->m_velocityX += player->m_groundAcceleration;
+		}
+	}
+	else {
 		player->SetDirection(DIRECTION_LEFT);
+		if (player->m_velocityX > -player->m_speed) {
+			player->m_velocityX -= player->m_groundAcceleration;
+		}
+	}
+
+	if (player->m_velocityX > player->m_speed) {
+		player->m_velocityX -= player->m_groundAcceleration;
+	}
+	else if (player->m_velocityX < -player->m_speed) {
+		player->m_velocityX += player->m_groundAcceleration;
+	}
 
 	if (input.PressedJump()) {
 		player->m_velocityY = -8;
 		player->SetOnFloor(false);
 		return new PlayerJumpState();
 	}
-
-	player->m_velocityX = hDir * player->m_speed;
 
 	if (player->m_velocityY >= 1.0f) {
 		return new PlayerFallState();
@@ -61,12 +82,24 @@ void PlayerJumpState::Enter(Player* player) {
 PlayerState* PlayerJumpState::HandleInput(Player* player, Input& input) {
 	int hDir = -input.HoldingLeft() + input.HoldingRight();
 
-	if (hDir > 0)
+	if (hDir > 0) {
 		player->SetDirection(DIRECTION_RIGHT);
-	else if (hDir < 0)
+		if (player->m_velocityX < player->m_speed) {
+			player->m_velocityX += 0.125f;
+		}
+	}
+	else if (hDir < 0) {
 		player->SetDirection(DIRECTION_LEFT);
+		if (player->m_velocityX > -player->m_speed) {
+			player->m_velocityX -= 0.125f;
+		}
+	}
 
-	player->m_velocityX = hDir * 2.5f;
+	if (player->m_levelRef->ValueAtPoint(player->m_x + STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 4) != 1) {
+		if (hDir == player->m_direction) {
+			return new PlayerWallSlideState();
+		}
+	}
 
 	if (input.ReleasedJump()) {
 		player->m_velocityY *= 0.5;
@@ -95,15 +128,21 @@ void PlayerFallState::Enter(Player* player) {
 PlayerState* PlayerFallState::HandleInput(Player* player, Input& input) {
 	int hDir = -input.HoldingLeft() + input.HoldingRight();
 
-	if (hDir > 0)
+	if (hDir > 0) {
 		player->SetDirection(DIRECTION_RIGHT);
-	else if (hDir < 0)
+		if (player->m_velocityX < player->m_speed) {
+			player->m_velocityX += 0.125f;
+		}
+	}
+	else if (hDir < 0) {
 		player->SetDirection(DIRECTION_LEFT);
-
-	player->m_velocityX = hDir * 2.5f;
+		if (player->m_velocityX > -player->m_speed) {
+			player->m_velocityX -= 0.125f;
+		}
+	}
 
 	if (player->m_levelRef->ValueAtPoint(player->m_x + STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 4) != 1) {
-		if ((input.HoldingLeft() && player->m_direction == DIRECTION_LEFT) || (input.HoldingRight() && player->m_direction == DIRECTION_RIGHT)) {
+		if (hDir == player->m_direction) {
 			return new PlayerWallSlideState();
 		}
 	}
@@ -134,7 +173,10 @@ PlayerState* PlayerWallSlideState::HandleInput(Player* player, Input& input) {
 		return new PlayerFallState();
 	}
 	if (input.PressedJump()) {
-		return new PlayerWallJumpState((Direction)-player->m_direction);
+		player->InvertDirection();
+		player->m_velocityX = player->m_speed * player->m_direction;
+		player->m_velocityY = player->m_jumpStrength;
+		return new PlayerJumpState();
 	}
 
 	return NULL;
@@ -148,39 +190,7 @@ PlayerState* PlayerWallSlideState::Update(Player* player) {
 		return new PlayerFallState();
 	}
 
-	player->m_velocityY = std::clamp(player->m_velocityY + GRAVITY, -player->m_WallSlideSpeed, player->m_WallSlideSpeed);
-
-	return NULL;
-}
-
-// Wall Jump
-
-void PlayerWallJumpState::Enter(Player* player) {
-	player->SetAnimation(&player->m_currentBodyAnimation, player->m_jumpAnimation);
-	player->SetDirection(m_direction);
-	player->m_velocityY = player->m_wallJumpStrength;
-}
-
-PlayerState* PlayerWallJumpState::HandleInput(Player* player, Input& input) {
-
-	if (input.ReleasedJump()) {
-		//player->m_velocityY *= 0.5;
-	}
-
-	return NULL;
-}
-
-PlayerState* PlayerWallJumpState::Update(Player* player) {
-	player->m_velocityX = m_direction * 2.5f;
-	player->m_velocityY = std::clamp(player->m_velocityY + GRAVITY * player->m_WallJumpGravityMultiplier, -12.0f, 12.0f);
-
-	if (player->OnFloor()) {
-		return new PlayerIdleState();
-	}
-
-	if (player->m_velocityY >= .0f) {
-		return new PlayerFallState();
-	}
+	player->m_velocityY = std::clamp(player->m_velocityY + GRAVITY, -20.0f, player->m_WallSlideSpeed);
 
 	return NULL;
 }
@@ -268,7 +278,10 @@ void StickHitState::Enter(Player* player) {
 	player->SetAnimation(&player->m_currentStickAnimation, player->m_stickHitAnimation);
 	player->m_currentStickAnimation->Reset();
 	player->m_stickSprite->SetFrame(player->m_currentStickAnimation->GetFrame()->GetFrameIndex());
-	player->HitAtPoint(player->m_x + 25 * player->m_direction, player->m_y + 4, player->m_direction, 0);
+	bool slide = player->HitAtPoint(player->m_x + 25 * player->m_direction, player->m_y + 4, player->m_direction, 0);
+	if (!slide) {
+		player->m_velocityX = -3.0f * player->m_direction;
+	}
 }
 
 PlayerState* StickHitState::HandleInput(Player* player, Input& input) {

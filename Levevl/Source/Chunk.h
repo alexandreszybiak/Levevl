@@ -57,8 +57,8 @@ public:
 	int GetWidth();
 	std::vector<char>* GetData();
 
-	// Slide changes the target grid position of a chunk which inits a movement
-	void Slide(int x, int y);
+	// Slide changes the target grid position of a chunk which inits a movement, return false if the chunk cannot move
+	bool Slide(int x, int y);
 
 	// Checks if this chunk can move, this function can be called recursively
 	bool CanSlide(int x, int y, std::vector<Chunk*>& otherChunks, std::vector<Chunk*>& freeChunks);

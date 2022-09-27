@@ -20,7 +20,6 @@ class Player : public Entity{
 	friend class PlayerJumpState;
 	friend class PlayerFallState;
 	friend class PlayerWallSlideState;
-	friend class PlayerWallJumpState;
 	friend class StickIdleState;
 	friend class StickHitState;
 	friend class StickAimingUpState;
@@ -44,6 +43,8 @@ private:
 	float m_velocityX, m_velocityY;
 	float m_xRemainder, m_yRemainder;
 	const float m_speed = 2.5f;
+	const float m_groundAcceleration = 0.25f;
+	const float m_groundDeceleration = 0.25f;
 	const float m_jumpStrength = -8.0f;
 	const float m_wallJumpStrength = -4.5f;
 	const float m_WallSlideSpeed = 2.0f;
@@ -83,12 +84,9 @@ public:
 
 	void SetDirection(Direction direction) { m_direction = direction; }
 	Direction GetDirection() { return m_direction; }
-
-	void SetState(PlayerState* state);
-
-	
+	void InvertDirection();
 
 private:
-	void HitAtPoint(int x, int y, int dirX, int dirY);
+	bool HitAtPoint(int x, int y, int dirX, int dirY);
 
 };
