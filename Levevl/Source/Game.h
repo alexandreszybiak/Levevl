@@ -1,6 +1,5 @@
 #pragma once
 
-#define MAX_CHUNK 10
 #define TILE_SIZE 24
 
 class Input;
