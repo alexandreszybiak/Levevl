@@ -1,16 +1,13 @@
 #pragma once
 
-#define MAP_WIDTH 270
-#define MAP_HEIGHT 150
-
 struct SDL_Rect;
 class Input;
 class Graphics;
 
 class Map {
 public:
-	static const int m_mapWidth = 270;
-	static const int m_mapHeight = 150;
+	static const int m_mapWidth = 82;
+	static const int m_mapHeight = 45;
 	Uint8 m_data[m_mapWidth * m_mapHeight];
 
 protected:

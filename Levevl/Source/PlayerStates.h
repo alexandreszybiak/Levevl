@@ -27,7 +27,10 @@ public:
 };
 
 class PlayerJumpState : public PlayerState {
+private:
+	float m_accelerationX;
 public:
+	PlayerJumpState(float accelerationX) : m_accelerationX(accelerationX) {};
 	void Enter(Player* player) override;
 	PlayerState* HandleInput(Player* player, Input& input);
 	PlayerState* Update(Player* player);
@@ -35,8 +38,9 @@ public:
 
 class PlayerFallState : public PlayerState {
 private:
-	//float m_coyoteTimer;
+	float m_accelerationX;
 public:
+	PlayerFallState(float accelerationX) : m_accelerationX(accelerationX) {};
 	void Enter(Player* player) override;
 	PlayerState* HandleInput(Player* player, Input& input);
 	PlayerState* Update(Player* player);

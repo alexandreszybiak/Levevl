@@ -4,7 +4,7 @@
 #include "Entity.h"
 #include "Utilities.h"
 
-#define GRAVITY .38f
+#define GRAVITY .48f
 #define STICK_TIP_X 20
 
 class Level;
@@ -43,9 +43,10 @@ private:
 	float m_velocityX, m_velocityY;
 	float m_xRemainder, m_yRemainder;
 	const float m_speed = 2.5f;
-	const float m_groundAcceleration = 0.25f;
+	const float m_groundAcceleration = 0.45f;
+	const float m_airAcceleration = 0.9f;
 	const float m_groundDeceleration = 0.25f;
-	const float m_jumpStrength = -8.0f;
+	const float m_jumpStrength = -9.5f;
 	const float m_wallJumpStrength = -4.5f;
 	const float m_WallSlideSpeed = 2.0f;
 	const float m_WallJumpGravityMultiplier = .45f;

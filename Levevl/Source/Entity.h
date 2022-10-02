@@ -1,5 +1,7 @@
 #pragma once
 
+#define ENTITY_MAX_SPEED 24.0f
+
 class Entity {
 protected:
 	int m_x, m_y;

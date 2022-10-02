@@ -13,18 +13,18 @@ Map::~Map() {}
 void Map::Update(Input& input) {}
 
 void Map::Draw(Graphics& graphics) {
-	for (int column = 0; column < MAP_WIDTH; column++) {
-		for (int row = 0; row < MAP_HEIGHT; row++) {
+	for (int column = 0; column < m_mapWidth; column++) {
+		for (int row = 0; row < m_mapHeight; row++) {
 			SDL_Rect rect = { 0,0,TILE_SIZE,TILE_SIZE };
 
 			// Look at neighbours horizontal
-			if (column + 1 < MAP_WIDTH && m_data[(column + 1) + row * m_mapWidth] || column + 1 == MAP_WIDTH)
+			if (column + 1 < m_mapWidth && m_data[(column + 1) + row * m_mapWidth] || column + 1 == m_mapWidth)
 				rect.x += TILE_SIZE;
 			if (column > 0 && m_data[(column - 1) + row * m_mapWidth] || column == 0)
 				rect.x += TILE_SIZE * 2;
 
 			// Look at neighbours vertical
-			if (row + 1 < MAP_HEIGHT && m_data[column + (row + 1) * m_mapWidth] || row + 1 == MAP_HEIGHT)
+			if (row + 1 < m_mapHeight && m_data[column + (row + 1) * m_mapWidth] || row + 1 == m_mapHeight)
 				rect.y += TILE_SIZE;
 			if (row > 0 && m_data[column + (row - 1) * m_mapWidth] || row == 0)
 				rect.y += TILE_SIZE * 2;
@@ -39,8 +39,8 @@ void Map::Draw(Graphics& graphics) {
 }
 
 void Map::DrawBackground(Graphics& graphics) {
-	for (int column = 0; column < MAP_WIDTH; column++) {
-		for (int row = 0; row < MAP_HEIGHT; row++) {
+	for (int column = 0; column < m_mapWidth; column++) {
+		for (int row = 0; row < m_mapHeight; row++) {
 			SDL_Rect rect = { 0,0,TILE_SIZE,TILE_SIZE };
 			m_destinationRect.x = column * TILE_SIZE;
 			m_destinationRect.y = row * TILE_SIZE;
