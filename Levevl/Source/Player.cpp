@@ -143,17 +143,21 @@ void Player::MoveX(float x) {
 	int sign = Sign(move);
 
 	while (move != 0) {
-		VerticalLine line = { m_x + m_boundingBox.X2() * sign + sign, m_y + m_boundingBox.Y1(), m_y + m_boundingBox.Y2()};
 
-		VerticalLine stickLine = { m_x + STICK_TIP_X * m_direction + m_direction, m_y + 3, m_y + 4 };
+		VerticalLine bodyLine = { m_x + m_boundingBox.X2() * sign + sign, m_y + m_boundingBox.Y1(), m_y + m_boundingBox.Y2()};
 
-		if (m_levelRef->OverlapsLine(line)) {
+		if (m_levelRef->OverlapsLine(bodyLine)) {
 			m_velocityX = 0.0f;
 			break;
 		}
-		if (m_direction == sign && m_levelRef->OverlapsLine(stickLine)) {
-			m_velocityX = 0.0f;
-			break;
+
+		if (m_stickState == m_stickIdleState || m_stickState == m_stickHitState) {
+			VerticalLine stickLine = { m_x + STICK_TIP_X * sign + sign, m_y + 3, m_y + 4 };
+
+			if (m_levelRef->OverlapsLine(stickLine)) {
+				m_velocityX = 0.0f;
+				break;
+			}
 		}
 
 		m_x += sign;
@@ -173,28 +177,28 @@ void Player::MoveY(float y) {
 	int sign = Sign(move);
 
 	while (move != 0) {
-		HorizontalLine line = { m_y + m_boundingBox.Y2() * sign + sign, m_x + m_boundingBox.X1(), m_x + m_boundingBox.X2() };
+		HorizontalLine bodyLine = { m_y + m_boundingBox.Y2() * sign + sign, m_x + m_boundingBox.X1(), m_x + m_boundingBox.X2() };
 
-		VerticalLine stickLine = { m_x + 20 * sign + sign, m_y + 3, m_y + 4 };
-
-		if (!m_levelRef->OverlapsLine(line)) {
-			m_y += sign;
-			move -= sign;
-		}
-		else {
+		if (m_levelRef->OverlapsLine(bodyLine)) {
 			m_velocityY = .0f;
 			if (move > 0) {
 				m_onFloor = true;
 			}
 			break;
 		}
+
+		m_y += sign;
+		move -= sign;
 	}
 
 	// Offset the player if the stick tip is overlapping the world
-	VerticalLine stickLine = { m_x + 20 * m_direction, m_y + 3, m_y + 4 };
-	for (int i = 0; i < 16 && m_levelRef->OverlapsLine(stickLine); i++) {
-		m_x += -m_direction;
-		stickLine = { m_x + 20 * m_direction, m_y + 3, m_y + 4 };
+	if (m_stickState == m_stickIdleState || m_stickState == m_stickHitState) {
+		
+		VerticalLine stickLine = { m_x + 20 * m_direction, m_y + 3, m_y + 4 };
+		for (int i = 0; i < 16 && m_levelRef->OverlapsLine(stickLine); i++) {
+			m_x += -m_direction;
+			stickLine = { m_x + 20 * m_direction, m_y + 3, m_y + 4 };
+		}
 	}
 
 }
