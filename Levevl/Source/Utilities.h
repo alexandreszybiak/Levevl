@@ -50,6 +50,7 @@ class VerticalLine : public StraightLine {
 private:
 	int m_x;
 public:
+	VerticalLine() : StraightLine(0,0), m_x(0) {}
 	VerticalLine(int x, int start, int end) : StraightLine(start, end), m_x(x) {}
 	int X() { return m_x; }
 

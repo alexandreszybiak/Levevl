@@ -82,6 +82,9 @@ void PlayerJumpState::Enter(Player* player) {
 }
 
 PlayerState* PlayerJumpState::HandleInput(Player* player, Input& input) {
+
+	// Move left and right
+
 	int inputHDir = -input.HoldingLeft() + input.HoldingRight();
 
 	if (inputHDir > 0) {
@@ -97,11 +100,21 @@ PlayerState* PlayerJumpState::HandleInput(Player* player, Input& input) {
 		}
 	}
 
-	if (player->m_levelRef->ValueAtPoint(player->m_x + STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 4) != 1) {
-		if (inputHDir == player->m_direction) {
-			return player->m_playerWallSlideState;
-		}
+	// Start wall slide
+
+	VerticalLine frontLine = { player->m_x + STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 3, player->m_y + 4 };
+
+	if (player->m_stickState != player->m_stickIdleState && player->m_stickState != player->m_stickHitState) {
+
+		frontLine = { player->m_x + BODY_FRONT_X * player->m_direction + player->m_direction, player->m_y + 3, player->m_y + 4 };
+
 	}
+
+	if (player->m_levelRef->OverlapsLine(frontLine) && inputHDir == player->m_direction) {
+		return player->m_playerWallSlideState;
+	}
+
+	// Make a smaller jump
 
 	if (input.ReleasedJump()) {
 		player->m_velocityY *= 0.5;
@@ -129,6 +142,9 @@ void PlayerFallState::Enter(Player* player) {
 }
 
 PlayerState* PlayerFallState::HandleInput(Player* player, Input& input) {
+
+	// Move left & right
+
 	int inputHDir = -input.HoldingLeft() + input.HoldingRight();
 
 	if (inputHDir > 0) {
@@ -144,10 +160,19 @@ PlayerState* PlayerFallState::HandleInput(Player* player, Input& input) {
 		}
 	}
 
-	if (player->m_levelRef->ValueAtPoint(player->m_x + STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 4) != 1) {
-		if (inputHDir == player->m_direction) {
-			return player->m_playerWallSlideState;
-		}
+	// Start wall slide
+
+	bool isStickWallSlide = true;
+
+	VerticalLine frontLine = { player->m_x + STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 3, player->m_y + 4 };
+
+	if (player->m_stickState != player->m_stickIdleState && player->m_stickState != player->m_stickHitState) {
+		frontLine = { player->m_x + BODY_FRONT_X * player->m_direction + player->m_direction, player->m_y + 3, player->m_y + 4 };
+		isStickWallSlide = false;
+	}
+
+	if (player->m_levelRef->OverlapsLine(frontLine) && inputHDir == player->m_direction) {
+		return player->m_playerWallSlideState->Reset(isStickWallSlide);
 	}
 
 	return NULL;
@@ -165,21 +190,37 @@ PlayerState* PlayerFallState::Update(Player* player) {
 
 // Wall Slide
 
-void PlayerWallSlideState::Enter(Player* player) {
+void PlayerWallSlideState::Enter(Player* player) {}
 
-}
 PlayerState* PlayerWallSlideState::HandleInput(Player* player, Input& input) {
+
+	int inputHDir = -input.HoldingLeft() + input.HoldingRight();
+
 	if (player->m_direction == DIRECTION_LEFT && !input.HoldingLeft()) {
 		return player->m_playerFallState->Reset(player->m_groundAcceleration);
 	}
 	if (player->m_direction == DIRECTION_RIGHT && !input.HoldingRight()) {
 		return player->m_playerFallState->Reset(player->m_groundAcceleration);
 	}
+
+	// Wall jump
+
 	if (input.PressedJump()) {
-		player->InvertDirection();
-		player->m_velocityX = player->m_speed * 1.5f * player->m_direction;
+		player->m_velocityX = player->m_speed * 1.5f * -inputHDir;
 		player->m_velocityY = player->m_jumpStrength * 0.9f;
 		return player->m_playerJumpState->Reset(0.125f);
+	}
+
+	// Cancel wall slide by changing stick position
+	if(m_isStickWallSlide){
+		if (input.PressedUp() || input.PressedDown()) {
+			return player->m_playerFallState->Reset(player->m_groundAcceleration);
+		}
+	}
+	else {
+		if (inputHDir != 0) {
+			return player->m_playerFallState->Reset(player->m_groundAcceleration);
+		}
 	}
 
 	return NULL;

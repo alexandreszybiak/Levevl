@@ -6,6 +6,7 @@
 
 #define GRAVITY .48f
 #define STICK_TIP_X 20
+#define BODY_FRONT_X 12
 
 class Level;
 class Graphics;

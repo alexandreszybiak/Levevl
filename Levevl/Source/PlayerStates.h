@@ -55,8 +55,15 @@ public:
 };
 
 class PlayerWallSlideState : public PlayerState {
+private:
+	bool m_isStickWallSlide;
 public:
+	PlayerWallSlideState() : m_isStickWallSlide(false) {}
 	void Enter(Player* player) override;
+	PlayerState* Reset(bool isStickWallSlide) {
+		m_isStickWallSlide = isStickWallSlide;
+		return this;
+	}
 	PlayerState* HandleInput(Player* player, Input& input);
 	PlayerState* Update(Player* player);
 };
