@@ -14,6 +14,8 @@
 
 Player::Player(int x, int y, Level* level) : Entity(x, y), m_direction(DIRECTION_RIGHT), m_currentBodyAnimation(nullptr), m_onFloor(false), m_stickCollisionLine({ 25,4,5 }), m_boundingBox({ -12,-16,12,16 }), m_xRemainder(.0f), m_yRemainder(.0f), m_levelRef(level) {
 
+	// Init animations
+
 	m_idleAnimation = new Animation(1);
 	m_idleAnimation->PushFrame(5);
 
@@ -48,11 +50,29 @@ Player::Player(int x, int y, Level* level) : Entity(x, y), m_direction(DIRECTION
 	SetAnimation(&m_currentBodyAnimation, m_idleAnimation);
 	SetAnimation(&m_currentStickAnimation, m_stickIdleAnimation);
 
-	m_bodyState = new PlayerIdleState();
-	m_stickState = new StickIdleState();
+	// Init player states
+
+	m_playerIdleState = new PlayerIdleState();
+	m_playerJumpState = new PlayerJumpState();
+	m_playerFallState = new PlayerFallState();
+	m_playerWallSlideState = new PlayerWallSlideState();
+
+	m_bodyState = m_playerIdleState;
+
+	// Init stick states
+
+	m_stickIdleState = new StickIdleState();
+	m_stickAimingDownState = new StickAimingDownState();
+	m_stickAimingUpState = new StickAimingUpState();
+	m_stickHitState = new StickHitState();
+	m_stickHitDownState = new StickHitDownState();
+	m_stickHitUpState = new StickHitUpState();
+
+	m_stickState = m_stickIdleState;
+
+	// Init sprites
 
 	m_bodySprite = new Sprite(-30, -40, 60, 56, 5);
-
 	m_stickSprite = new Sprite(-30, -40, 60, 56, 5);
 
 }
@@ -78,34 +98,34 @@ void Player::Update(Input& input) {
 
 	state = m_bodyState->HandleInput(this, input);
 	if (state != NULL) {
-		delete m_bodyState;
 		m_bodyState = state;
 		m_bodyState->Enter(this);
 	}
 
 	state = m_stickState->HandleInput(this, input);
 	if (state != NULL) {
-		delete m_stickState;
 		m_stickState = state;
 		m_stickState->Enter(this);
 	}
 
 	state = m_bodyState->Update(this);
 	if (state != NULL) {
-		delete m_bodyState;
 		m_bodyState = state;
 		m_bodyState->Enter(this);
 	}
 
 	state = m_stickState->Update(this);
 	if (state != NULL) {
-		delete m_stickState;
 		m_stickState = state;
 		m_stickState->Enter(this);
 	}
 
+	// Move player
+
 	MoveX(m_velocityX);
 	MoveY(m_velocityY);
+
+	// Update sprite position
 
 	m_bodySprite->SetPosition(m_x - 30, m_y - 40);
 	m_stickSprite->SetPosition(m_x - 30, m_y - 40);

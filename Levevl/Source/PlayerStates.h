@@ -30,8 +30,12 @@ class PlayerJumpState : public PlayerState {
 private:
 	float m_accelerationX;
 public:
-	PlayerJumpState(float accelerationX) : m_accelerationX(accelerationX) {};
+	PlayerJumpState() : m_accelerationX(0.0f) {};
 	void Enter(Player* player) override;
+	PlayerState* Reset(float accelerationX) {
+		m_accelerationX = accelerationX;
+		return this;
+	}
 	PlayerState* HandleInput(Player* player, Input& input);
 	PlayerState* Update(Player* player);
 };
@@ -40,8 +44,12 @@ class PlayerFallState : public PlayerState {
 private:
 	float m_accelerationX;
 public:
-	PlayerFallState(float accelerationX) : m_accelerationX(accelerationX) {};
+	PlayerFallState() : m_accelerationX(0.0f) {};
 	void Enter(Player* player) override;
+	PlayerState* Reset(float accelerationX) {
+		m_accelerationX = accelerationX;
+		return this;
+	}
 	PlayerState* HandleInput(Player* player, Input& input);
 	PlayerState* Update(Player* player);
 };

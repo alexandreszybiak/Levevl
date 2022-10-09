@@ -12,6 +12,18 @@ class Graphics;
 class Input;
 class Chunk;
 class PlayerState;
+
+class PlayerIdleState;
+class PlayerJumpState;
+class PlayerFallState;
+class PlayerWallSlideState;
+class StickIdleState;
+class StickHitState;
+class StickAimingUpState;
+class StickHitUpState;
+class StickAimingDownState;
+class StickHitDownState;
+
 class Sprite;
 class Animation;
 
@@ -61,6 +73,18 @@ private:
 
 	// State machines
 	PlayerState * m_bodyState, * m_stickState;
+
+	// States
+	PlayerIdleState* m_playerIdleState;
+	PlayerJumpState* m_playerJumpState;
+	PlayerFallState* m_playerFallState;
+	PlayerWallSlideState* m_playerWallSlideState;
+	StickIdleState* m_stickIdleState;
+	StickAimingDownState* m_stickAimingDownState;
+	StickAimingUpState* m_stickAimingUpState;
+	StickHitState* m_stickHitState;
+	StickHitDownState* m_stickHitDownState;
+	StickHitUpState* m_stickHitUpState;
 
 	Direction m_direction;
 

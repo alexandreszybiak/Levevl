@@ -49,11 +49,11 @@ PlayerState* PlayerIdleState::HandleInput(Player* player, Input& input) {
 	if (input.PressedJump()) {
 		player->m_velocityY = player->m_jumpStrength;
 		player->SetOnFloor(false);
-		return new PlayerJumpState(player->m_airAcceleration);
+		return player->m_playerJumpState->Reset(player->m_airAcceleration);
 	}
 
 	if (player->m_velocityY >= 1.0f) {
-		return new PlayerFallState(player->m_airAcceleration);
+		return player->m_playerFallState->Reset(player->m_airAcceleration);
 	}
 
 	return NULL;
@@ -99,7 +99,7 @@ PlayerState* PlayerJumpState::HandleInput(Player* player, Input& input) {
 
 	if (player->m_levelRef->ValueAtPoint(player->m_x + STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 4) != 1) {
 		if (inputHDir == player->m_direction) {
-			return new PlayerWallSlideState();
+			return player->m_playerWallSlideState;
 		}
 	}
 
@@ -115,7 +115,7 @@ PlayerState* PlayerJumpState::Update(Player* player) {
 	player->m_velocityY = std::clamp(player->m_velocityY + GRAVITY, -12.0f, 12.0f);
 
 	if (player->m_velocityY >= 0) {
-		return new PlayerFallState(player->m_airAcceleration);
+		return player->m_playerFallState->Reset(player->m_airAcceleration);
 	}
 
 	return NULL;
@@ -146,7 +146,7 @@ PlayerState* PlayerFallState::HandleInput(Player* player, Input& input) {
 
 	if (player->m_levelRef->ValueAtPoint(player->m_x + STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 4) != 1) {
 		if (inputHDir == player->m_direction) {
-			return new PlayerWallSlideState();
+			return player->m_playerWallSlideState;
 		}
 	}
 
@@ -155,7 +155,7 @@ PlayerState* PlayerFallState::HandleInput(Player* player, Input& input) {
 
 PlayerState* PlayerFallState::Update(Player* player) {
 	if (player->OnFloor()) {
-		return new PlayerIdleState();
+		return player->m_playerIdleState;
 	}
 
 	player->m_velocityY = std::clamp(player->m_velocityY + GRAVITY, -12.0f, 12.0f);
@@ -170,27 +170,27 @@ void PlayerWallSlideState::Enter(Player* player) {
 }
 PlayerState* PlayerWallSlideState::HandleInput(Player* player, Input& input) {
 	if (player->m_direction == DIRECTION_LEFT && !input.HoldingLeft()) {
-		return new PlayerFallState(player->m_groundAcceleration);
+		return player->m_playerFallState->Reset(player->m_groundAcceleration);
 	}
 	if (player->m_direction == DIRECTION_RIGHT && !input.HoldingRight()) {
-		return new PlayerFallState(player->m_groundAcceleration);
+		return player->m_playerFallState->Reset(player->m_groundAcceleration);
 	}
 	if (input.PressedJump()) {
 		player->InvertDirection();
 		player->m_velocityX = player->m_speed * 1.5f * player->m_direction;
 		player->m_velocityY = player->m_jumpStrength * 0.9f;
-		return new PlayerJumpState(0.125f);
+		return player->m_playerJumpState->Reset(0.125f);
 	}
 
 	return NULL;
 }
 PlayerState* PlayerWallSlideState::Update(Player* player) {
 	if (player->OnFloor()) {
-		return new PlayerIdleState();
+		return player->m_playerIdleState;
 	}
 
 	if (player->m_levelRef->ValueAtPoint(player->m_x + STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 4) == 1) {
-		return new PlayerFallState(player->m_groundAcceleration);
+		return player->m_playerFallState->Reset(player->m_groundAcceleration);
 	}
 
 	player->m_velocityY = std::clamp(player->m_velocityY + GRAVITY, -20.0f, player->m_WallSlideSpeed);
@@ -206,14 +206,14 @@ void StickIdleState::Enter(Player* player) {
 
 PlayerState* StickIdleState::HandleInput(Player* player, Input& input) {
 	if (input.PressedUp()) {
-		return new StickAimingUpState();
+		return player->m_stickAimingUpState;
 	}
 	else if (input.PressedDown()) {
-		return new StickAimingDownState();
+		return player->m_stickAimingDownState;
 	}
 
 	if (input.PressedHit()) {
-		return new StickHitState();
+		return player->m_stickHitState;
 	}
 
 	return NULL;
@@ -232,14 +232,14 @@ void StickAimingDownState::Enter(Player* player) {
 PlayerState* StickAimingDownState::HandleInput(Player* player, Input& input) {
 
 	if (input.PressedHit()) {
-		return new StickHitDownState();
+		return player->m_stickHitDownState;
 	}
 
 	if (!input.HoldingDown()) {
 		if (input.HoldingUp()) {
-			return new StickAimingUpState();
+			return player->m_stickAimingUpState;
 		}
-		return new StickIdleState();
+		return player->m_stickIdleState;
 	}
 
 	return NULL;
@@ -258,14 +258,14 @@ void StickAimingUpState::Enter(Player* player) {
 PlayerState* StickAimingUpState::HandleInput(Player* player, Input& input) {
 
 	if (input.PressedHit()) {
-		return new StickHitUpState();
+		return player->m_stickHitUpState;
 	}
 
 	if (!input.HoldingUp()) {
 		if (input.HoldingDown()) {
-			return new StickAimingDownState();
+			return player->m_stickAimingDownState;
 		}
-		return new StickIdleState();
+		return player->m_stickIdleState;
 	}
 
 	return NULL;
@@ -291,10 +291,10 @@ PlayerState* StickHitState::HandleInput(Player* player, Input& input) {
 
 	if (input.PressedHit()) {
 		if (input.HoldingUp()) {
-			return new StickHitUpState();
+			return player->m_stickHitUpState;
 		}
 		else if (input.HoldingDown()) {
-			return new StickHitDownState();
+			return player->m_stickHitDownState;
 		}
 		else {
 			Enter(player);
@@ -303,13 +303,13 @@ PlayerState* StickHitState::HandleInput(Player* player, Input& input) {
 
 	if (!player->m_currentStickAnimation->Playing()) {
 		if (input.HoldingUp()) {
-			return new StickAimingUpState();
+			return player->m_stickAimingUpState;
 		}
 		else if (input.HoldingDown()) {
-			return new StickAimingDownState();
+			return player->m_stickAimingDownState;
 		}
 		else {
-			return new StickIdleState();
+			return player->m_stickIdleState;
 		}
 	}
 
@@ -333,10 +333,10 @@ PlayerState* StickHitDownState::HandleInput(Player* player, Input& input) {
 
 	if (!player->m_currentStickAnimation->Playing()) {
 		if (input.HoldingDown()) {
-			return new StickAimingDownState();
+			return player->m_stickAimingDownState;
 		}
 		else {
-			return new StickIdleState();
+			return player->m_stickIdleState;
 		}
 	}
 
@@ -360,10 +360,10 @@ PlayerState* StickHitUpState::HandleInput(Player* player, Input& input) {
 
 	if (!player->m_currentStickAnimation->Playing()) {
 		if (input.HoldingUp()) {
-			return new StickAimingUpState();
+			return player->m_stickAimingUpState;
 		}
 		else {
-			return new StickIdleState();
+			return player->m_stickIdleState;
 		}
 	}
 

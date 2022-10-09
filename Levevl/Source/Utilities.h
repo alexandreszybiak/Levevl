@@ -5,6 +5,12 @@ enum Direction {
 	DIRECTION_RIGHT = 1
 };
 
+enum class Axis
+{
+	Horizontal,
+	Vertical
+};
+
 const int Sign(const int i);
 const float Sign(const float f);
 
@@ -66,4 +72,20 @@ public:
 	bool IsTouchingBottom();
 	bool IsOverlapingLeft();
 	bool IsOverlapingRight();
+};
+
+class LineCollider {
+private:
+	// An offset position from
+	int m_x, m_y;
+	int m_length;
+	Axis m_axis;
+public:
+	//
+private:
+	//
+public:
+	LineCollider(int x, int y, int length, Axis axis) : m_x(x), m_y(y), m_length(length), m_axis(axis) {}
+	const bool OverlapsSolid();
+	
 };

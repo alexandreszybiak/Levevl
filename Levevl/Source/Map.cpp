@@ -46,13 +46,8 @@ void Map::Draw(Graphics& graphics) {
 
 void Map::DrawBackground(Graphics& graphics) {
 
-	int left = std::max(graphics.m_camera.m_x / TILE_SIZE, 0);
-	int right = std::min((graphics.m_camera.m_x + graphics.m_camera.m_width) / TILE_SIZE + 1, m_mapWidth);
-	int top = std::max(graphics.m_camera.m_y / TILE_SIZE, 0);
-	int bottom = std::min((graphics.m_camera.m_y + graphics.m_camera.m_height) / TILE_SIZE + 1, m_mapHeight);
-
-	for (int column = left; column < right; column++) {
-		for (int row = top; row < bottom; row++) {
+	for (int column = 0; column < 27; column++) {
+		for (int row = 0; row < 15; row++) {
 			SDL_Rect rect = { 0,0,TILE_SIZE,TILE_SIZE };
 			m_destinationRect.x = column * TILE_SIZE;
 			m_destinationRect.y = row * TILE_SIZE;
