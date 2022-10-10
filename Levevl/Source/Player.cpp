@@ -152,7 +152,7 @@ void Player::MoveX(float x) {
 		}
 
 		if (m_stickState == m_stickIdleState || m_stickState == m_stickHitState) {
-			VerticalLine stickLine = { m_x + STICK_TIP_X * sign + sign, m_y + 3, m_y + 4 };
+			VerticalLine stickLine = { m_x + HORIZONTAL_STICK_TIP_X * sign + sign, m_y + 3, m_y + 4 };
 
 			if (m_levelRef->OverlapsLine(stickLine)) {
 				m_velocityX = 0.0f;
@@ -187,6 +187,14 @@ void Player::MoveY(float y) {
 			break;
 		}
 
+		if (move < 0 && m_stickState != m_stickIdleState && m_stickState != m_stickHitState) {
+			HorizontalLine stickLine = { m_y + VERTICAL_STICK_TIP_Y * sign + sign, m_x - VERTICAL_STICK_TIP_X1 * m_direction, m_x - VERTICAL_STICK_TIP_X2 + 1 * m_direction };
+			if (m_levelRef->OverlapsLine(stickLine)) {
+				m_velocityY = .0f;
+				break;
+			}
+		}
+
 		m_y += sign;
 		move -= sign;
 	}
@@ -197,7 +205,7 @@ void Player::MoveY(float y) {
 		VerticalLine stickLine = { m_x + 20 * m_direction, m_y + 3, m_y + 4 };
 		for (int i = 0; i < 16 && m_levelRef->OverlapsLine(stickLine); i++) {
 			m_x += -m_direction;
-			stickLine = { m_x + 20 * m_direction, m_y + 3, m_y + 4 };
+			stickLine = { m_x + 20 * m_direction, m_y + HORIZONTAL_STICK_TIP_Y1, m_y + HORIZONTAL_STICK_TIP_Y2 };
 		}
 	}
 

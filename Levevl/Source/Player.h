@@ -5,7 +5,12 @@
 #include "Utilities.h"
 
 #define GRAVITY .48f
-#define STICK_TIP_X 20
+#define HORIZONTAL_STICK_TIP_X 20
+#define HORIZONTAL_STICK_TIP_Y1 3
+#define HORIZONTAL_STICK_TIP_Y2 4
+#define VERTICAL_STICK_TIP_X1 7
+#define VERTICAL_STICK_TIP_X2 8
+#define VERTICAL_STICK_TIP_Y 25
 #define BODY_FRONT_X 12
 
 class Level;

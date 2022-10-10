@@ -46,9 +46,13 @@ void Map::Draw(Graphics& graphics) {
 
 void Map::DrawBackground(Graphics& graphics) {
 
+	
+
 	for (int column = 0; column < 27; column++) {
 		for (int row = 0; row < 15; row++) {
-			SDL_Rect rect = { 0,0,TILE_SIZE,TILE_SIZE };
+			int randX = std::rand() % 104;
+			int randY = std::rand() % 104;
+			SDL_Rect rect = { randX,randY,TILE_SIZE,TILE_SIZE };
 			m_destinationRect.x = column * TILE_SIZE;
 			m_destinationRect.y = row * TILE_SIZE;
 			graphics.Draw(graphics.backgroundTexture, &rect, &m_destinationRect, true);

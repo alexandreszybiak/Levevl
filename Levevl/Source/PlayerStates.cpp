@@ -102,7 +102,7 @@ PlayerState* PlayerJumpState::HandleInput(Player* player, Input& input) {
 
 	// Start wall slide
 
-	VerticalLine frontLine = { player->m_x + STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 3, player->m_y + 4 };
+	VerticalLine frontLine = { player->m_x + HORIZONTAL_STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 3, player->m_y + 4 };
 
 	if (player->m_stickState != player->m_stickIdleState && player->m_stickState != player->m_stickHitState) {
 
@@ -164,7 +164,7 @@ PlayerState* PlayerFallState::HandleInput(Player* player, Input& input) {
 
 	bool isStickWallSlide = true;
 
-	VerticalLine frontLine = { player->m_x + STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 3, player->m_y + 4 };
+	VerticalLine frontLine = { player->m_x + HORIZONTAL_STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 3, player->m_y + 4 };
 
 	if (player->m_stickState != player->m_stickIdleState && player->m_stickState != player->m_stickHitState) {
 		frontLine = { player->m_x + BODY_FRONT_X * player->m_direction + player->m_direction, player->m_y + 3, player->m_y + 4 };
@@ -230,7 +230,7 @@ PlayerState* PlayerWallSlideState::Update(Player* player) {
 		return player->m_playerIdleState;
 	}
 
-	if (player->m_levelRef->ValueAtPoint(player->m_x + STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 4) == 1) {
+	if (player->m_levelRef->ValueAtPoint(player->m_x + HORIZONTAL_STICK_TIP_X * player->m_direction + player->m_direction, player->m_y + 4) == 1) {
 		return player->m_playerFallState->Reset(player->m_groundAcceleration);
 	}
 
