@@ -21,6 +21,12 @@ public:
 	TileType* GetTileTypeAtPoint(int x, int y);
 };
 
+enum TileTypes {
+	TILE_TYPE_NOTHING,
+	TILE_TYPE_EMPTY,
+	TILE_TYPE_BRICK
+};
+
 class TileType {
 protected:
 	static int m_tileSize;

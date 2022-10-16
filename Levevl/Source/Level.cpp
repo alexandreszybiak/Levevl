@@ -11,16 +11,18 @@
 #include "TileHitFx.h"
 
 Level::Level(Camera& camera) : m_camera(camera), m_tileHitFx(*(new TileHitFx())) {
+
 	worldMap = new Map();
 	player = new Player(986, 175, this);
 	m_camera.m_target = player;
 
 	// Init tile types
-	m_emptyTile = new EmptyTile();
-	m_brickTile = new BrickTile();
+	m_tileTypes[TILE_TYPE_NOTHING] = new NothingTile();
+	m_tileTypes[TILE_TYPE_EMPTY] = new EmptyTile();
+	m_tileTypes[TILE_TYPE_BRICK] = new BrickTile();
 
-	m_testTileMap = new TileMap(5, 4, TILE_SIZE, m_brickTile);
-	m_testTileMap->SetRegion(m_emptyTile, 1, 1, 4, 3);
+	m_testTileMap = new TileMap(5, 4, TILE_SIZE, m_tileTypes[TILE_TYPE_BRICK]);
+	m_testTileMap->SetRegion(m_tileTypes[TILE_TYPE_EMPTY], 1, 1, 4, 3);
 
 }
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <array>
 #include <vector>
 
 class Input;
@@ -6,6 +7,7 @@ class Camera;
 class HorizontalLine;
 class VerticalLine;
 class TileMap;
+class TileType;
 
 class NothingTile;
 class EmptyTile;
@@ -29,12 +31,10 @@ public:
 
 	TileMap* m_testTileMap;
 
-	// All tile types
-	NothingTile* m_nothingTile;
-	EmptyTile* m_emptyTile;
-	BrickTile* m_brickTile;
+	// Stores all the pointers to tile types
+	std::array<TileType*, 3> m_tileTypes;
 
-	
+	//TileType* m_tileTypes[3];
 
 
 private:
