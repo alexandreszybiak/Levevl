@@ -30,7 +30,7 @@ public:
 	TileHitFx& m_tileHitFx;
 
 	// Stores all the pointers to tile types
-	std::array<TileType*, 3> m_tileTypes;
+	std::array<TileType*, 4> m_tileTypes;
 
 	//TileType* m_tileTypes[3];
 

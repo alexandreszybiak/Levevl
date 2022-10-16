@@ -28,15 +28,13 @@ public:
 	// Gets a tile by TileMap coordinates
 	TileType* GetTile(int x, int y);
 
-	// Gets a tile by giving a point in the world
-	TileType* GetTileAtPoint(int x, int y);
-
 };
 
 enum TileTypes {
 	TILE_TYPE_NOTHING,
 	TILE_TYPE_EMPTY,
-	TILE_TYPE_BRICK
+	TILE_TYPE_BRICK,
+	TILE_TYPE_TURBO
 };
 
 class TileType {
@@ -45,7 +43,7 @@ protected:
 	TileTypes m_type;
 public:
 	TileType(TileTypes type) : m_type(type) {}
-	//virtual void Hit(Chunk& chunk) = 0;
+	virtual void Hit(Chunk& chunk);
 	virtual bool Solid() = 0;
 	virtual bool Visible() = 0;
 	virtual void Draw(Graphics& graphics, int x, int y) = 0;
@@ -78,6 +76,16 @@ class BrickTile : public TileType {
 public:
 	BrickTile() : TileType(TILE_TYPE_BRICK) {}
 	//void Hit();
+	bool Solid() { return true; }
+	bool Visible() { return true; }
+	void Draw(Graphics& graphics, int x, int y);
+};
+
+class TurboTile : public TileType {
+
+public:
+	TurboTile() : TileType(TILE_TYPE_TURBO) {}
+	void Hit(Chunk& chunk);
 	bool Solid() { return true; }
 	bool Visible() { return true; }
 	void Draw(Graphics& graphics, int x, int y);

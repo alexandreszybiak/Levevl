@@ -2,6 +2,7 @@
 #include <algorithm>
 #include "SDL.h"
 #include "Game.h"
+#include "TileMap.h"
 #include "Level.h"
 #include "Player.h"
 #include "PlayerStates.h"
@@ -280,14 +281,19 @@ bool Player::HitAtPoint(int x, int y, int dirX, int dirY) {
 	for (Chunk& chunk : m_levelRef->v_chunks) {
 		int ValueAtOrigin = chunk.ValueAtPoint(x + 24 * -dirX, y + 24 * -dirY);
 		int levelValueAtStickPoint = m_levelRef->ValueAtPoint(x, y);
-		int chunkValueAtStickPoint = chunk.ValueAtPoint(x, y);
 
-		if (chunkValueAtStickPoint == 2) {
+		int chunkValueAtStickPoint = chunk.ValueAtPoint(x, y);
+		TileType* tile = chunk.TileAtPoint(x, y);
+
+		// If I hit a solid inside the Chunk
+		if (tile && tile->Solid()) {
+			tile->Hit(chunk);
 			m_levelRef->m_tileHitFx.Reset(x, y, dirX, dirY);
 			chunk.m_tileHitFx = &m_levelRef->m_tileHitFx;
 			return chunk.Slide(dirX, dirY);
 		}
 
+		// If I hit the void
 		if (levelValueAtStickPoint == 0 && ValueAtOrigin == 1) {
 			m_levelRef->m_tileHitFx.Reset(x, y, dirX, dirY);
 			chunk.m_tileHitFx = &m_levelRef->m_tileHitFx;

@@ -247,3 +247,13 @@ void Chunk::SetRegion(char value, int x1, int y1, int x2, int y2) {
 	m_tileMap->SetRegion(m_levelRef->m_tileTypes[value], x1, y1, x2, y2);
 
 }
+
+TileType* Chunk::TileAtPoint(int x, int y) {
+	int tileX = floor(float(x - m_x) / TILE_SIZE);
+	int tileY = floor(float(y - m_y) / TILE_SIZE);
+
+	if (tileX < 0 || tileX >= m_width || tileY < 0 || tileY >= m_height)
+		return 0;
+
+	return m_tileMap->GetTile(tileX, tileY);
+}

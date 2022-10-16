@@ -1,3 +1,4 @@
+#include <iostream>
 #include "math.h"
 #include "SDL.h"
 #include "Game.h"
@@ -61,6 +62,10 @@ TileType* TileMap::GetTile(int x, int y) {
 
 int TileType::m_tileSize = TILE_SIZE;
 
+void TileType::Hit(Chunk& chunk) {
+	std::cout << "You hit a tile" << std::endl;
+}
+
 void NothingTile::Draw(Graphics& graphics, int x, int y) {
 
 }
@@ -75,4 +80,14 @@ void BrickTile::Draw(Graphics& graphics, int x, int y) {
 	SDL_Rect srcRect = { m_tileSize, 0, m_tileSize, m_tileSize };
 	SDL_Rect dstRect = { x, y, m_tileSize, m_tileSize };
 	graphics.Draw(graphics.chunkTexture, &srcRect, &dstRect);
+}
+
+void TurboTile::Draw(Graphics& graphics, int x, int y) {
+	SDL_Rect srcRect = { m_tileSize * 2, 0, m_tileSize, m_tileSize };
+	SDL_Rect dstRect = { x, y, m_tileSize, m_tileSize };
+	graphics.Draw(graphics.chunkTexture, &srcRect, &dstRect);
+}
+
+void TurboTile::Hit(Chunk& chunk) {
+	std::cout << "You hit a turbo tile!" << std::endl;
 }

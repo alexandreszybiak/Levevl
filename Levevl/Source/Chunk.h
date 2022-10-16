@@ -6,6 +6,7 @@ class HorizontalLine;
 class VerticalLine;
 class Graphics;
 class TileMap;
+class TileType;
 class Level;
 class TileHitFx;
 
@@ -78,6 +79,9 @@ public:
 
 	// Return the value found at the given point on the chunk's tilemap data
 	int ValueAtPoint(int x, int y);
+
+	// Return the TileType at a given point in the world
+	TileType* TileAtPoint(int x, int y);
 
 private:
 	//

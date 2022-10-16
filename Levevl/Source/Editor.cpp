@@ -104,14 +104,14 @@ void Editor::Update(Input& input) {
 		int gridY2 = (m_selection.y + m_selection.h) / TILE_SIZE;
 		if (m_selectedChunk) {
 			// Draw over the selected chunk
-			m_selectedChunk->SetRegion((m_brushValue + 1) * m_brushMode, gridX, gridY, gridX2, gridY2);
+			m_selectedChunk->SetRegion(m_brushValue * m_brushMode, gridX, gridY, gridX2, gridY2);
 		}
-		else if (m_brushValue == 2) {
+		else if (m_brushValue == 0) {
 			m_level_ref->worldMap->SetRegion(1 * m_brushMode, gridX, gridY, gridX2, gridY2);
 		}
 		else if(m_brushMode) {
 			m_selectedChunk = m_level_ref->BuildChunk(m_selection.x, m_selection.y, gridX2 - gridX, gridY2 - gridY,
-				 m_brushValue + 1);
+				 m_brushValue);
 			m_selectedChunkIndex = m_level_ref->v_chunks.size() - 1;
 		}
 
@@ -121,7 +121,7 @@ void Editor::Update(Input& input) {
 	
 	
 	if (int y = input.GetMouseWheel()) {
-		int maxValue = 3;
+		int maxValue = 4;
 		m_brushValue = (m_brushValue + maxValue + y) % maxValue;
 	}
 	if (input.WasKeyPressed(SDL_SCANCODE_DELETE)) {
@@ -174,12 +174,12 @@ void Editor::Draw(Graphics& graphics) {
 	
 	// Draw the current brush value
 	SDL_Texture* cursorTexture = graphics.chunkTexture;
-	SDL_Rect srcRect = { TILE_SIZE * m_brushValue,0,TILE_SIZE, TILE_SIZE };
+	SDL_Rect srcRect = { TILE_SIZE * (m_brushValue - 1),0,TILE_SIZE, TILE_SIZE };
 	SDL_Rect dstRect = { m_cursorX + 8 - m_level_ref->m_camera.m_x,m_cursorY + 12 - m_level_ref->m_camera.m_y,TILE_SIZE, TILE_SIZE };
 
-	if (m_brushValue > 1) {
+	if (m_brushValue == 0) {
 		cursorTexture = graphics.worldTexture;
-		srcRect = { 0, 0, TILE_SIZE, TILE_SIZE };
+		srcRect = { TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE };
 	}
 	SDL_RenderCopy(graphics.m_renderer, cursorTexture, &srcRect, &dstRect);
 }
