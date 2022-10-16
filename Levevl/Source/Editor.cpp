@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "Input.h"
 #include "Graphics.h"
+#include "TileMap.h"
 #include "Camera.h"
 #include "Editor.h"
 #include "Map"
@@ -109,7 +110,8 @@ void Editor::Update(Input& input) {
 			m_level_ref->worldMap->SetRegion(1 * m_brushMode, gridX, gridY, gridX2, gridY2);
 		}
 		else if(m_brushMode) {
-			m_selectedChunk = m_level_ref->BuildChunk(m_selection.x, m_selection.y, gridX2 - gridX, gridY2 - gridY, m_brushValue + 1);
+			m_selectedChunk = m_level_ref->BuildChunk(m_selection.x, m_selection.y, gridX2 - gridX, gridY2 - gridY,
+				 m_brushValue + 1);
 			m_selectedChunkIndex = m_level_ref->v_chunks.size() - 1;
 		}
 
@@ -239,13 +241,24 @@ void Editor::Load() {
 			m_level_ref->v_chunks.reserve(numChunk);
 
 			for (int i = 0; i < numChunk; i++) {
+
 				SDL_RWread(levelFile, &x, sizeof(int), 1);
 				SDL_RWread(levelFile, &y, sizeof(int), 1);
 				SDL_RWread(levelFile, &width, sizeof(int), 1);
 				SDL_RWread(levelFile, &size, sizeof(int), 1);
-				Chunk* newChunk = m_level_ref->BuildChunk(x, y, width, size / width, 1);
 
-				SDL_RWread(levelFile, newChunk->GetData()->data(), sizeof(char) * size, 1);
+				TileMap* newTileMap = new TileMap(width, size / width, TILE_SIZE, m_level_ref->m_tileTypes[TILE_TYPE_BRICK]);
+
+
+				// Convert raw chunk data to tile type pointers
+
+				char currentRawTileValue = 0;
+				for (int t = 0; t < sizeof(char) * size; t++) {
+					SDL_RWread(levelFile, &currentRawTileValue, sizeof(char), 1);
+					newTileMap->SetTile(m_level_ref->m_tileTypes[currentRawTileValue], t);
+				}
+
+				m_level_ref->BuildChunk(x, y, width, size / width, newTileMap);
 			}
 
 			break;

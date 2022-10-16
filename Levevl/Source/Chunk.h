@@ -1,16 +1,16 @@
 #pragma once
 #include <vector>
 #include "SDL.h"
-#include "Map.h"
 
 class HorizontalLine;
 class VerticalLine;
 class Graphics;
+class TileMap;
 class Level;
 class TileHitFx;
 
 //A piece of a level that can be moved around
-class Chunk : public Map {
+class Chunk {
 public:
 	
 	TileHitFx* m_tileHitFx;
@@ -34,7 +34,9 @@ private:
 	//
 	int m_width, m_height;
 
-	std::vector<char> m_data;
+	//std::vector<char> m_data;
+
+	TileMap* m_tileMap;
 	
 	SDL_Rect m_emptyRect, m_brickRect;
 	SDL_Rect m_destinationRect;
@@ -42,8 +44,7 @@ private:
 	Level* m_levelRef;
 	
 public:
-	Chunk(int x, int y, int width, int height, char initValue, Level* levelRef);
-	//Chunk(const Chunk& chunkCopy);
+	Chunk(int x, int y, int width, int height, TileMap* tileMap, Level* levelRef);
 	~Chunk();
 	void Update();
 	void Draw(Graphics& graphics);

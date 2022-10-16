@@ -5,6 +5,8 @@
 #include "SDL.h"
 #include "Utilities.h"
 #include "Graphics.h"
+#include "TileMap.h"
+#include "Map.h"
 #include "Camera.h"
 #include "Chunk.h"
 #include "Game.h"
@@ -12,7 +14,7 @@
 #include "Player.h"
 #include "TileHitFx.h"
 
-Chunk::Chunk(int x, int y, int width, int height, char initValue, Level* levelRef):
+Chunk::Chunk(int x, int y, int width, int height, TileMap* tileMap, Level* levelRef):
 		m_x(x),
 		m_y(y),
 		m_xRemainder(.0f),
@@ -23,18 +25,12 @@ Chunk::Chunk(int x, int y, int width, int height, char initValue, Level* levelRe
 		m_targetY(y),
 		m_width(width),
 		m_height(height),
+		m_tileMap(tileMap),
 		m_levelRef(levelRef),
 		m_emptyRect({ 0,0,TILE_SIZE,TILE_SIZE }),
 		m_brickRect({ TILE_SIZE,0,TILE_SIZE,TILE_SIZE }),
 		m_destinationRect({ 0,0,TILE_SIZE,TILE_SIZE }),
-		m_tileHitFx(nullptr)
-{
-	m_data.reserve(m_width * m_height);
-	for (int i = 0; i < m_width * m_height; i++) {
-		m_data.push_back(initValue);
-	}
-	//std::cout << "Chunk created." << std::endl;
-}
+		m_tileHitFx(nullptr) {}
 
 //Chunk::Chunk(const Chunk& chunkCopy): 
 //		m_x(chunkCopy.m_x), 
@@ -52,7 +48,7 @@ Chunk::Chunk(int x, int y, int width, int height, char initValue, Level* levelRe
 //}
 
 Chunk::~Chunk() {
-	m_data.clear();
+	delete m_tileMap;
 	std::cout << "Chunk destroyed." << std::endl;
 }
 
@@ -110,18 +106,7 @@ void Chunk::Move(float x, float y) {
 }
 
 void Chunk::Draw(Graphics& graphics) {
-	for (int column = 0; column < m_width; column++) {
-		for (int row = 0; row < m_height; row++) {
-			m_destinationRect.x = column * TILE_SIZE + m_x;
-			m_destinationRect.y = row * TILE_SIZE + m_y;
-			if (m_data[column + row * m_width]  == 1) {
-				graphics.Draw(graphics.chunkTexture, &m_emptyRect, &m_destinationRect);
-			}
-			else if (m_data[column + row * m_width] == 2) {
-				graphics.Draw(graphics.chunkTexture, &m_brickRect, &m_destinationRect);
-			}
-		}
-	}
+	m_tileMap->Draw(graphics, m_x, m_y);
 }
 
 void Chunk::DrawMask(Graphics& graphics) {
@@ -129,18 +114,18 @@ void Chunk::DrawMask(Graphics& graphics) {
 		for (int row = 0; row < m_height; row++) {
 			SDL_Rect rect = { 0,0,TILE_SIZE,TILE_SIZE };
 			// Look at neighbours horizontal
-			if (column + 1 < m_width && m_data[column + 1 + row * m_width])
+			if (column + 1 < m_width && m_tileMap->GetTile(column + 1, row)->Visible())
 				rect.x += TILE_SIZE;
-			if (column > 0 && m_data[column - 1 + row * m_width])
+			if (column > 0 && m_tileMap->GetTile(column - 1, row)->Visible())
 				rect.x += TILE_SIZE * 2;
 			// Look at neighbours vertical
-			if (row + 1 < m_height && m_data[column + (row + 1) * m_width])
+			if (row + 1 < m_height && m_tileMap->GetTile(column, row + 1)->Visible())
 				rect.y += TILE_SIZE;
-			if (row > 0 && m_data[column + (row - 1) * m_width])
+			if (row > 0 && m_tileMap->GetTile(column, row - 1)->Visible())
 				rect.y += TILE_SIZE * 2;
 			m_destinationRect.x = column * TILE_SIZE + m_x;
 			m_destinationRect.y = row * TILE_SIZE + m_y;
-			if (m_data[column + row * m_width]) {
+			if (m_tileMap->GetTile(column, row)->Visible()) {
 				graphics.Draw(graphics.chunkMaskTexture, &rect, &m_destinationRect);
 			}
 		}
@@ -201,7 +186,7 @@ int Chunk::GetWidth() {
 }
 
 std::vector<char>* Chunk::GetData() {
-	return &m_data;
+	return nullptr;
 }
 
 int Chunk::ValueAtPoint(int x, int y) {
@@ -211,7 +196,7 @@ int Chunk::ValueAtPoint(int x, int y) {
 	if (tileX < 0 || tileX >= m_width || tileY < 0 || tileY >= m_height)
 		return 0;
 
-	return m_data[tileX + tileY * m_width];
+	return m_tileMap->GetTile(tileX, tileY)->GetType();
 }
 
 int Chunk::OverlapsPoint(int x, int y) {
@@ -221,13 +206,13 @@ int Chunk::OverlapsPoint(int x, int y) {
 	if (tileX < 0 || tileX >= m_width || tileY < 0 || tileY >= m_height)
 		return 0;
 
-	return m_data[tileX + tileY * m_width];
+	return m_tileMap->GetTile(tileX, tileY)->GetType();
 }
 
 bool Chunk::OverlapsChunk(Chunk* otherChunk, int offsetX = 0, int offsetY = 0) {
 	for (int x = 0; x < m_width; x++) {
 		for (int y = 0; y < m_height; y++) {
-			if (m_data[x + y * m_width]) {
+			if (m_tileMap->GetTile(x, y)->Visible()) {
 				if (otherChunk->OverlapsPoint((x + offsetX) * TILE_SIZE + m_targetX, (y + offsetY) * TILE_SIZE + m_targetY)) {
 					return true;
 				}
@@ -242,7 +227,7 @@ bool Chunk::OverlapsWalls(int offsetX = 0, int offsetY = 0) {
 	int py = 0;
 	for (int x = 0; x < m_width; x++) {
 		for (int y = 0; y < m_height; y++) {
-			if (m_data[x + y * m_width]) {
+			if (m_tileMap->GetTile(x, y)->Visible()) {
 				px = (x + offsetX) * TILE_SIZE + m_targetX;
 				py = (y + offsetY) * TILE_SIZE + m_targetY;
 				if(m_levelRef->worldMap->OverlapsPoint(px, py))
@@ -259,11 +244,6 @@ void Chunk::SetRegion(char value, int x1, int y1, int x2, int y2) {
 	x2 -= m_targetX / TILE_SIZE;
 	y2 -= m_targetY / TILE_SIZE;
 
-	for (int x = x1; x < x2; x++) {
-		for (int y = y1; y < y2; y++) {
-			if (x < 0 || x >= m_width || y < 0 || y >= m_height)
-				continue;
-			m_data[x + y * m_width] = value;
-		}
-	}
+	m_tileMap->SetRegion(m_levelRef->m_tileTypes[value], x1, y1, x2, y2);
+
 }

@@ -35,6 +35,14 @@ void TileMap::Draw(Graphics& graphics, int x, int y) {
 	}
 }
 
+void TileMap::SetTile(TileType* value, int index) {
+	m_data[index] = value;
+}
+
+void TileMap::SetTile(TileType* value, int x, int y) {
+	m_data[x + y * m_width] = value;
+}
+
 void TileMap::SetRegion(TileType* value, int x1, int y1, int x2, int y2) {
 	for (int x = x1; x < x2; x++) {
 		for (int y = y1; y < y2; y++) {
@@ -45,7 +53,7 @@ void TileMap::SetRegion(TileType* value, int x1, int y1, int x2, int y2) {
 	}
 }
 
-TileType* TileMap::GetTileTypeAtPoint(int x, int y) {
+TileType* TileMap::GetTile(int x, int y) {
 	return m_data[x + y * m_width];
 }
 

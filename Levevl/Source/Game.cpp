@@ -165,9 +165,6 @@ void Game::render(Graphics& graphics) {
 	//Draw world map
 	level->worldMap->Draw(graphics);
 
-	//Draw test tileMap
-	level->m_testTileMap->Draw(graphics, level->player->X(), level->player->Y());
-
 	// End draw
 	SDL_SetTextureBlendMode(graphics.gameTexture, SDL_BLENDMODE_NONE);
 	SDL_SetRenderTarget(graphics.m_renderer, NULL);

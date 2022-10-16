@@ -21,9 +21,6 @@ Level::Level(Camera& camera) : m_camera(camera), m_tileHitFx(*(new TileHitFx()))
 	m_tileTypes[TILE_TYPE_EMPTY] = new EmptyTile();
 	m_tileTypes[TILE_TYPE_BRICK] = new BrickTile();
 
-	m_testTileMap = new TileMap(5, 4, TILE_SIZE, m_tileTypes[TILE_TYPE_BRICK]);
-	m_testTileMap->SetRegion(m_tileTypes[TILE_TYPE_EMPTY], 1, 1, 4, 3);
-
 }
 
 Level::~Level() {
@@ -45,9 +42,17 @@ void Level::Update(Input& input) {
 	
 }
 
-Chunk* Level::BuildChunk(int x, int y, int width, int height, char initValue) {
+Chunk* Level::BuildChunk(int x, int y, int width, int height, TileMap* tileMap) {
 	//v_chunks.push_back({ x,y,width,height,initValue,this });
-	v_chunks.emplace_back(x,y,width,height,initValue,this);
+	v_chunks.emplace_back(x,y,width,height,tileMap,this);
+	return &v_chunks[v_chunks.size() - 1];
+}
+
+Chunk* Level::BuildChunk(int x, int y, int width, int height, char initValue) {
+
+	TileMap* newTileMap = new TileMap(width, height, TILE_SIZE, m_tileTypes[initValue]);
+
+	v_chunks.emplace_back(x, y, width, height, newTileMap, this);
 	return &v_chunks[v_chunks.size() - 1];
 }
 

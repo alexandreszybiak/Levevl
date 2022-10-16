@@ -29,8 +29,6 @@ public:
 
 	TileHitFx& m_tileHitFx;
 
-	TileMap* m_testTileMap;
-
 	// Stores all the pointers to tile types
 	std::array<TileType*, 3> m_tileTypes;
 
@@ -46,7 +44,12 @@ public:
 
 	void Update(Input& input);
 
+	// Builds a new chunk from an existing TileMap
+	Chunk* BuildChunk(int x, int y, int width, int height, TileMap* tileMap);
+
+	// Builds a new chunk from an initial value
 	Chunk* BuildChunk(int x, int y, int width, int height, char initValue);
+
 	void DeleteChunk(int index);
 
 	int ValueAtPoint(int x, int y);
