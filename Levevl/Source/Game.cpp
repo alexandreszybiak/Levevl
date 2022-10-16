@@ -2,6 +2,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "Input.h"
+#include "TileMap.h"
 #include "Chunk.h"
 #include "Map.h"
 #include "Game.h"
@@ -163,6 +164,9 @@ void Game::render(Graphics& graphics) {
 
 	//Draw world map
 	level->worldMap->Draw(graphics);
+
+	//Draw test tileMap
+	level->m_testTileMap->Draw(graphics, level->player->X(), level->player->Y());
 
 	// End draw
 	SDL_SetTextureBlendMode(graphics.gameTexture, SDL_BLENDMODE_NONE);

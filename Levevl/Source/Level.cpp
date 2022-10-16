@@ -3,6 +3,7 @@
 #include "Utilities.h"
 #include "Game.h"
 #include "Camera.h"
+#include "TileMap.h"
 #include "Map.h"
 #include "Chunk.h"
 #include "Level.h"
@@ -13,6 +14,14 @@ Level::Level(Camera& camera) : m_camera(camera), m_tileHitFx(*(new TileHitFx()))
 	worldMap = new Map();
 	player = new Player(986, 175, this);
 	m_camera.m_target = player;
+
+	// Init tile types
+	m_emptyTile = new EmptyTile();
+	m_brickTile = new BrickTile();
+
+	m_testTileMap = new TileMap(5, 4, TILE_SIZE, m_brickTile);
+	m_testTileMap->SetRegion(m_emptyTile, 1, 1, 4, 3);
+
 }
 
 Level::~Level() {

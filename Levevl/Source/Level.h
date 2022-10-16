@@ -5,6 +5,12 @@ class Input;
 class Camera;
 class HorizontalLine;
 class VerticalLine;
+class TileMap;
+
+class NothingTile;
+class EmptyTile;
+class BrickTile;
+
 class Map;
 class Chunk;
 class Player;
@@ -20,6 +26,16 @@ public:
 	Player* player;
 
 	TileHitFx& m_tileHitFx;
+
+	TileMap* m_testTileMap;
+
+	// All tile types
+	NothingTile* m_nothingTile;
+	EmptyTile* m_emptyTile;
+	BrickTile* m_brickTile;
+
+	
+
 
 private:
 	//

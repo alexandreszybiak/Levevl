@@ -210,6 +210,7 @@
     <ClCompile Include="Source\PlayerStates.cpp" />
     <ClCompile Include="Source\Sprite.cpp" />
     <ClCompile Include="Source\TileHitFx.cpp" />
+    <ClCompile Include="Source\TileMap.cpp" />
     <ClCompile Include="Source\Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -229,6 +230,7 @@
     <ClInclude Include="Source\PlayerStates.h" />
     <ClInclude Include="Source\Sprite.h" />
     <ClInclude Include="Source\TileHitFx.h" />
+    <ClInclude Include="Source\TileMap.h" />
     <ClInclude Include="Source\Utilities.h" />
   </ItemGroup>
   <ItemGroup>
