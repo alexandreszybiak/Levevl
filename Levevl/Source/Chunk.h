@@ -10,6 +10,11 @@ class TileType;
 class Level;
 class TileHitFx;
 
+enum ChunkMovementType {
+	CHUNK_MOVE_TYPE_EASE,
+	CHUNK_MOVE_TYPE_LINEAR
+};
+
 //A piece of a level that can be moved around
 class Chunk {
 public:
@@ -31,6 +36,12 @@ private:
 
 	// Velocity
 	float m_velocityX, m_velocityY;
+
+	// Movement type
+	ChunkMovementType m_chunkMovementType;
+
+	// Turbo flag
+	bool m_isTurbo;
 
 	//
 	int m_width, m_height;

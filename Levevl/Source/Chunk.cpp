@@ -30,6 +30,7 @@ Chunk::Chunk(int x, int y, int width, int height, TileMap* tileMap, Level* level
 		m_emptyRect({ 0,0,TILE_SIZE,TILE_SIZE }),
 		m_brickRect({ TILE_SIZE,0,TILE_SIZE,TILE_SIZE }),
 		m_destinationRect({ 0,0,TILE_SIZE,TILE_SIZE }),
+		m_chunkMovementType(CHUNK_MOVE_TYPE_LINEAR),
 		m_tileHitFx(nullptr) {}
 
 //Chunk::Chunk(const Chunk& chunkCopy): 
@@ -56,8 +57,20 @@ void Chunk::Update() {
 	int distX = m_x - m_targetX;
 	int distY = m_y - m_targetY;
 
-	m_velocityX = ceil(abs(distX) * .5f) * Sign(distX) * -1;
-	m_velocityY = ceil(abs(distY) * .5f) * Sign(distY) * -1;
+	if (m_chunkMovementType == CHUNK_MOVE_TYPE_EASE) {
+		m_velocityX = ceil(abs(distX) * .5f) * Sign(distX) * -1;
+		m_velocityY = ceil(abs(distY) * .5f) * Sign(distY) * -1;
+	}
+
+	else if (m_chunkMovementType == CHUNK_MOVE_TYPE_LINEAR) {
+		m_velocityX = -6 * Sign(distX);
+		m_velocityY = -6 * Sign(m_x - m_targetX);
+	}
+
+	// Movement is over
+	if (m_x == m_targetX && m_isTurbo) {
+		/*Slide(Sign(distX), Sign()*/
+	}
 
 	Move(m_velocityX, m_velocityY);
 }

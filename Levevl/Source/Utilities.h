@@ -1,5 +1,18 @@
 #pragma once
 
+class Vector2 {
+public:
+	int x;
+	int y;
+public:
+	Vector2();
+	Vector2(int x, int y);
+	static Vector2 Up();
+	static Vector2 Left();
+	static Vector2 Down();
+	static Vector2 Right();
+};
+
 enum Direction {
 	DIRECTION_LEFT = -1,
 	DIRECTION_RIGHT = 1
