@@ -118,6 +118,6 @@ public:
 	void InvertDirection();
 
 private:
-	bool HitAtPoint(int x, int y, int dirX, int dirY);
+	bool HitAtPoint(int x, int y, const Vector2& direction);
 
 };

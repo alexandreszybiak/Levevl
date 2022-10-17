@@ -71,10 +71,10 @@ public:
 	std::vector<char>* GetData();
 
 	// Slide changes the target grid position of a chunk which inits a movement, return false if the chunk cannot move
-	bool Slide(int x, int y);
+	bool Slide(const Vector2& direction);
 
 	// Checks if this chunk can move, this function can be called recursively
-	bool CanSlide(int x, int y, std::vector<Chunk*>& otherChunks, std::vector<Chunk*>& freeChunks);
+	bool CanSlide(const Vector2& direction, std::vector<Chunk*>& otherChunks, std::vector<Chunk*>& freeChunks);
 
 	// Checks if this chunk overlaps the given 2d point and return the value at point
 	int OverlapsPoint(int x, int y);

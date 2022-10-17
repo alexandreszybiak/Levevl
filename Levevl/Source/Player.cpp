@@ -276,10 +276,10 @@ bool Player::IsRiding(Chunk& chunk) {
 
 }
 
-bool Player::HitAtPoint(int x, int y, int dirX, int dirY) {
+bool Player::HitAtPoint(int x, int y, const Vector2& direction) {
 	
 	for (Chunk& chunk : m_levelRef->v_chunks) {
-		int ValueAtOrigin = chunk.ValueAtPoint(x + 24 * -dirX, y + 24 * -dirY);
+		int ValueAtOrigin = chunk.ValueAtPoint(x + 24 * -direction.x, y + 24 * -direction.y);
 		int levelValueAtStickPoint = m_levelRef->ValueAtPoint(x, y);
 
 		int chunkValueAtStickPoint = chunk.ValueAtPoint(x, y);
@@ -287,16 +287,16 @@ bool Player::HitAtPoint(int x, int y, int dirX, int dirY) {
 
 		// If I hit a solid inside the Chunk
 		if (tile && tile->Solid()) {
-			m_levelRef->m_tileHitFx.Reset(x, y, dirX, dirY);
+			m_levelRef->m_tileHitFx.Reset(x, y, direction.x, direction.y);
 			chunk.m_tileHitFx = &m_levelRef->m_tileHitFx;
-			return tile->Hit(chunk, dirX, dirY);
+			return tile->Hit(chunk, direction);
 		}
 
 		// If I hit the void
 		if (levelValueAtStickPoint == 0 && ValueAtOrigin == 1) {
-			m_levelRef->m_tileHitFx.Reset(x, y, dirX, dirY);
+			m_levelRef->m_tileHitFx.Reset(x, y, direction.x, direction.y);
 			chunk.m_tileHitFx = &m_levelRef->m_tileHitFx;
-			return chunk.Slide(dirX, dirY);
+			return chunk.Slide(direction);
 		}
 	}
 

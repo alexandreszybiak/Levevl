@@ -46,19 +46,19 @@ void Editor::Update(Input& input) {
 	else {
 		if (input.WasKeyPressed(SDL_SCANCODE_LEFT)) {
 			if(m_selectedChunk)
-				m_selectedChunk->Slide(-1, 0);
+				m_selectedChunk->Slide(Vector2::Left());
 		}
 		if (input.WasKeyPressed(SDL_SCANCODE_RIGHT)) {
 			if (m_selectedChunk)
-				m_selectedChunk->Slide(1, 0);
+				m_selectedChunk->Slide(Vector2::Right());
 		}
 		if (input.WasKeyPressed(SDL_SCANCODE_UP)) {
 			if (m_selectedChunk)
-				m_selectedChunk->Slide(0, -1);
+				m_selectedChunk->Slide(Vector2::Up());
 		}
 		if (input.WasKeyPressed(SDL_SCANCODE_DOWN)) {
 			if (m_selectedChunk)
-				m_selectedChunk->Slide(0, 1);
+				m_selectedChunk->Slide(Vector2::Down());
 		}
 	}
 

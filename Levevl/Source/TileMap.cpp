@@ -1,6 +1,7 @@
 #include <iostream>
 #include "math.h"
 #include "SDL.h"
+#include "Utilities.h"
 #include "Game.h"
 #include "Graphics.h"
 #include "Camera.h"
@@ -63,7 +64,7 @@ TileType* TileMap::GetTile(int x, int y) {
 
 int TileType::m_tileSize = TILE_SIZE;
 
-bool TileType::Hit(Chunk& chunk, int dirX, int dirY) {
+bool TileType::Hit(Chunk& chunk, const Vector2& direction) {
 	std::cout << "You hit a tile" << std::endl;
 	return false;
 }
@@ -84,8 +85,8 @@ void BrickTile::Draw(Graphics& graphics, int x, int y) {
 	graphics.Draw(graphics.chunkTexture, &srcRect, &dstRect);
 }
 
-bool BrickTile::Hit(Chunk& chunk, int dirX, int dirY) {
-	return chunk.Slide(dirX, dirY);
+bool BrickTile::Hit(Chunk& chunk, const Vector2& direction) {
+	return chunk.Slide(direction);
 }
 
 // Turbo tile
@@ -96,7 +97,7 @@ void TurboTile::Draw(Graphics& graphics, int x, int y) {
 	graphics.Draw(graphics.chunkTexture, &srcRect, &dstRect);
 }
 
-bool TurboTile::Hit(Chunk& chunk, int dirX, int dirY) {
+bool TurboTile::Hit(Chunk& chunk, const Vector2& direction) {
 	std::cout << "You hit a turbo tile!" << std::endl;
 	return false;
 }

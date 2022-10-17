@@ -322,7 +322,10 @@ void StickHitState::Enter(Player* player) {
 	player->SetAnimation(&player->m_currentStickAnimation, player->m_stickHitAnimation);
 	player->m_currentStickAnimation->Reset();
 	player->m_stickSprite->SetFrame(player->m_currentStickAnimation->GetFrame()->GetFrameIndex());
-	bool slide = player->HitAtPoint(player->m_x + 25 * player->m_direction, player->m_y + 4, player->m_direction, 0);
+
+	Vector2 hitDirection = { player->m_direction, 0 };
+
+	bool slide = player->HitAtPoint(player->m_x + 25 * player->m_direction, player->m_y + 4, hitDirection);
 	if (!slide) {
 		player->m_velocityX = -3.0f * player->m_direction;
 	}
@@ -367,7 +370,7 @@ void StickHitDownState::Enter(Player* player) {
 	player->SetAnimation(&player->m_currentStickAnimation, player->m_stickHitDownAnimation);
 	player->m_currentStickAnimation->Reset();
 	player->m_stickSprite->SetFrame(player->m_currentStickAnimation->GetFrame()->GetFrameIndex());
-	player->HitAtPoint(player->m_x - 7 * player->m_direction, player->m_y + 32, 0, 1);
+	player->HitAtPoint(player->m_x - 7 * player->m_direction, player->m_y + 32, Vector2::Down());
 }
 
 PlayerState* StickHitDownState::HandleInput(Player* player, Input& input) {
@@ -394,7 +397,7 @@ void StickHitUpState::Enter(Player* player) {
 	player->SetAnimation(&player->m_currentStickAnimation, player->m_stickHitUpAnimation);
 	player->m_currentStickAnimation->Reset();
 	player->m_stickSprite->SetFrame(player->m_currentStickAnimation->GetFrame()->GetFrameIndex());
-	player->HitAtPoint(player->m_x - 7 * player->m_direction, player->m_y - 32, 0, -1);
+	player->HitAtPoint(player->m_x - 7 * player->m_direction, player->m_y - 32, Vector2::Up());
 }
 
 PlayerState* StickHitUpState::HandleInput(Player* player, Input& input) {
