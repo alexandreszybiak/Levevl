@@ -43,7 +43,7 @@ protected:
 	TileTypes m_type;
 public:
 	TileType(TileTypes type) : m_type(type) {}
-	virtual void Hit(Chunk& chunk);
+	virtual bool Hit(Chunk& chunk, int dirX, int dirY);
 	virtual bool Solid() = 0;
 	virtual bool Visible() = 0;
 	virtual void Draw(Graphics& graphics, int x, int y) = 0;
@@ -75,7 +75,7 @@ class BrickTile : public TileType {
 
 public:
 	BrickTile() : TileType(TILE_TYPE_BRICK) {}
-	//void Hit();
+	bool Hit(Chunk& chunk, int dirX, int dirY);
 	bool Solid() { return true; }
 	bool Visible() { return true; }
 	void Draw(Graphics& graphics, int x, int y);
@@ -85,7 +85,7 @@ class TurboTile : public TileType {
 
 public:
 	TurboTile() : TileType(TILE_TYPE_TURBO) {}
-	void Hit(Chunk& chunk);
+	bool Hit(Chunk& chunk, int dirX, int dirY);
 	bool Solid() { return true; }
 	bool Visible() { return true; }
 	void Draw(Graphics& graphics, int x, int y);

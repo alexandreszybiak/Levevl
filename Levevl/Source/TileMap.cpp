@@ -5,6 +5,7 @@
 #include "Graphics.h"
 #include "Camera.h"
 #include "TileMap.h"
+#include "Chunk.h"
 
 TileMap::TileMap(int width, int height, int tileSize, TileType* initTile) : m_width(width), m_height(height), m_tileSize(tileSize) {
 	m_data.reserve(m_width * m_height);
@@ -62,8 +63,9 @@ TileType* TileMap::GetTile(int x, int y) {
 
 int TileType::m_tileSize = TILE_SIZE;
 
-void TileType::Hit(Chunk& chunk) {
+bool TileType::Hit(Chunk& chunk, int dirX, int dirY) {
 	std::cout << "You hit a tile" << std::endl;
+	return false;
 }
 
 void NothingTile::Draw(Graphics& graphics, int x, int y) {
@@ -82,12 +84,19 @@ void BrickTile::Draw(Graphics& graphics, int x, int y) {
 	graphics.Draw(graphics.chunkTexture, &srcRect, &dstRect);
 }
 
+bool BrickTile::Hit(Chunk& chunk, int dirX, int dirY) {
+	return chunk.Slide(dirX, dirY);
+}
+
+// Turbo tile
+
 void TurboTile::Draw(Graphics& graphics, int x, int y) {
 	SDL_Rect srcRect = { m_tileSize * 2, 0, m_tileSize, m_tileSize };
 	SDL_Rect dstRect = { x, y, m_tileSize, m_tileSize };
 	graphics.Draw(graphics.chunkTexture, &srcRect, &dstRect);
 }
 
-void TurboTile::Hit(Chunk& chunk) {
+bool TurboTile::Hit(Chunk& chunk, int dirX, int dirY) {
 	std::cout << "You hit a turbo tile!" << std::endl;
+	return false;
 }

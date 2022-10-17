@@ -287,10 +287,9 @@ bool Player::HitAtPoint(int x, int y, int dirX, int dirY) {
 
 		// If I hit a solid inside the Chunk
 		if (tile && tile->Solid()) {
-			tile->Hit(chunk);
 			m_levelRef->m_tileHitFx.Reset(x, y, dirX, dirY);
 			chunk.m_tileHitFx = &m_levelRef->m_tileHitFx;
-			return chunk.Slide(dirX, dirY);
+			return tile->Hit(chunk, dirX, dirY);
 		}
 
 		// If I hit the void
