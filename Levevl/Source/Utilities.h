@@ -7,10 +7,21 @@ public:
 public:
 	Vector2();
 	Vector2(int x, int y);
+
+	static Vector2 Zero();
+
 	static Vector2 Up();
 	static Vector2 Left();
 	static Vector2 Down();
 	static Vector2 Right();
+
+	friend bool operator==(const Vector2& left, const Vector2& right) {
+		return (left.x == right.x && left.y == right.y);
+	}
+	friend bool operator!=(const Vector2& left, const Vector2& right) {
+		return (left.x != right.x || left.y != right.y);
+	}
+
 };
 
 enum Direction {

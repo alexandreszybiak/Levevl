@@ -99,5 +99,6 @@ void TurboTile::Draw(Graphics& graphics, int x, int y) {
 
 bool TurboTile::Hit(Chunk& chunk, const Vector2& direction) {
 	std::cout << "You hit a turbo tile!" << std::endl;
+	return chunk.Slide(direction, true);
 	return false;
 }

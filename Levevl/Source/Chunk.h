@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "SDL.h"
+#include "Utilities.h"
 
 class HorizontalLine;
 class VerticalLine;
@@ -40,8 +41,8 @@ private:
 	// Movement type
 	ChunkMovementType m_chunkMovementType;
 
-	// Turbo flag
-	bool m_isTurbo;
+	// Turbo direction
+	Vector2 m_turboDirection;
 
 	//
 	int m_width, m_height;
@@ -71,7 +72,7 @@ public:
 	std::vector<char>* GetData();
 
 	// Slide changes the target grid position of a chunk which inits a movement, return false if the chunk cannot move
-	bool Slide(const Vector2& direction);
+	bool Slide(const Vector2& direction, bool turbo = false);
 
 	// Checks if this chunk can move, this function can be called recursively
 	bool CanSlide(const Vector2& direction, std::vector<Chunk*>& otherChunks, std::vector<Chunk*>& freeChunks);

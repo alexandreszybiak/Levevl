@@ -31,6 +31,7 @@ Chunk::Chunk(int x, int y, int width, int height, TileMap* tileMap, Level* level
 		m_brickRect({ TILE_SIZE,0,TILE_SIZE,TILE_SIZE }),
 		m_destinationRect({ 0,0,TILE_SIZE,TILE_SIZE }),
 		m_chunkMovementType(CHUNK_MOVE_TYPE_LINEAR),
+		m_turboDirection({ 0,0 }),
 		m_tileHitFx(nullptr) {}
 
 //Chunk::Chunk(const Chunk& chunkCopy): 
@@ -63,16 +64,21 @@ void Chunk::Update() {
 	}
 
 	else if (m_chunkMovementType == CHUNK_MOVE_TYPE_LINEAR) {
-		m_velocityX = -6 * Sign(distX);
-		m_velocityY = -6 * Sign(distY);
-	}
-
-	// Movement is over
-	if (m_x == m_targetX && m_isTurbo) {
-		/*Slide(Sign(distX), Sign()*/
+		m_velocityX = -12 * Sign(distX);
+		m_velocityY = -12 * Sign(distY);
 	}
 
 	Move(m_velocityX, m_velocityY);
+
+	// Movement is over
+	if (m_x == m_targetX && m_y == m_targetY && m_turboDirection != Vector2::Zero() ) {
+		bool couldSlide = Slide(m_turboDirection);
+		if (couldSlide == false) {
+			m_turboDirection = Vector2::Zero();
+			m_chunkMovementType = CHUNK_MOVE_TYPE_EASE;
+		}
+	}
+
 }
 
 void Chunk::Move(float x, float y) {
@@ -144,7 +150,7 @@ void Chunk::DrawMask(Graphics& graphics) {
 		}
 	}
 }
-bool Chunk::Slide(const Vector2& direction) {
+bool Chunk::Slide(const Vector2& direction, bool turbo) {
 	std::vector<Chunk*> otherChunks;
 	std::vector<Chunk*> freeChunks;
 	otherChunks.reserve(m_levelRef->v_chunks.size());
@@ -160,6 +166,12 @@ bool Chunk::Slide(const Vector2& direction) {
 			e->m_targetX += direction.x * TILE_SIZE;
 			e->m_targetY += direction.y * TILE_SIZE;
 		}
+
+		if (turbo) {
+			m_turboDirection = direction;
+			m_chunkMovementType = CHUNK_MOVE_TYPE_LINEAR;
+		}
+
 		return true;
 	}
 
