@@ -152,17 +152,17 @@ void Chunk::DrawMask(Graphics& graphics) {
 }
 bool Chunk::Slide(const Vector2& direction, bool turbo) {
 	std::vector<Chunk*> otherChunks;
-	std::vector<Chunk*> freeChunks;
+	std::vector<Chunk*> pushedChunks;
 	otherChunks.reserve(m_levelRef->v_chunks.size());
-	freeChunks.reserve(m_levelRef->v_chunks.size());
+	pushedChunks.reserve(m_levelRef->v_chunks.size());
 	for (Chunk& e : m_levelRef->v_chunks) {
 		if (&e == this)
 			continue;
 		otherChunks.push_back(&e);
 	}
 
-	if (CanSlide(direction, otherChunks, freeChunks)) {
-		for (Chunk* e : freeChunks) {
+	if (CanSlide(direction, otherChunks, pushedChunks)) {
+		for (Chunk* e : pushedChunks) {
 			e->m_targetX += direction.x * TILE_SIZE;
 			e->m_targetY += direction.y * TILE_SIZE;
 		}
@@ -178,7 +178,7 @@ bool Chunk::Slide(const Vector2& direction, bool turbo) {
 	return false;
 }
 
-bool Chunk::CanSlide(const Vector2& direction, std::vector<Chunk*>& otherChunks, std::vector<Chunk*>& freeChunks) {
+bool Chunk::CanSlide(const Vector2& direction, std::vector<Chunk*>& otherChunks, std::vector<Chunk*>& pushedChunks) {
 	if (OverlapsWalls(direction.x, direction.y))
 		return false;
 
@@ -189,12 +189,12 @@ bool Chunk::CanSlide(const Vector2& direction, std::vector<Chunk*>& otherChunks,
 		if (OverlapsChunk(currentChunk, direction.x, direction.y)) {
 			auto end = std::remove(otherChunks.begin(), otherChunks.end(), currentChunk);
 			otherChunks.erase(end, otherChunks.end());
-			if (!currentChunk->CanSlide(direction, otherChunks, freeChunks))
+			if (!currentChunk->CanSlide(direction, otherChunks, pushedChunks))
 				return false;
 		}
 	}
 
-	freeChunks.push_back(this);
+	pushedChunks.push_back(this);
 	return true;
 }
 

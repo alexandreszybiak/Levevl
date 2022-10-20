@@ -20,6 +20,9 @@ enum ChunkMovementType {
 class Chunk {
 public:
 	
+	// A TileMap object to store the data
+	TileMap* m_tileMap;
+
 	TileHitFx* m_tileHitFx;
 
 private:
@@ -48,8 +51,6 @@ private:
 	int m_width, m_height;
 
 	//std::vector<char> m_data;
-
-	TileMap* m_tileMap;
 	
 	SDL_Rect m_emptyRect, m_brickRect;
 	SDL_Rect m_destinationRect;

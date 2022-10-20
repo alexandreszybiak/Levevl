@@ -9,8 +9,8 @@
 #include "Chunk.h"
 
 TileMap::TileMap(int width, int height, int tileSize, TileType* initTile) : m_width(width), m_height(height), m_tileSize(tileSize) {
-	m_data.reserve(m_width * m_height);
-	for (int i = 0; i < m_width * m_height; i++) {
+	m_data.reserve(width * height);
+	for (int i = 0; i < width * height; i++) {
 		m_data.push_back(initTile);
 	}
 }
@@ -58,6 +58,10 @@ void TileMap::SetRegion(TileType* value, int x1, int y1, int x2, int y2) {
 
 TileType* TileMap::GetTile(int x, int y) {
 	return m_data[x + y * m_width];
+}
+
+const std::vector<TileType*>& TileMap::GetData() {
+	return m_data;
 }
 
 // Tile types

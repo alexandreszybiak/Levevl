@@ -29,6 +29,9 @@ public:
 	// Gets a tile by TileMap coordinates
 	TileType* GetTile(int x, int y);
 
+	// Get data
+	const std::vector<TileType*>& GetData();
+
 };
 
 enum TileTypes {
@@ -48,7 +51,7 @@ public:
 	virtual bool Solid() = 0;
 	virtual bool Visible() = 0;
 	virtual void Draw(Graphics& graphics, int x, int y) = 0;
-	virtual int GetType() { return m_type; }
+	int GetType() { return m_type; }
 
 };
 

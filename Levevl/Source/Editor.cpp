@@ -187,82 +187,87 @@ void Editor::Draw(Graphics& graphics) {
 void Editor::Save() {
 	int worldMapLength = m_level_ref->worldMap->m_mapWidth * m_level_ref->worldMap->m_mapHeight;
 	SDL_RWops* levelFile = SDL_RWFromFile("level.bin", "w+b");
-	if (levelFile) {
-		for (int i = 0; i < worldMapLength; i++) {
-			SDL_RWwrite(levelFile, &m_level_ref->worldMap->m_data[i], sizeof(Uint8), 1);
-		}
 
-		int chunkCount = m_level_ref->v_chunks.size();
-		
-		SDL_RWwrite(levelFile, &chunkCount, sizeof(int), 1);
-
-		for (Chunk& chunk : m_level_ref->v_chunks) {
-			int x = chunk.GetX();
-			int y = chunk.GetY();
-			int width = chunk.GetWidth();
-			int size = chunk.GetData()->size();
-
-			SDL_RWwrite(levelFile, &x, sizeof(int), 1);
-			SDL_RWwrite(levelFile, &y, sizeof(int), 1);
-			SDL_RWwrite(levelFile, &width, sizeof(int), 1);
-			SDL_RWwrite(levelFile, &size, sizeof(int), 1);
-
-			for (char c : *chunk.GetData()) {
-				SDL_RWwrite(levelFile, &c, sizeof(char), 1);
-			}
-		}
-		SDL_RWclose(levelFile);
-		std::cout << "Level saved!" << std::endl;
-	}
-	else {
+	if (!levelFile) {
 		std::cout << "Level file not found." << std::endl;
+		return;
 	}
+
+	for (int i = 0; i < worldMapLength; i++) {
+		SDL_RWwrite(levelFile, &m_level_ref->worldMap->m_data[i], sizeof(Uint8), 1);
+	}
+
+	int chunkCount = m_level_ref->v_chunks.size();
+		
+	SDL_RWwrite(levelFile, &chunkCount, sizeof(int), 1);
+
+	for (Chunk& chunk : m_level_ref->v_chunks) {
+		int x = chunk.GetX();
+		int y = chunk.GetY();
+		int width = chunk.GetWidth();
+		int size = chunk.m_tileMap->GetData().size();
+
+		SDL_RWwrite(levelFile, &x, sizeof(int), 1);
+		SDL_RWwrite(levelFile, &y, sizeof(int), 1);
+		SDL_RWwrite(levelFile, &width, sizeof(int), 1);
+		SDL_RWwrite(levelFile, &size, sizeof(int), 1);
+
+		for (TileType* tile : chunk.m_tileMap->GetData()) {
+			int type = tile->GetType();
+			SDL_RWwrite(levelFile, &type, 1, 1);
+		}
+	}
+	SDL_RWclose(levelFile);
+	std::cout << "Level saved!" << std::endl;
 }
 
 void Editor::Load() {
 	int worldMapLength = m_level_ref->worldMap->m_mapWidth * m_level_ref->worldMap->m_mapHeight;
 	SDL_RWops* levelFile = SDL_RWFromFile("level.bin", "r+b");
-	if (levelFile) {
-		while (1) {
-			for (int i = 0; i < worldMapLength; i++) {
-				if (!SDL_RWread(levelFile, &m_level_ref->worldMap->m_data[i], sizeof(Uint8), 1))
-					break;
-			}
-
-			int numChunk = 0;
-			if (!SDL_RWread(levelFile, &numChunk, sizeof(int), 1))
-				break;
-
-			int x = 0;
-			int y = 0;
-			int width = 0;
-			int size = 0;
-
-			m_level_ref->v_chunks.reserve(numChunk);
-
-			for (int i = 0; i < numChunk; i++) {
-
-				SDL_RWread(levelFile, &x, sizeof(int), 1);
-				SDL_RWread(levelFile, &y, sizeof(int), 1);
-				SDL_RWread(levelFile, &width, sizeof(int), 1);
-				SDL_RWread(levelFile, &size, sizeof(int), 1);
-
-				TileMap* newTileMap = new TileMap(width, size / width, TILE_SIZE, m_level_ref->m_tileTypes[TILE_TYPE_BRICK]);
-
-
-				// Convert raw chunk data to tile type pointers
-
-				char currentRawTileValue = 0;
-				for (int t = 0; t < sizeof(char) * size; t++) {
-					SDL_RWread(levelFile, &currentRawTileValue, sizeof(char), 1);
-					newTileMap->SetTile(m_level_ref->m_tileTypes[currentRawTileValue], t);
-				}
-
-				m_level_ref->BuildChunk(x, y, width, size / width, newTileMap);
-			}
-
-			break;
-		}
-		SDL_RWclose(levelFile);
+	if (!levelFile) {
+		std::cout << "No world file found." << std::endl;
+		return;
 	}
+	while (1) {
+		for (int i = 0; i < worldMapLength; i++) {
+			if (!SDL_RWread(levelFile, &m_level_ref->worldMap->m_data[i], sizeof(Uint8), 1))
+				break;
+		}
+
+		int numChunk = 0;
+		if (!SDL_RWread(levelFile, &numChunk, sizeof(int), 1))
+			break;
+
+		int x = 0;
+		int y = 0;
+		int width = 0;
+		int size = 0;
+
+		m_level_ref->v_chunks.reserve(numChunk);
+
+		for (int i = 0; i < numChunk; i++) {
+
+			SDL_RWread(levelFile, &x, sizeof(int), 1);
+			SDL_RWread(levelFile, &y, sizeof(int), 1);
+			SDL_RWread(levelFile, &width, sizeof(int), 1);
+			SDL_RWread(levelFile, &size, sizeof(int), 1);
+
+			TileMap* newTileMap = new TileMap(width, size / width, TILE_SIZE, m_level_ref->m_tileTypes[TILE_TYPE_BRICK]);
+
+
+			// Convert raw chunk data to tile type pointers
+
+			char currentRawTileValue = 0;
+			for (int t = 0; t < sizeof(char) * size; t++) {
+				SDL_RWread(levelFile, &currentRawTileValue, sizeof(char), 1);
+				newTileMap->SetTile(m_level_ref->m_tileTypes[currentRawTileValue], t);
+			}
+
+			m_level_ref->BuildChunk(x, y, width, size / width, newTileMap);
+		}
+
+		break;
+	}
+	SDL_RWclose(levelFile);
+
 }
