@@ -34,23 +34,22 @@ Chunk::Chunk(int x, int y, int width, int height, TileMap* tileMap, Level* level
 		m_turboDirection({ 0,0 }),
 		m_tileHitFx(nullptr) {}
 
-//Chunk::Chunk(const Chunk& chunkCopy): 
-//		m_x(chunkCopy.m_x), 
-//		m_y(chunkCopy.m_y),
-//		m_targetX(chunkCopy.m_targetX),
-//		m_targetY(chunkCopy.m_targetY),
-//		m_width(chunkCopy.m_width), 
-//		m_height(chunkCopy.m_height),
-//		m_levelRef(chunkCopy.m_levelRef),
+//Chunk::Chunk(const Chunk& src): 
+//		m_x(src.m_x), 
+//		m_y(src.m_y),
+//		m_targetX(src.m_targetX),
+//		m_targetY(src.m_targetY),
+//		m_width(src.m_width), 
+//		m_height(src.m_height),
+//		m_levelRef(src.m_levelRef),
 //		m_emptyRect({ 0,0,TILE_SIZE,TILE_SIZE }),
 //		m_brickRect({ TILE_SIZE,0,TILE_SIZE,TILE_SIZE }),
 //		m_destinationRect({ 0,0,TILE_SIZE,TILE_SIZE }),
-//		m_data(chunkCopy.m_data) {
+//		m_tileMap(src.m_tileMap) {
 //	std::cout << "Chunk copied." << std::endl;
 //}
 
 Chunk::~Chunk() {
-	delete m_tileMap;
 	std::cout << "Chunk destroyed." << std::endl;
 }
 

@@ -57,7 +57,8 @@ Chunk* Level::BuildChunk(int x, int y, int width, int height, char initValue) {
 	return &v_chunks[v_chunks.size() - 1];
 }
 
-void Level::DeleteChunk(int index) {
+void Level::DeleteChunk(Chunk* chunk, int index) {
+	delete chunk->m_tileMap;
 	v_chunks.erase(v_chunks.begin() + index);
 }
 

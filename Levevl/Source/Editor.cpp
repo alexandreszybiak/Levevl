@@ -126,7 +126,7 @@ void Editor::Update(Input& input) {
 	}
 	if (input.WasKeyPressed(SDL_SCANCODE_DELETE)) {
 		if (m_selectedChunk) {
-			m_level_ref->DeleteChunk(m_selectedChunkIndex);
+			m_level_ref->DeleteChunk(m_selectedChunk, m_selectedChunkIndex);
 			m_selectedChunk = nullptr;
 			m_selectedChunkIndex = 0;
 		}

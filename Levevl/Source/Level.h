@@ -50,7 +50,7 @@ public:
 	// Builds a new chunk from an initial value
 	Chunk* BuildChunk(int x, int y, int width, int height, char initValue);
 
-	void DeleteChunk(int index);
+	void DeleteChunk(Chunk* chunk, int index);
 
 	int ValueAtPoint(int x, int y);
 
