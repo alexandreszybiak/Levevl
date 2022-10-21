@@ -30,7 +30,7 @@ Chunk::Chunk(int x, int y, int width, int height, TileMap* tileMap, Level* level
 		m_emptyRect({ 0,0,TILE_SIZE,TILE_SIZE }),
 		m_brickRect({ TILE_SIZE,0,TILE_SIZE,TILE_SIZE }),
 		m_destinationRect({ 0,0,TILE_SIZE,TILE_SIZE }),
-		m_chunkMovementType(CHUNK_MOVE_TYPE_LINEAR),
+		m_chunkMovementType(CHUNK_MOVE_TYPE_EASE),
 		m_turboDirection({ 0,0 }),
 		m_tileHitFx(nullptr) {}
 
@@ -63,8 +63,8 @@ void Chunk::Update() {
 	}
 
 	else if (m_chunkMovementType == CHUNK_MOVE_TYPE_LINEAR) {
-		m_velocityX = -12 * Sign(distX);
-		m_velocityY = -12 * Sign(distY);
+		m_velocityX = -24 * Sign(distX);
+		m_velocityY = -24 * Sign(distY);
 	}
 
 	Move(m_velocityX, m_velocityY);
