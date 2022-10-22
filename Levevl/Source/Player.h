@@ -111,7 +111,7 @@ public:
 	bool OverlapsSolidX(int dirX, int offset);
 
 	// Collision checking on the y
-	bool OverlapsSolidY(Direction direction, int offset);
+	bool OverlapsSolidY(int dirY, int offset);
 
 
 	bool OnFloor() { return m_onFloor; }

@@ -63,8 +63,8 @@ void Chunk::Update() {
 	}
 
 	else if (m_chunkMovementType == CHUNK_MOVE_TYPE_LINEAR) {
-		m_velocityX = -24 * Sign(distX);
-		m_velocityY = -24 * Sign(distY);
+		m_velocityX = -12 * Sign(distX);
+		m_velocityY = -12 * Sign(distY);
 	}
 
 	Move(m_velocityX, m_velocityY);
@@ -122,6 +122,12 @@ void Chunk::Move(float x, float y) {
 
 		if (isPlayerRiding) {
 			m_levelRef->player->MoveY(moveY);
+		}
+		else {
+
+			while (m_levelRef->player->OverlapsSolidY(-Sign(moveY), 0)) {
+				m_levelRef->player->MoveInstant(0, Sign(moveY));
+			}
 		}
 	}
 }

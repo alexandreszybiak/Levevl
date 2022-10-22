@@ -167,24 +167,15 @@ void Player::MoveY(float y) {
 	int sign = Sign(move);
 
 	while (move != 0) {
-		HorizontalLine bodyLine = { m_y + m_boundingBox.Y2() * sign + sign, m_x + m_boundingBox.X1(), m_x + m_boundingBox.X2() };
-
-		if (m_levelRef->OverlapsLine(bodyLine)) {
+		
+		if (OverlapsSolidY(sign, sign)) {
 			m_velocityY = .0f;
 			if (move > 0) {
 				m_onFloor = true;
 			}
 			break;
 		}
-
-		if (move < 0 && m_stickState != m_stickIdleState && m_stickState != m_stickHitState) {
-			HorizontalLine stickLine = { m_y + VERTICAL_STICK_TIP_Y * sign + sign, m_x - VERTICAL_STICK_TIP_X1 * m_direction, m_x - VERTICAL_STICK_TIP_X2 + 1 * m_direction };
-			if (m_levelRef->OverlapsLine(stickLine)) {
-				m_velocityY = .0f;
-				break;
-			}
-		}
-
+		
 		m_y += sign;
 		move -= sign;
 	}
@@ -276,6 +267,23 @@ bool Player::OverlapsSolidX(int dirX, int offset) {
 	if (m_stickState == m_stickIdleState || m_stickState == m_stickHitState) {
 		VerticalLine stickLine = { m_x + HORIZONTAL_STICK_TIP_X * dirX + offset, m_y + 3, m_y + 4 };
 
+		if (m_levelRef->OverlapsLine(stickLine)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool Player::OverlapsSolidY(int dirY, int offset) {
+	HorizontalLine bodyLine = { m_y + m_boundingBox.Y2() * dirY + offset, m_x + m_boundingBox.X1(), m_x + m_boundingBox.X2() };
+
+	if (m_levelRef->OverlapsLine(bodyLine)) {
+		return true;
+	}
+
+	if (dirY < 0 && m_stickState != m_stickIdleState && m_stickState != m_stickHitState) {
+		HorizontalLine stickLine = { m_y + VERTICAL_STICK_TIP_Y * dirY + offset, m_x - VERTICAL_STICK_TIP_X1 * m_direction, m_x - VERTICAL_STICK_TIP_X2 + 1 * m_direction };
 		if (m_levelRef->OverlapsLine(stickLine)) {
 			return true;
 		}
