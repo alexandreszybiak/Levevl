@@ -145,20 +145,9 @@ void Player::MoveX(float x) {
 
 	while (move != 0) {
 
-		VerticalLine bodyLine = { m_x + m_boundingBox.X2() * sign + sign, m_y + m_boundingBox.Y1(), m_y + m_boundingBox.Y2()};
-
-		if (m_levelRef->OverlapsLine(bodyLine)) {
-			m_velocityX = 0.0f;
+		if (OverlapsSolidX(sign, sign)) {
+			m_velocityX = .0f;
 			break;
-		}
-
-		if (m_stickState == m_stickIdleState || m_stickState == m_stickHitState) {
-			VerticalLine stickLine = { m_x + HORIZONTAL_STICK_TIP_X * sign + sign, m_y + 3, m_y + 4 };
-
-			if (m_levelRef->OverlapsLine(stickLine)) {
-				m_velocityX = 0.0f;
-				break;
-			}
 		}
 
 		m_x += sign;
@@ -274,6 +263,25 @@ bool Player::IsRiding(Chunk& chunk) {
 	return false;
 
 
+}
+
+bool Player::OverlapsSolidX(int dirX, int offset) {
+
+	VerticalLine bodyLine = { m_x + m_boundingBox.X2() * dirX + offset, m_y + m_boundingBox.Y1(), m_y + m_boundingBox.Y2() };
+
+	if (m_levelRef->OverlapsLine(bodyLine)) {
+		return true;
+	}
+
+	if (m_stickState == m_stickIdleState || m_stickState == m_stickHitState) {
+		VerticalLine stickLine = { m_x + HORIZONTAL_STICK_TIP_X * dirX + offset, m_y + 3, m_y + 4 };
+
+		if (m_levelRef->OverlapsLine(stickLine)) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool Player::HitAtPoint(int x, int y, const Vector2& direction) {

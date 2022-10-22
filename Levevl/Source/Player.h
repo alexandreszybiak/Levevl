@@ -101,14 +101,26 @@ public:
 	void Update(Input& input);
 	void Draw(Graphics& graphics);
 
-	// Move and handle collisions
+	// Move and resolve collisions on the x axis
 	void MoveX(float x);
+
+	// Move and resolve collisions on the y axis
 	void MoveY(float y);
+
+	// Collision checking on the x axis
+	bool OverlapsSolidX(int dirX, int offset);
+
+	// Collision checking on the y
+	bool OverlapsSolidY(Direction direction, int offset);
+
+
 	bool OnFloor() { return m_onFloor; }
 	void SetOnFloor(bool b) { m_onFloor = b; }
 	void SetPosition(int x, int y);
 	void MoveInstant(int x, int y);
 	bool IsRiding(Chunk& chunk);
+
+	
 
 	void SetAnimation(Animation** target, Animation* animation);
 	const Animation* GetAnimation() { return m_currentBodyAnimation; }
@@ -118,6 +130,7 @@ public:
 	void InvertDirection();
 
 private:
+	// The player performs a chunk hit
 	bool HitAtPoint(int x, int y, const Vector2& direction);
 
 };

@@ -91,10 +91,8 @@ void Chunk::Move(float x, float y) {
 		return;
 
 	if (moveX != 0) {
-		bool isPlayerRiding = false;
-		if (m_levelRef->player->IsRiding(*this)) {
-			isPlayerRiding = true;
-		}
+		bool isPlayerRiding = m_levelRef->player->IsRiding(*this);
+
 		m_xRemainder -= moveX;
 		m_x += moveX;
 		if (m_tileHitFx) // Need Clean
@@ -103,7 +101,12 @@ void Chunk::Move(float x, float y) {
 		if (isPlayerRiding) {
 			m_levelRef->player->MoveX(moveX);
 		}
-		
+		else {
+
+			while (m_levelRef->player->OverlapsSolidX(-Sign(moveX), 0)) {
+				m_levelRef->player->MoveInstant(Sign(moveX), 0);
+			}
+		}	
 	}
 
 	if (moveY != 0) {
