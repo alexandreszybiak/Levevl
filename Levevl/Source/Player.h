@@ -5,6 +5,8 @@
 #include "Utilities.h"
 
 #define GRAVITY .48f
+#define JUMP_CANCEL_FACTOR .35f
+
 #define HORIZONTAL_STICK_TIP_X 20
 #define HORIZONTAL_STICK_TIP_Y1 3
 #define HORIZONTAL_STICK_TIP_Y2 4

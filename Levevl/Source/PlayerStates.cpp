@@ -114,10 +114,9 @@ PlayerState* PlayerJumpState::HandleInput(Player* player, Input& input) {
 		return player->m_playerWallSlideState;
 	}
 
-	// Make a smaller jump
-
+	// Cancel the jump
 	if (input.ReleasedJump()) {
-		player->m_velocityY *= 0.5;
+		player->m_velocityY *= JUMP_CANCEL_FACTOR;
 	}
 
 	return NULL;
@@ -221,6 +220,11 @@ PlayerState* PlayerWallSlideState::HandleInput(Player* player, Input& input) {
 		if (inputHDir != 0) {
 			return player->m_playerFallState->Reset(player->m_groundAcceleration);
 		}
+	}
+
+	// Cancel the jump
+	if (input.ReleasedJump()) {
+		player->m_velocityY *= JUMP_CANCEL_FACTOR;
 	}
 
 	return NULL;
