@@ -16,6 +16,10 @@ Level::Level(Camera& camera) : m_camera(camera), m_tileHitFx(*(new TileHitFx()))
 	player = new Player(986, 175, this);
 	m_camera.m_target = player;
 
+	// Add entities to list
+	m_entities.push_back(player);
+	m_entities.push_back(&m_tileHitFx);
+
 	// Init tile types
 	m_tileTypes[TILE_TYPE_NOTHING] = new NothingTile();
 	m_tileTypes[TILE_TYPE_EMPTY] = new EmptyTile();
@@ -34,9 +38,9 @@ void Level::Update(Input& input) {
 		chunk.Update();
 	}
 
-	player->Update(input);
-
-	m_tileHitFx.Update();
+	for (Entity* e : m_entities){
+		e->Update(input);
+	}
 
 	m_camera.Update();
 

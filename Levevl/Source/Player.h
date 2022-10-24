@@ -61,7 +61,7 @@ public:
 private:
 
 	float m_velocityX, m_velocityY;
-	float m_xRemainder, m_yRemainder;
+	
 	const float m_speed = 2.5f;
 	const float m_groundAcceleration = 0.45f;
 	const float m_airAcceleration = 0.9f;
@@ -100,29 +100,27 @@ private:
 
 public:
 	Player(int x, int y, Level* level);
-	void Update(Input& input);
+	void Update(Input& input) override;
 	void Draw(Graphics& graphics);
 
 	// Move and resolve collisions on the x axis
-	void MoveX(float x);
+	void MoveX(float x) override;
 
 	// Move and resolve collisions on the y axis
-	void MoveY(float y);
+	void MoveY(float y) override;
 
 	// Collision checking on the x axis
-	bool OverlapsSolidX(int dirX, int offset);
+	bool OverlapsSolidX(int dirX, int offset) override;
 
 	// Collision checking on the y
-	bool OverlapsSolidY(int dirY, int offset);
-
+	bool OverlapsSolidY(int dirY, int offset) override;
+	
+	// Returns true if the player should be carried by the chunk
+	bool IsRiding(Chunk& chunk);
 
 	bool OnFloor() { return m_onFloor; }
 	void SetOnFloor(bool b) { m_onFloor = b; }
-	void SetPosition(int x, int y);
-	void MoveInstant(int x, int y);
-	bool IsRiding(Chunk& chunk);
-
-	
+	void SetPosition(int x, int y);	
 
 	void SetAnimation(Animation** target, Animation* animation);
 	const Animation* GetAnimation() { return m_currentBodyAnimation; }

@@ -31,8 +31,7 @@ Chunk::Chunk(int x, int y, int width, int height, TileMap* tileMap, Level* level
 		m_brickRect({ TILE_SIZE,0,TILE_SIZE,TILE_SIZE }),
 		m_destinationRect({ 0,0,TILE_SIZE,TILE_SIZE }),
 		m_chunkMovementType(CHUNK_MOVE_TYPE_EASE),
-		m_turboDirection({ 0,0 }),
-		m_tileHitFx(nullptr) {}
+		m_turboDirection({ 0,0 }){}
 
 //Chunk::Chunk(const Chunk& src): 
 //		m_x(src.m_x), 
@@ -91,44 +90,54 @@ void Chunk::Move(float x, float y) {
 		return;
 
 	if (moveX != 0) {
-		bool isPlayerRiding = m_levelRef->player->IsRiding(*this);
+
+		for (Entity* e : m_levelRef->m_entities) {
+			if (e->IsRiding(*this)) {
+				e->SetCarryAmount(moveX, 0);
+			}
+		}
 
 		m_xRemainder -= moveX;
 		m_x += moveX;
-		if (m_tileHitFx) // Need Clean
-			m_tileHitFx->Move(moveX, 0);
 
-		if (isPlayerRiding) {
-			m_levelRef->player->MoveX(moveX);
-		}
-		else {
-
-			while (m_levelRef->player->OverlapsSolidX(-Sign(moveX), 0)) {
-				m_levelRef->player->MoveInstant(Sign(moveX), 0);
+		for (Entity* e : m_levelRef->m_entities) {
+			e->Carry();
+			while (e->OverlapsSolidX(-Sign(moveX), 0)) {
+				e->MoveInstant(Sign(moveX), 0);
 			}
-		}	
+		}
+
+		//// Carry entities
+		//if (isPlayerRiding) {
+		//	m_levelRef->player->MoveX(moveX);
+		//}
+		//// Push entities
+		//else {
+
+		//	while (m_levelRef->player->OverlapsSolidX(-Sign(moveX), 0)) {
+		//		m_levelRef->player->MoveInstant(Sign(moveX), 0);
+		//	}
+		//}	
 	}
 
 	if (moveY != 0) {
-		bool isPlayerRiding = false;
-		if (m_levelRef->player->IsRiding(*this)) {
-			isPlayerRiding = true;
+
+		for (Entity* e : m_levelRef->m_entities) {
+			if (e->IsRiding(*this)) {
+				e->SetCarryAmount(0, moveY);
+			}
 		}
 
 		m_yRemainder -= moveY;
 		m_y += moveY;
-		if(m_tileHitFx)
-			m_tileHitFx->Move(0, moveY);
 
-		if (isPlayerRiding) {
-			m_levelRef->player->MoveY(moveY);
-		}
-		else {
-
-			while (m_levelRef->player->OverlapsSolidY(-Sign(moveY), 0)) {
-				m_levelRef->player->MoveInstant(0, Sign(moveY));
+		for (Entity* e : m_levelRef->m_entities) {
+			e->Carry();
+			while (e->OverlapsSolidY(-Sign(moveY), 0)) {
+				e->MoveInstant(0, Sign(moveY));
 			}
 		}
+
 	}
 }
 

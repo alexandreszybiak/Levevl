@@ -9,7 +9,6 @@ class Graphics;
 class TileMap;
 class TileType;
 class Level;
-class TileHitFx;
 
 enum ChunkMovementType {
 	CHUNK_MOVE_TYPE_EASE,
@@ -22,8 +21,6 @@ public:
 	
 	// A TileMap object to store the data
 	TileMap* m_tileMap;
-
-	TileHitFx* m_tileHitFx;
 
 private:
 	// Used to compute collisions with entities

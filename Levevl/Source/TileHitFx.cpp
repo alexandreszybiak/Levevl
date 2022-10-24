@@ -4,9 +4,10 @@
 #include "Graphics.h"
 #include "Animation.h"
 #include "Sprite.h"
+#include "Chunk.h"
 #include "TileHitFx.h"
 
-TileHitFx::TileHitFx() : m_sprite(*(new Sprite(0, 0, 14, 34, 3, 14, 16))) {
+TileHitFx::TileHitFx() : Entity(0,0), m_sprite(*(new Sprite(0, 0, 14, 34, 3, 14, 16))) {
 	m_animation = new Animation(2, false);
 	m_animation->PushFrame(0);
 	m_animation->PushFrame(1);
@@ -22,7 +23,7 @@ TileHitFx::~TileHitFx() {
 	delete m_animation;
 }
 
-void TileHitFx::Update() {
+void TileHitFx::Update(Input& input) {
 	const KeyFrame* newFrame = m_animation->Update();
 
 	if (newFrame) {
@@ -33,6 +34,7 @@ void TileHitFx::Update() {
 		m_sprite.SetVisible(false);
 	}
 
+	m_sprite.SetPosition(m_x, m_y);
 
 }
 
@@ -64,6 +66,9 @@ void TileHitFx::Reset(int x, int y, int dirX, int dirY) {
 		newY = y / TILE_SIZE * TILE_SIZE + TILE_SIZE;
 	}
 
+	m_x = newX;
+	m_y = newY;
+
 	m_sprite.SetPosition(newX, newY);
 	m_sprite.SetVisible(true);
 	const KeyFrame* newFrame = m_animation->Reset();
@@ -85,4 +90,11 @@ void TileHitFx::Reset(int x, int y, int dirX, int dirY) {
 
 void TileHitFx::Move(int x, int y) {
 	m_sprite.Move(x, y);
+}
+
+bool TileHitFx::IsRiding(Chunk& chunk) {
+	if (chunk.ValueAtPoint(m_x, m_y) != 0) {
+		return true;
+	}
+	return false;
 }

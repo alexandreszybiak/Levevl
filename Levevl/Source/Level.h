@@ -4,6 +4,7 @@
 
 class Input;
 class Camera;
+class Entity;
 class HorizontalLine;
 class VerticalLine;
 class TileMap;
@@ -28,6 +29,8 @@ public:
 	Player* player;
 
 	TileHitFx& m_tileHitFx;
+
+	std::vector<Entity*> m_entities;
 
 	// Stores all the pointers to tile types
 	std::array<TileType*, 4> m_tileTypes;

@@ -1,10 +1,12 @@
 #pragma once
+#include "Entity.h"
 
+class Input;
 class Graphics;
 class Animation;
 class Sprite;
 
-class TileHitFx {
+class TileHitFx : public Entity {
 public:
 
 private:
@@ -15,8 +17,12 @@ private:
 public:
 	TileHitFx();
 	~TileHitFx();
-	void Update();
+	void Update(Input& input) override;
 	void Draw(Graphics& graphics);
+
+	// Check if that entity is riding that chunk
+	bool IsRiding(Chunk& chunk) override;
+
 	void SetPosition(int x, int y);
 	void Reset(int x, int y, int dirX, int dirY);
 	void Move(int x, int y);
