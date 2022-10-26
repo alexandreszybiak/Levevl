@@ -50,7 +50,7 @@ void TileHitFx::Reset(int x, int y, int dirX, int dirY) {
 	int newX, newY;
 
 	if (dirX > 0) {
-		newX = x / TILE_SIZE * TILE_SIZE;
+		newX = x / TILE_SIZE * TILE_SIZE - 1;
 		newY = y / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2;
 	}
 	else if (dirX < 0) {
@@ -59,7 +59,7 @@ void TileHitFx::Reset(int x, int y, int dirX, int dirY) {
 	}
 	else if (dirY > 0) {
 		newX = x / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2;
-		newY = y / TILE_SIZE * TILE_SIZE;
+		newY = y / TILE_SIZE * TILE_SIZE - 1;
 	}
 	else {
 		newX = x / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2;
