@@ -15,6 +15,7 @@ Level::Level(Camera& camera) : m_camera(camera), m_tileHitFx(*(new TileHitFx()))
 	worldMap = new Map();
 	player = new Player(986, 175, this);
 	m_camera.m_target = player;
+	m_camera.m_levelRef = this;
 
 	// Add entities to list
 	m_entities.push_back(player);
@@ -65,6 +66,12 @@ Chunk* Level::BuildChunk(int x, int y, int width, int height, char initValue) {
 void Level::DeleteChunk(Chunk* chunk, int index) {
 	delete chunk->m_tileMap;
 	v_chunks.erase(v_chunks.begin() + index);
+}
+
+void Level::ActivateTiles() {
+	for (Chunk& chunk : v_chunks) {
+		chunk.ActivateTiles();
+	}
 }
 
 int Level::ValueAtPoint(int x, int y) {

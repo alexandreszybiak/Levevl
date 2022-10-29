@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "math.h"
 #include <algorithm>
 #include <iostream>
 #include "SDL.h"
@@ -167,6 +168,23 @@ void Chunk::DrawMask(Graphics& graphics) {
 		}
 	}
 }
+
+void Chunk::ActivateTiles() {
+	int left = std::max(m_levelRef->m_camera.m_x / TILE_SIZE - 1 - m_x / TILE_SIZE, 0);
+	int right = std::min((m_levelRef->m_camera.m_x + m_levelRef->m_camera.m_width) / TILE_SIZE + 1 - m_x / TILE_SIZE, m_width);
+	int top = std::max(m_levelRef->m_camera.m_y / TILE_SIZE - m_y / TILE_SIZE, 0);
+	int bottom = std::min((m_levelRef->m_camera.m_y + m_levelRef->m_camera.m_height) / TILE_SIZE + 1 - m_y / TILE_SIZE, m_height);
+
+	for (int x = left; x < right; x++) {
+		for (int y = top; y < bottom; y++) {
+			TileType* tile = m_tileMap->GetTile(x, y);
+			if (tile && tile->GetType() == TILE_TYPE_SPAWNER) {
+				tile->Activate(Vector2(x, y));
+			}
+		}
+	}
+}
+
 bool Chunk::Slide(const Vector2& direction, bool turbo) {
 	std::vector<Chunk*> otherChunks;
 	std::vector<Chunk*> pushedChunks;

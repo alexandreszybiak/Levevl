@@ -33,6 +33,7 @@ public:
 	SDL_Texture* playerStickTexture;
 	SDL_Texture* backgroundTexture;
 	SDL_Texture* tileHitFxTexture;
+	SDL_Texture* bouncingEnemyTexture;
 
 private:
 	//

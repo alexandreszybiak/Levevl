@@ -146,6 +146,9 @@
     <Image Include="Assets\tile_hit_fx_texture.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Assets\bouncing_enemy_texture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="level.bin">

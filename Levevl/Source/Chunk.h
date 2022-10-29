@@ -70,6 +70,9 @@ public:
 	int GetWidth();
 	std::vector<char>* GetData();
 
+	// Activate tiles
+	void ActivateTiles();
+
 	// Slide changes the target grid position of a chunk which inits a movement, return false if the chunk cannot move
 	bool Slide(const Vector2& direction, bool turbo = false);
 

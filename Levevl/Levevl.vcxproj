@@ -235,6 +235,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\background_texture.png" />
+    <Image Include="Assets\bouncing_enemy_texture.png" />
     <Image Include="Assets\chunk_mask_tileset.tga" />
     <Image Include="Assets\chunk_texture.png" />
     <Image Include="Assets\player.png" />

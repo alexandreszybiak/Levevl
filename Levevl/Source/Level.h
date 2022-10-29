@@ -53,6 +53,9 @@ public:
 	// Builds a new chunk from an initial value
 	Chunk* BuildChunk(int x, int y, int width, int height, char initValue);
 
+	// Activate tiles when entering a room
+	void ActivateTiles();
+
 	void DeleteChunk(Chunk* chunk, int index);
 
 	int ValueAtPoint(int x, int y);
@@ -60,7 +63,10 @@ public:
 	// Returns true if the level is solid at a given point
 	bool SolidAtPoint(int x, int y);
 
+	// Returns true if the line overlaps solids
 	bool LineOverlapsSolid(HorizontalLine& line);
+
+	// Returns true if the line overlaps solids
 	bool LineOverlapsSolid(VerticalLine& line);
 
 private:

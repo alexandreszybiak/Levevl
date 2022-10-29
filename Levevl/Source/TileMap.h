@@ -49,6 +49,7 @@ protected:
 public:
 	TileType(TileTypes type) : m_type(type) {}
 	virtual bool Hit(Chunk& chunk, const Vector2& direction);
+	virtual void Activate(const Vector2& position);
 	virtual bool Solid() = 0;
 	virtual bool Visible() = 0;
 	virtual void Draw(Graphics& graphics, int x, int y) = 0;
@@ -98,6 +99,7 @@ public:
 class SpawnerTile : public TileType {
 public:
 	SpawnerTile() : TileType(TILE_TYPE_SPAWNER) {}
+	void Activate(const Vector2& position) override;
 	bool Solid() { return false; }
 	bool Visible() { return true; }
 	void Draw(Graphics& graphics, int x, int y);

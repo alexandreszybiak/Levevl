@@ -73,6 +73,10 @@ bool TileType::Hit(Chunk& chunk, const Vector2& direction) {
 	return false;
 }
 
+void TileType::Activate(const Vector2& position) {
+
+}
+
 void NothingTile::Draw(Graphics& graphics, int x, int y) {
 
 }
@@ -113,4 +117,8 @@ void SpawnerTile::Draw(Graphics& graphics, int x, int y) {
 	SDL_Rect srcRect = { m_tileSize * 3, 0, m_tileSize, m_tileSize };
 	SDL_Rect dstRect = { x, y, m_tileSize, m_tileSize };
 	graphics.Draw(graphics.chunkTexture, &srcRect, &dstRect);
+}
+
+void SpawnerTile::Activate(const Vector2& position) {
+	std::cout << "Spawner activated at " << position.x << "," << position.y << std::endl;
 }
