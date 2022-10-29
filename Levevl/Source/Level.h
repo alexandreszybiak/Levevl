@@ -57,8 +57,11 @@ public:
 
 	int ValueAtPoint(int x, int y);
 
-	bool OverlapsLine(HorizontalLine& line);
-	bool OverlapsLine(VerticalLine& line);
+	// Returns true if the level is solid at a given point
+	bool SolidAtPoint(int x, int y);
+
+	bool LineOverlapsSolid(HorizontalLine& line);
+	bool LineOverlapsSolid(VerticalLine& line);
 
 private:
 	//

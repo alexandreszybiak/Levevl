@@ -77,16 +77,28 @@ int Level::ValueAtPoint(int x, int y) {
 	return 0;
 }
 
-bool Level::OverlapsLine(VerticalLine& line) {
+bool Level::SolidAtPoint(int x, int y) {
+	for (Chunk& chunk : v_chunks) {
+		TileType* tile = chunk.TileAtPoint(x, y);
+		if (tile == nullptr)
+			continue;
+		if (tile->Solid())
+			return true;
+		else
+			return false;
+
+	}
+	return true;
+}
+
+bool Level::LineOverlapsSolid(VerticalLine& line) {
 	int x = line.X();
 	int y = line.Start();
 
 	// Horizontal
 	while (1) {
-		int valueAtPoint = ValueAtPoint(x, y);
-		if (valueAtPoint != 1) {
+		if (SolidAtPoint(x, y))
 			return true;
-		}
 		if (y < line.End() - 1) {
 			y += std::min(line.End() - 1 - y, TILE_SIZE);
 			continue;
@@ -97,16 +109,14 @@ bool Level::OverlapsLine(VerticalLine& line) {
 	return false;
 }
 
-bool Level::OverlapsLine(HorizontalLine& line) {
+bool Level::LineOverlapsSolid(HorizontalLine& line) {
 	int y = line.Y();
 	int x = line.Start();
 
 	// Horizontal
 	while (1) {
-		int valueAtPoint = ValueAtPoint(x, y);
-		if (valueAtPoint != 1) {
+		if (SolidAtPoint(x, y))
 			return true;
-		}
 		if (x < line.End() - 1) {
 			x += std::min(line.End() - 1 - x, TILE_SIZE);
 			continue;

@@ -295,7 +295,7 @@ TileType* Chunk::TileAtPoint(int x, int y) {
 	int tileY = floor(float(y - m_y) / TILE_SIZE);
 
 	if (tileX < 0 || tileX >= m_width || tileY < 0 || tileY >= m_height)
-		return 0;
+		return nullptr;
 
 	return m_tileMap->GetTile(tileX, tileY);
 }

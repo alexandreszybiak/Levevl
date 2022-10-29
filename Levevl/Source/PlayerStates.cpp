@@ -110,7 +110,7 @@ PlayerState* PlayerJumpState::HandleInput(Player* player, Input& input) {
 
 	}
 
-	if (player->m_levelRef->OverlapsLine(frontLine) && inputHDir == player->m_direction) {
+	if (player->m_levelRef->LineOverlapsSolid(frontLine) && inputHDir == player->m_direction) {
 		return player->m_playerWallSlideState;
 	}
 
@@ -170,7 +170,7 @@ PlayerState* PlayerFallState::HandleInput(Player* player, Input& input) {
 		isStickWallSlide = false;
 	}
 
-	if (player->m_levelRef->OverlapsLine(frontLine) && inputHDir == player->m_direction) {
+	if (player->m_levelRef->LineOverlapsSolid(frontLine) && inputHDir == player->m_direction) {
 		return player->m_playerWallSlideState->Reset(isStickWallSlide);
 	}
 
