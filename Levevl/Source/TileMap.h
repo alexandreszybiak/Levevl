@@ -38,7 +38,8 @@ enum TileTypes {
 	TILE_TYPE_NOTHING,
 	TILE_TYPE_EMPTY,
 	TILE_TYPE_BRICK,
-	TILE_TYPE_TURBO
+	TILE_TYPE_TURBO,
+	TILE_TYPE_SPAWNER
 };
 
 class TileType {
@@ -69,7 +70,6 @@ class EmptyTile : public TileType {
 
 public:
 	EmptyTile() : TileType(TILE_TYPE_EMPTY) {}
-	//void Hit();
 	bool Solid() { return false; }
 	bool Visible() { return true; }
 	void Draw(Graphics& graphics, int x, int y);
@@ -91,6 +91,14 @@ public:
 	TurboTile() : TileType(TILE_TYPE_TURBO) {}
 	bool Hit(Chunk& chunk, const Vector2& direction);
 	bool Solid() { return true; }
+	bool Visible() { return true; }
+	void Draw(Graphics& graphics, int x, int y);
+};
+
+class SpawnerTile : public TileType {
+public:
+	SpawnerTile() : TileType(TILE_TYPE_SPAWNER) {}
+	bool Solid() { return false; }
 	bool Visible() { return true; }
 	void Draw(Graphics& graphics, int x, int y);
 };

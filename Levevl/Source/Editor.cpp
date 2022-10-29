@@ -121,7 +121,7 @@ void Editor::Update(Input& input) {
 	
 	
 	if (int y = input.GetMouseWheel()) {
-		int maxValue = 4;
+		int maxValue = 5;
 		m_brushValue = (m_brushValue + maxValue + y) % maxValue;
 	}
 	if (input.WasKeyPressed(SDL_SCANCODE_DELETE)) {

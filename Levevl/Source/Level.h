@@ -33,7 +33,7 @@ public:
 	std::vector<Entity*> m_entities;
 
 	// Stores all the pointers to tile types
-	std::array<TileType*, 4> m_tileTypes;
+	std::array<TileType*, 5> m_tileTypes;
 
 	//TileType* m_tileTypes[3];
 

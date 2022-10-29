@@ -106,3 +106,11 @@ bool TurboTile::Hit(Chunk& chunk, const Vector2& direction) {
 	return chunk.Slide(direction, true);
 	return false;
 }
+
+// Spawner tile
+
+void SpawnerTile::Draw(Graphics& graphics, int x, int y) {
+	SDL_Rect srcRect = { m_tileSize * 3, 0, m_tileSize, m_tileSize };
+	SDL_Rect dstRect = { x, y, m_tileSize, m_tileSize };
+	graphics.Draw(graphics.chunkTexture, &srcRect, &dstRect);
+}
