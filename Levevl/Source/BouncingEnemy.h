@@ -4,6 +4,8 @@
 
 class Graphics;
 class Input;
+class Chunk;
+class Level;
 
 class BouncingEnemy : public Entity {
 public:
@@ -11,9 +13,10 @@ public:
 private:
 	Sprite m_sprite;
 public:
-	BouncingEnemy();
+	BouncingEnemy(int x, int y, Level* level);
 	void Update(Input& input);
 	void Draw(Graphics& graphics) override;
+	bool IsRiding(Chunk& chunk) override;
 
 private:
 	//

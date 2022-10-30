@@ -7,6 +7,8 @@
 #include "Camera.h"
 #include "TileMap.h"
 #include "Chunk.h"
+#include "Level.h"
+#include "BouncingEnemy.h"
 
 TileMap::TileMap(int width, int height, int tileSize, TileType* initTile) : m_width(width), m_height(height), m_tileSize(tileSize) {
 	m_data.reserve(width * height);
@@ -120,5 +122,11 @@ void SpawnerTile::Draw(Graphics& graphics, int x, int y) {
 }
 
 void SpawnerTile::Activate(const Vector2& position) {
+	if (m_levelRef.CanAddEntity() == false)
+		return;
 	std::cout << "Spawner activated at " << position.x << "," << position.y << std::endl;
+
+	BouncingEnemy* newEnemy = new BouncingEnemy(position.x, position.y, &m_levelRef);
+
+	m_levelRef.AddEntityToDrawList(newEnemy);
 }

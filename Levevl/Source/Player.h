@@ -96,8 +96,6 @@ private:
 
 	Direction m_direction;
 
-	Level* m_levelRef;
-
 public:
 	Player(int x, int y, Level* level);
 	void Update(Input& input) override;

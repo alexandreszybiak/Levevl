@@ -5,6 +5,7 @@ class Input;
 class Graphics;
 class Animation;
 class Sprite;
+class Level;
 
 class TileHitFx : public Entity {
 public:
@@ -15,7 +16,7 @@ private:
 	Sprite& m_sprite;
 
 public:
-	TileHitFx();
+	TileHitFx(Level* level);
 	~TileHitFx();
 	void Update(Input& input) override;
 	void Draw(Graphics& graphics);

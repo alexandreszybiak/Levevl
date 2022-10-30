@@ -29,7 +29,7 @@ public:
 
 	Player* player;
 
-	TileHitFx& m_tileHitFx;
+	TileHitFx* m_tileHitFx;
 
 	std::array<Entity*, 20> m_entities;
 
@@ -59,6 +59,9 @@ public:
 
 	// Removes an entity from the draw list
 	void RemoveEntityFromDrawList(Entity* entity);
+
+	//
+	bool CanAddEntity();
 
 	// Activate tiles when entering a room
 	void ActivateTiles();

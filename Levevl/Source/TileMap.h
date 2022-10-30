@@ -5,6 +5,7 @@ class Vector2;
 class Graphics;
 class Chunk;
 class TileType;
+class Level;
 
 class TileMap {
 private:
@@ -97,8 +98,10 @@ public:
 };
 
 class SpawnerTile : public TileType {
+private:
+	Level& m_levelRef;
 public:
-	SpawnerTile() : TileType(TILE_TYPE_SPAWNER) {}
+	SpawnerTile(Level& level) : TileType(TILE_TYPE_SPAWNER), m_levelRef(level) {}
 	void Activate(const Vector2& position) override;
 	bool Solid() { return false; }
 	bool Visible() { return true; }

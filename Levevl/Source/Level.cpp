@@ -11,25 +11,25 @@
 #include "Player.h"
 #include "TileHitFx.h"
 
-Level::Level(Camera& camera) : m_camera(camera), m_tileHitFx(*(new TileHitFx())), m_entitiesLastIndex(0) {
+Level::Level(Camera& camera) : m_camera(camera), m_entitiesLastIndex(0) {
 
 	worldMap = new Map();
 	player = new Player(986, 175, this);
-	Player* player2 = new Player(986, 175, this);
+	m_tileHitFx = new TileHitFx(this);
 	m_camera.m_target = player;
 	m_camera.m_levelRef = this;
 
 	// Init entities
 	m_entities.fill(nullptr);
 	AddEntityToDrawList(player);
-	AddEntityToDrawList(&m_tileHitFx);
+	AddEntityToDrawList(m_tileHitFx);
 
 	// Init tile types
 	m_tileTypes[TILE_TYPE_NOTHING] = new NothingTile();
 	m_tileTypes[TILE_TYPE_EMPTY] = new EmptyTile();
 	m_tileTypes[TILE_TYPE_BRICK] = new BrickTile();
 	m_tileTypes[TILE_TYPE_TURBO] = new TurboTile();
-	m_tileTypes[TILE_TYPE_SPAWNER] = new SpawnerTile();
+	m_tileTypes[TILE_TYPE_SPAWNER] = new SpawnerTile(*this);
 
 }
 
@@ -91,6 +91,10 @@ void Level::RemoveEntityFromDrawList(Entity* entity) {
 	for (Entity* e : m_entities) {
 		e->m_index = drawIndex++;
 	}
+}
+
+bool Level::CanAddEntity() {
+	return m_entitiesLastIndex != m_entities.size();
 }
 
 Chunk* Level::BuildChunk(int x, int y, int width, int height, TileMap* tileMap) {

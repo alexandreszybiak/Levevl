@@ -13,7 +13,7 @@
 #include "Chunk.h"
 #include "TileHitFx.h"
 
-Player::Player(int x, int y, Level* level) : Entity(x, y), m_direction(DIRECTION_RIGHT), m_currentBodyAnimation(nullptr), m_onFloor(false), m_stickCollisionLine({ 25,4,5 }), m_boundingBox({ -12,-16,12,16 }), m_levelRef(level) {
+Player::Player(int x, int y, Level* level) : Entity(x, y, level), m_direction(DIRECTION_RIGHT), m_currentBodyAnimation(nullptr), m_onFloor(false), m_stickCollisionLine({ 25,4,5 }), m_boundingBox({ -12,-16,12,16 }) {
 
 	// Init animations
 
@@ -298,13 +298,13 @@ bool Player::HitAtPoint(int x, int y, const Vector2& direction) {
 
 		// If I hit a solid inside the Chunk
 		if (tile && tile->Solid()) {
-			m_levelRef->m_tileHitFx.Reset(x, y, direction.x, direction.y);
+			m_levelRef->m_tileHitFx->Reset(x, y, direction.x, direction.y);
 			return tile->Hit(chunk, direction);
 		}
 
 		// If I hit the void
 		if (levelValueAtStickPoint == 0 && ValueAtOrigin == 1) {
-			m_levelRef->m_tileHitFx.Reset(x, y, direction.x, direction.y);
+			m_levelRef->m_tileHitFx->Reset(x, y, direction.x, direction.y);
 			return chunk.Slide(direction);
 		}
 	}

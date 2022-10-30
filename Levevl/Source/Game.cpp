@@ -152,6 +152,7 @@ void Game::render(Graphics& graphics) {
 	SDL_SetTextureBlendMode(graphics.playerBodyTexture, blendAndPreserveAlpha);
 	SDL_SetTextureBlendMode(graphics.playerStickTexture, blendAndPreserveAlpha);
 	SDL_SetTextureBlendMode(graphics.tileHitFxTexture, blendAndPreserveAlpha);
+	SDL_SetTextureBlendMode(graphics.bouncingEnemyTexture, blendAndPreserveAlpha);
 	for (Chunk& chunk : level->v_chunks) {
 		chunk.Draw(graphics);
 	}

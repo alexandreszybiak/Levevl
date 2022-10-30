@@ -6,8 +6,9 @@
 #include "Sprite.h"
 #include "Chunk.h"
 #include "TileHitFx.h"
+#include "Level.h"
 
-TileHitFx::TileHitFx() : Entity(0,0), m_sprite(*(new Sprite(0, 0, 14, 34, 3, 14, 16))) {
+TileHitFx::TileHitFx(Level* level) : Entity(0,0, level), m_sprite(*(new Sprite(0, 0, 14, 34, 3, 14, 16))) {
 	m_animation = new Animation(2, false);
 	m_animation->PushFrame(0);
 	m_animation->PushFrame(1);
