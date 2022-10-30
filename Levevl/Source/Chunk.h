@@ -79,8 +79,8 @@ public:
 	// Checks if this chunk can move, this function can be called recursively
 	bool CanSlide(const Vector2& direction, std::vector<Chunk*>& otherChunks, std::vector<Chunk*>& freeChunks);
 
-	// Checks if this chunk overlaps the given 2d point and return the value at point
-	int OverlapsPoint(int x, int y);
+	// Returns true if this chunk overlaps the given point
+	bool OverlapsPoint(const Vector2& point);
 
 	// Checks if this chunk overlaps the given chunk, with
 	bool OverlapsChunk(Chunk* otherChunk, int offsetX, int offsetY);
@@ -93,6 +93,9 @@ public:
 
 	// Return the value found at the given point on the chunk's tilemap data
 	int ValueAtPoint(int x, int y);
+
+	// Returns true if the given point overlaps the solid part of this chunk
+	bool SolidAtPoint(const Vector2& point);
 
 	// Return the TileType at a given point in the world
 	TileType* TileAtPoint(int x, int y);

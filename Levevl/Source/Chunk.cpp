@@ -259,21 +259,25 @@ int Chunk::ValueAtPoint(int x, int y) {
 	return m_tileMap->GetTile(tileX, tileY)->GetType();
 }
 
-int Chunk::OverlapsPoint(int x, int y) {
-	int tileX = floor(float(x - m_x) / TILE_SIZE);
-	int tileY = floor(float(y - m_y) / TILE_SIZE);
+bool Chunk::OverlapsPoint(const Vector2& point) {
+	int tileX = floor(float(point.x - m_x) / TILE_SIZE);
+	int tileY = floor(float(point.y - m_y) / TILE_SIZE);
 
 	if (tileX < 0 || tileX >= m_width || tileY < 0 || tileY >= m_height)
-		return 0;
+		return false;
 
-	return m_tileMap->GetTile(tileX, tileY)->GetType();
+	if (m_tileMap->GetTile(tileX, tileY)->GetType() == TILE_TYPE_NOTHING)
+		return false;
+
+	return true;
 }
 
 bool Chunk::OverlapsChunk(Chunk* otherChunk, int offsetX = 0, int offsetY = 0) {
 	for (int x = 0; x < m_width; x++) {
 		for (int y = 0; y < m_height; y++) {
 			if (m_tileMap->GetTile(x, y)->Visible()) {
-				if (otherChunk->OverlapsPoint((x + offsetX) * TILE_SIZE + m_targetX, (y + offsetY) * TILE_SIZE + m_targetY)) {
+				Vector2 point = { (x + offsetX) * TILE_SIZE + m_targetX, (y + offsetY) * TILE_SIZE + m_targetY };
+				if (otherChunk->OverlapsPoint(point)) {
 					return true;
 				}
 			}
@@ -316,4 +320,14 @@ TileType* Chunk::TileAtPoint(int x, int y) {
 		return nullptr;
 
 	return m_tileMap->GetTile(tileX, tileY);
+}
+
+bool Chunk::SolidAtPoint(const Vector2& point) {
+	int tileX = floor(float(point.x - m_x) / TILE_SIZE);
+	int tileY = floor(float(point.y - m_y) / TILE_SIZE);
+
+	if (tileX < 0 || tileX >= m_width || tileY < 0 || tileY >= m_height)
+		return true;
+
+	return m_tileMap->GetTile(tileX, tileY)->Solid();
 }

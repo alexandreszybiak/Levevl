@@ -74,7 +74,7 @@ void Editor::Update(Input& input) {
 		int index = m_level_ref->v_chunks.size() - 1;
 		for (std::vector<Chunk>::reverse_iterator i = m_level_ref->v_chunks.rbegin();
 			i != m_level_ref->v_chunks.rend(); ++i) {
-			if (i->OverlapsPoint(m_cursorX, m_cursorY)) {
+			if (i->OverlapsPoint(Vector2(m_cursorX, m_cursorY))) {
 				m_selectedChunk = &*i;
 				m_selectedChunkIndex = index;
 				break;

@@ -215,6 +215,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Animation.h" />
+    <ClInclude Include="Source\BouncingEnemy.h" />
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Chunk.h" />
     <ClInclude Include="Source\Editor.h" />

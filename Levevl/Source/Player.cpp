@@ -234,9 +234,9 @@ bool Player::IsRiding(Chunk& chunk) {
 
 	// Horizontal
 	while (1) {
-		int valueAtFeetPoint = chunk.ValueAtPoint(x, y);
-		int valueAtUnderFeetPoint = chunk.ValueAtPoint(x, y + 1);
-		if (valueAtFeetPoint > 0 && valueAtUnderFeetPoint != 1) {
+		bool overlapsAtFeetPoint = chunk.OverlapsPoint(Vector2(x, y));
+		bool solidAtUnderFeetPoint = chunk.SolidAtPoint(Vector2(x, y + 1));
+		if (overlapsAtFeetPoint && solidAtUnderFeetPoint) {
 			return true;
 		}
 		if (x < feetLine.End() - 1) {

@@ -25,8 +25,10 @@ public:
 
 	virtual void MoveInstant(int x, int y);
 
+	// Preparation for carry
 	void SetCarryAmount(int x, int y);
 
+	// Carry the entity
 	void Carry();
 
 	// Collision checking on the x axis
