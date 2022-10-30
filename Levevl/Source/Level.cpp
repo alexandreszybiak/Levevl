@@ -1,3 +1,4 @@
+#include <iostream>
 #include <vector>
 #include "SDL.h"
 #include "Utilities.h"
@@ -10,16 +11,22 @@
 #include "Player.h"
 #include "TileHitFx.h"
 
-Level::Level(Camera& camera) : m_camera(camera), m_tileHitFx(*(new TileHitFx())) {
+Level::Level(Camera& camera) : m_camera(camera), m_tileHitFx(*(new TileHitFx())), m_drawListLastIndex(0) {
 
 	worldMap = new Map();
 	player = new Player(986, 175, this);
+	Player* player2 = new Player(986, 175, this);
 	m_camera.m_target = player;
 	m_camera.m_levelRef = this;
 
 	// Add entities to list
 	m_entities.push_back(player);
 	m_entities.push_back(&m_tileHitFx);
+
+	// Init draw list
+	m_drawList.fill(nullptr);
+	AddEntityToDrawList(player);
+	AddEntityToDrawList(&m_tileHitFx);
 
 	// Init tile types
 	m_tileTypes[TILE_TYPE_NOTHING] = new NothingTile();
@@ -47,6 +54,45 @@ void Level::Update(Input& input) {
 	m_camera.Update();
 
 	
+}
+
+void Level::DrawEntities(Graphics& graphics) {
+	for (Entity* entity : m_drawList) {
+		if (entity == nullptr)
+			break;
+		entity->Draw(graphics);
+	}
+}
+
+void Level::AddEntityToDrawList(Entity* entity) {
+	if (m_drawListLastIndex == m_drawList.size()) {
+		std::cout << "Can't add to draw list. No more free slots." << std::endl;
+		return;
+	}
+	m_drawList[m_drawListLastIndex] = entity;
+	entity->m_drawIndex = m_drawListLastIndex;
+	m_drawListLastIndex++;
+}
+
+void Level::RemoveEntityFromDrawList(Entity* entity) {
+	int index = entity->m_drawIndex;
+	if (index == -1)
+		return;
+	entity->m_drawIndex = -1;
+
+	size_t size = sizeof(void*) * (m_drawListLastIndex - 1 - index);
+	void* dst = &m_drawList + index;
+	void* src = &m_drawList[index + 1];
+
+	std::memcpy(dst, src, size);
+
+	m_drawList[m_drawListLastIndex - 1] = nullptr;
+	m_drawListLastIndex--;
+
+	int drawIndex = 0;
+	for (Entity* e : m_drawList) {
+		e->m_drawIndex = drawIndex++;
+	}
 }
 
 Chunk* Level::BuildChunk(int x, int y, int width, int height, TileMap* tileMap) {

@@ -7,14 +7,17 @@ class Input;
 class Chunk;
 
 class Entity {
+public:
+	int m_drawIndex;
+
 protected:
 	int m_x, m_y;
 	float m_xRemainder, m_yRemainder;
 	int m_carryAmountX, m_carryAmountY;
 
 public:
-	Entity() : m_x(0), m_y(0), m_xRemainder(.0f), m_yRemainder(.0f), m_carryAmountX(0), m_carryAmountY(0) {}
-	Entity(int x, int y) : m_x(x), m_y(y), m_xRemainder(.0f), m_yRemainder(.0f), m_carryAmountX(0), m_carryAmountY(0) {}
+	Entity() : m_x(0), m_y(0), m_xRemainder(.0f), m_yRemainder(.0f), m_carryAmountX(0), m_carryAmountY(0), m_drawIndex(-1) {}
+	Entity(int x, int y) : m_x(x), m_y(y), m_xRemainder(.0f), m_yRemainder(.0f), m_carryAmountX(0), m_carryAmountY(0), m_drawIndex(-1) {}
 
 	virtual void Update(Input& input) = 0;
 

@@ -3,6 +3,7 @@
 #include <vector>
 
 class Input;
+class Graphics;
 class Camera;
 class Entity;
 class HorizontalLine;
@@ -35,11 +36,10 @@ public:
 	// Stores all the pointers to tile types
 	std::array<TileType*, 5> m_tileTypes;
 
-	//TileType* m_tileTypes[3];
-
-
 private:
-	//
+	// DrawList
+	std::array<Entity*, 20> m_drawList;
+	int m_drawListLastIndex;
 
 public:
 	Level(Camera& camera);
@@ -47,11 +47,19 @@ public:
 
 	void Update(Input& input);
 
+	void DrawEntities(Graphics& graphics);
+
 	// Builds a new chunk from an existing TileMap
 	Chunk* BuildChunk(int x, int y, int width, int height, TileMap* tileMap);
 
 	// Builds a new chunk from an initial value
 	Chunk* BuildChunk(int x, int y, int width, int height, char initValue);
+
+	// Adds an entity to the draw list
+	void AddEntityToDrawList(Entity* entity);
+
+	// Removes an entity from the draw list
+	void RemoveEntityFromDrawList(Entity* entity);
 
 	// Activate tiles when entering a room
 	void ActivateTiles();
