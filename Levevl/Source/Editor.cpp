@@ -23,7 +23,6 @@ Editor::Editor(Level* level) :
 		m_drawGuides(false) {
 	m_level_ref = level;
 	m_selectedChunk = nullptr;
-	m_selectedChunkIndex = 0;
 	Load();
 }
 
@@ -76,7 +75,6 @@ void Editor::Update(Input& input) {
 			i != m_level_ref->v_chunks.rend(); ++i) {
 			if (i->OverlapsPoint(Vector2(m_cursorX, m_cursorY))) {
 				m_selectedChunk = &*i;
-				m_selectedChunkIndex = index;
 				break;
 			}
 			index--;
@@ -112,7 +110,6 @@ void Editor::Update(Input& input) {
 		else if(m_brushMode) {
 			m_selectedChunk = m_level_ref->BuildChunk(m_selection.x, m_selection.y, gridX2 - gridX, gridY2 - gridY,
 				 m_brushValue);
-			m_selectedChunkIndex = m_level_ref->v_chunks.size() - 1;
 		}
 
 		// Reset the selection
@@ -126,9 +123,8 @@ void Editor::Update(Input& input) {
 	}
 	if (input.WasKeyPressed(SDL_SCANCODE_DELETE)) {
 		if (m_selectedChunk) {
-			m_level_ref->DeleteChunk(m_selectedChunk, m_selectedChunkIndex);
+			m_level_ref->DeleteChunk(m_selectedChunk);
 			m_selectedChunk = nullptr;
-			m_selectedChunkIndex = 0;
 		}
 	}
 	if (input.IsKeyHeld(SDL_SCANCODE_LCTRL)) {

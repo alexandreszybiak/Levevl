@@ -52,7 +52,11 @@ void Level::Update(Input& input) {
 Chunk* Level::BuildChunk(int x, int y, int width, int height, TileMap* tileMap) {
 	//v_chunks.push_back({ x,y,width,height,initValue,this });
 	v_chunks.emplace_back(x,y,width,height,tileMap,this);
-	return &v_chunks[v_chunks.size() - 1];
+
+	int lastIndex = v_chunks.size() - 1;
+	Chunk* newChunk = &v_chunks[lastIndex];
+	newChunk->m_index = lastIndex;
+	return newChunk;
 }
 
 Chunk* Level::BuildChunk(int x, int y, int width, int height, char initValue) {
@@ -60,12 +64,21 @@ Chunk* Level::BuildChunk(int x, int y, int width, int height, char initValue) {
 	TileMap* newTileMap = new TileMap(width, height, TILE_SIZE, m_tileTypes[initValue]);
 
 	v_chunks.emplace_back(x, y, width, height, newTileMap, this);
-	return &v_chunks[v_chunks.size() - 1];
+
+	int lastIndex = v_chunks.size() - 1;
+	Chunk* newChunk = &v_chunks[lastIndex];
+	newChunk->m_index = lastIndex;
+	return newChunk;
 }
 
-void Level::DeleteChunk(Chunk* chunk, int index) {
+void Level::DeleteChunk(Chunk* chunk) {
 	delete chunk->m_tileMap;
-	v_chunks.erase(v_chunks.begin() + index);
+	v_chunks.erase(v_chunks.begin() + chunk->m_index);
+	int i = 0;
+	for (Chunk& chunk : v_chunks) {
+		chunk.m_index = i;
+		i++;
+	}
 }
 
 void Level::ActivateTiles() {

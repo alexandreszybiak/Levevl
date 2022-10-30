@@ -56,7 +56,7 @@ public:
 	// Activate tiles when entering a room
 	void ActivateTiles();
 
-	void DeleteChunk(Chunk* chunk, int index);
+	void DeleteChunk(Chunk* chunk);
 
 	int ValueAtPoint(int x, int y);
 

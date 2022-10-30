@@ -22,6 +22,9 @@ public:
 	// A TileMap object to store the data
 	TileMap* m_tileMap;
 
+	// The index in the chunk list
+	int m_index;
+
 private:
 	// Used to compute collisions with entities
 	int m_x, m_y;
