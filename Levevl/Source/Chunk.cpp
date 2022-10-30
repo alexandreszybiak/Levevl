@@ -93,6 +93,8 @@ void Chunk::Move(float x, float y) {
 	if (moveX != 0) {
 
 		for (Entity* e : m_levelRef->m_entities) {
+			if (e == nullptr)
+				break;
 			if (e->IsRiding(*this)) {
 				e->SetCarryAmount(moveX, 0);
 			}
@@ -102,6 +104,8 @@ void Chunk::Move(float x, float y) {
 		m_x += moveX;
 
 		for (Entity* e : m_levelRef->m_entities) {
+			if (e == nullptr)
+				break;
 			e->Carry();
 			while (e->OverlapsSolidX(-Sign(moveX), 0)) {
 				e->MoveInstant(Sign(moveX), 0);
@@ -124,6 +128,8 @@ void Chunk::Move(float x, float y) {
 	if (moveY != 0) {
 
 		for (Entity* e : m_levelRef->m_entities) {
+			if (e == nullptr)
+				break;
 			if (e->IsRiding(*this)) {
 				e->SetCarryAmount(0, moveY);
 			}
@@ -133,6 +139,8 @@ void Chunk::Move(float x, float y) {
 		m_y += moveY;
 
 		for (Entity* e : m_levelRef->m_entities) {
+			if (e == nullptr)
+				break;
 			e->Carry();
 			while (e->OverlapsSolidY(-Sign(moveY), 0)) {
 				e->MoveInstant(0, Sign(moveY));

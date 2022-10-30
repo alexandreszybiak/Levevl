@@ -11,7 +11,7 @@
 #include "Player.h"
 #include "TileHitFx.h"
 
-Level::Level(Camera& camera) : m_camera(camera), m_tileHitFx(*(new TileHitFx())), m_drawListLastIndex(0) {
+Level::Level(Camera& camera) : m_camera(camera), m_tileHitFx(*(new TileHitFx())), m_entitiesLastIndex(0) {
 
 	worldMap = new Map();
 	player = new Player(986, 175, this);
@@ -19,12 +19,8 @@ Level::Level(Camera& camera) : m_camera(camera), m_tileHitFx(*(new TileHitFx()))
 	m_camera.m_target = player;
 	m_camera.m_levelRef = this;
 
-	// Add entities to list
-	m_entities.push_back(player);
-	m_entities.push_back(&m_tileHitFx);
-
-	// Init draw list
-	m_drawList.fill(nullptr);
+	// Init entities
+	m_entities.fill(nullptr);
 	AddEntityToDrawList(player);
 	AddEntityToDrawList(&m_tileHitFx);
 
@@ -48,6 +44,8 @@ void Level::Update(Input& input) {
 	}
 
 	for (Entity* e : m_entities){
+		if (e == nullptr)
+			break;
 		e->Update(input);
 	}
 
@@ -57,7 +55,7 @@ void Level::Update(Input& input) {
 }
 
 void Level::DrawEntities(Graphics& graphics) {
-	for (Entity* entity : m_drawList) {
+	for (Entity* entity : m_entities) {
 		if (entity == nullptr)
 			break;
 		entity->Draw(graphics);
@@ -65,33 +63,33 @@ void Level::DrawEntities(Graphics& graphics) {
 }
 
 void Level::AddEntityToDrawList(Entity* entity) {
-	if (m_drawListLastIndex == m_drawList.size()) {
+	if (m_entitiesLastIndex == m_entities.size()) {
 		std::cout << "Can't add to draw list. No more free slots." << std::endl;
 		return;
 	}
-	m_drawList[m_drawListLastIndex] = entity;
-	entity->m_drawIndex = m_drawListLastIndex;
-	m_drawListLastIndex++;
+	m_entities[m_entitiesLastIndex] = entity;
+	entity->m_index = m_entitiesLastIndex;
+	m_entitiesLastIndex++;
 }
 
 void Level::RemoveEntityFromDrawList(Entity* entity) {
-	int index = entity->m_drawIndex;
+	int index = entity->m_index;
 	if (index == -1)
 		return;
-	entity->m_drawIndex = -1;
+	entity->m_index = -1;
 
-	size_t size = sizeof(void*) * (m_drawListLastIndex - 1 - index);
-	void* dst = &m_drawList + index;
-	void* src = &m_drawList[index + 1];
+	size_t size = sizeof(void*) * (m_entitiesLastIndex - 1 - index);
+	void* dst = &m_entities + index;
+	void* src = &m_entities[index + 1];
 
 	std::memcpy(dst, src, size);
 
-	m_drawList[m_drawListLastIndex - 1] = nullptr;
-	m_drawListLastIndex--;
+	m_entities[m_entitiesLastIndex - 1] = nullptr;
+	m_entitiesLastIndex--;
 
 	int drawIndex = 0;
-	for (Entity* e : m_drawList) {
-		e->m_drawIndex = drawIndex++;
+	for (Entity* e : m_entities) {
+		e->m_index = drawIndex++;
 	}
 }
 

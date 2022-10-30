@@ -156,8 +156,6 @@ void Game::render(Graphics& graphics) {
 		chunk.Draw(graphics);
 	}
 	level->DrawEntities(graphics);
-	//level->player->Draw(graphics);
-	//level->m_tileHitFx.Draw(graphics);
 
 	// Draw the background
 	SDL_SetTextureBlendMode(graphics.backgroundTexture, maskedByAlpha);

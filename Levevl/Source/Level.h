@@ -31,15 +31,14 @@ public:
 
 	TileHitFx& m_tileHitFx;
 
-	std::vector<Entity*> m_entities;
+	std::array<Entity*, 20> m_entities;
 
 	// Stores all the pointers to tile types
 	std::array<TileType*, 5> m_tileTypes;
 
 private:
 	// DrawList
-	std::array<Entity*, 20> m_drawList;
-	int m_drawListLastIndex;
+	int m_entitiesLastIndex;
 
 public:
 	Level(Camera& camera);
