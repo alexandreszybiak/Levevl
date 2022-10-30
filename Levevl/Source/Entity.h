@@ -2,6 +2,7 @@
 
 #define ENTITY_MAX_SPEED 24.0f
 
+class Graphics;
 class Input;
 class Chunk;
 
@@ -16,6 +17,8 @@ public:
 	Entity(int x, int y) : m_x(x), m_y(y), m_xRemainder(.0f), m_yRemainder(.0f), m_carryAmountX(0), m_carryAmountY(0) {}
 
 	virtual void Update(Input& input) = 0;
+
+	virtual void Draw(Graphics& graphics) = 0;
 
 	// Move by integer values on the x axis, override this function if you want collision detection and resolution
 	virtual void MoveX(float x);
