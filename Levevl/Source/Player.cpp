@@ -13,7 +13,7 @@
 #include "Chunk.h"
 #include "TileHitFx.h"
 
-Player::Player(int x, int y, Level* level) : Entity(x, y, level), m_direction(DIRECTION_RIGHT), m_currentBodyAnimation(nullptr), m_onFloor(false), m_stickCollisionLine({ 25,4,5 }), m_boundingBox({ -12,-16,12,16 }) {
+Player::Player(int x, int y, Level* level) : Entity(x, y, level), m_direction(DIRECTION_RIGHT), m_currentBodyAnimation(nullptr), m_stickCollisionLine({ 25,4,5 }), m_boundingBox({ -12,-16,12,16 }) {
 
 	// Init animations
 
@@ -126,69 +126,22 @@ void Player::Update(Input& input) {
 	MoveX(m_velocityX);
 	MoveY(m_velocityY);
 
-	// Update sprite position
-
-	m_bodySprite->SetPosition(m_x - 30, m_y - 40);
-	m_stickSprite->SetPosition(m_x - 30, m_y - 40);
-
-}
-
-void Player::MoveX(float x) {
-	m_xRemainder += x;
-	int move = (int)m_xRemainder;
-
-	if (move == 0)
-		return;
-
-	m_xRemainder -= move;
-	int sign = Sign(move);
-
-	while (move != 0) {
-
-		if (OverlapsSolidX(sign, sign)) {
-			m_velocityX = .0f;
-			break;
-		}
-
-		m_x += sign;
-		move -= sign;
-
-	}
-}
-
-void Player::MoveY(float y) {
-	m_yRemainder += y;
-	int move = round(m_yRemainder);
-
-	if (move == 0)
-		return;
-
-	m_yRemainder -= move;
-	int sign = Sign(move);
-
-	while (move != 0) {
-		
-		if (OverlapsSolidY(sign, sign)) {
-			m_velocityY = .0f;
-			if (move > 0) {
-				m_onFloor = true;
-			}
-			break;
-		}
-		
-		m_y += sign;
-		move -= sign;
-	}
 
 	// Offset the player if the stick tip is overlapping the world
+
 	if (m_stickState == m_stickIdleState || m_stickState == m_stickHitState) {
-		
+
 		VerticalLine stickLine = { m_x + 20 * m_direction, m_y + 3, m_y + 4 };
 		for (int i = 0; i < 16 && m_levelRef->LineOverlapsSolid(stickLine); i++) {
 			m_x += -m_direction;
 			stickLine = { m_x + 20 * m_direction, m_y + HORIZONTAL_STICK_TIP_Y1, m_y + HORIZONTAL_STICK_TIP_Y2 };
 		}
 	}
+
+	// Update sprite position
+
+	m_bodySprite->SetPosition(m_x - 30, m_y - 40);
+	m_stickSprite->SetPosition(m_x - 30, m_y - 40);
 
 }
 

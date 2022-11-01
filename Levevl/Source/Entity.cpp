@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "Utilities.h"
 #include "Entity.h"
 
@@ -12,14 +13,21 @@ void Entity::MoveX(float x) {
 	int sign = Sign(move);
 
 	while (move != 0) {
+
+		if (OverlapsSolidX(sign, sign)) {
+			m_velocityX = .0f;
+			break;
+		}
+
 		m_x += sign;
 		move -= sign;
+
 	}
 }
 
 void Entity::MoveY(float y) {
 	m_yRemainder += y;
-	int move = (int)m_yRemainder;
+	int move = round(m_yRemainder);
 
 	if (move == 0)
 		return;
@@ -28,6 +36,15 @@ void Entity::MoveY(float y) {
 	int sign = Sign(move);
 
 	while (move != 0) {
+
+		if (OverlapsSolidY(sign, sign)) {
+			m_velocityY = .0f;
+			if (move > 0) {
+				m_onFloor = true;
+			}
+			break;
+		}
+
 		m_y += sign;
 		move -= sign;
 	}

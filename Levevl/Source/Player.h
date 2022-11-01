@@ -59,8 +59,6 @@ public:
 	Animation * m_stickIdleAnimation, * m_stickHitAnimation, * m_stickIdleUpAnimation, * m_stickHitUpAnimation, * m_stickIdleDownAnimation, * m_stickHitDownAnimation;
 
 private:
-
-	float m_velocityX, m_velocityY;
 	
 	const float m_speed = 2.5f;
 	const float m_groundAcceleration = 0.45f;
@@ -76,8 +74,6 @@ private:
 	VerticalLine m_stickCollisionLine;
 
 	AABB m_boundingBox;
-
-	bool m_onFloor;
 
 	// State machines
 	PlayerState * m_bodyState, * m_stickState;
@@ -100,12 +96,6 @@ public:
 	Player(int x, int y, Level* level);
 	void Update(Input& input) override;
 	void Draw(Graphics& graphics);
-
-	// Move and resolve collisions on the x axis
-	void MoveX(float x) override;
-
-	// Move and resolve collisions on the y axis
-	void MoveY(float y) override;
 
 	// Collision checking on the x axis
 	bool OverlapsSolidX(int dirX, int offset) override;
