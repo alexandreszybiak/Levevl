@@ -1,8 +1,6 @@
 #pragma once
-#include <vector>
 #include "SDL.h"
 #include "Entity.h"
-#include "Utilities.h"
 
 #define GRAVITY .48f
 #define JUMP_CANCEL_FACTOR .35f
@@ -71,10 +69,6 @@ private:
 
 	Sprite * m_bodySprite, * m_stickSprite;
 
-	VerticalLine m_stickCollisionLine;
-
-	AABB m_boundingBox;
-
 	// State machines
 	PlayerState * m_bodyState, * m_stickState;
 
@@ -102,9 +96,6 @@ public:
 
 	// Collision checking on the y
 	bool OverlapsSolidY(int dirY, int offset) override;
-	
-	// Returns true if the player should be carried by the chunk
-	bool IsRiding(Chunk& chunk);
 
 	bool OnFloor() { return m_onFloor; }
 	void SetOnFloor(bool b) { m_onFloor = b; }

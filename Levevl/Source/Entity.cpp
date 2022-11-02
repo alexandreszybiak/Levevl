@@ -1,6 +1,9 @@
 #include <algorithm>
+#include <math.h>
+#include "Game.h"
 #include "Utilities.h"
 #include "Entity.h"
+#include "Chunk.h"
 
 void Entity::MoveX(float x) {
 	m_xRemainder += x;
@@ -73,4 +76,29 @@ bool Entity::OverlapsSolidX(int dirX, int offset) {
 
 bool Entity::OverlapsSolidY(int dirY, int offset) {
 	return false;
+}
+
+bool Entity::IsRiding(Chunk& chunk) {
+	HorizontalLine feetLine = { m_y + m_boundingBox.Y2(), m_x + m_boundingBox.X1(), m_x + m_boundingBox.X2() };
+
+	int y = feetLine.Y();
+	int x = feetLine.Start();
+
+	// Horizontal
+	while (1) {
+		bool overlapsAtFeetPoint = chunk.OverlapsPoint(Vector2(x, y));
+		bool solidAtUnderFeetPoint = chunk.SolidAtPoint(Vector2(x, y + 1));
+		if (overlapsAtFeetPoint && solidAtUnderFeetPoint) {
+			return true;
+		}
+		if (x < feetLine.End() - 1) {
+			x += std::min(feetLine.End() - 1 - x, TILE_SIZE);
+			continue;
+		}
+		break;
+	}
+
+	return false;
+
+
 }

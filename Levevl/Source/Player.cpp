@@ -13,7 +13,10 @@
 #include "Chunk.h"
 #include "TileHitFx.h"
 
-Player::Player(int x, int y, Level* level) : Entity(x, y, level), m_direction(DIRECTION_RIGHT), m_currentBodyAnimation(nullptr), m_stickCollisionLine({ 25,4,5 }), m_boundingBox({ -12,-16,12,16 }) {
+Player::Player(int x, int y, Level* level) : Entity(x, y, level), m_direction(DIRECTION_RIGHT), m_currentBodyAnimation(nullptr) {
+
+	//
+	m_boundingBox = { -12,-16,12,16 };
 
 	// Init animations
 
@@ -177,31 +180,6 @@ void Player::SetPosition(int x, int y) {
 void Player::SetAnimation(Animation** target, Animation* animation) {
 	*target = animation;
 	(*target)->Play();
-}
-
-bool Player::IsRiding(Chunk& chunk) {
-	HorizontalLine feetLine = { m_y + m_boundingBox.Y2(), m_x + m_boundingBox.X1(), m_x + m_boundingBox.X2() };
-
-	int y = feetLine.Y();
-	int x = feetLine.Start();
-
-	// Horizontal
-	while (1) {
-		bool overlapsAtFeetPoint = chunk.OverlapsPoint(Vector2(x, y));
-		bool solidAtUnderFeetPoint = chunk.SolidAtPoint(Vector2(x, y + 1));
-		if (overlapsAtFeetPoint && solidAtUnderFeetPoint) {
-			return true;
-		}
-		if (x < feetLine.End() - 1) {
-			x += std::min(feetLine.End() - 1 - x, TILE_SIZE);
-			continue;
-		}
-		break;
-	}
-
-	return false;
-
-
 }
 
 bool Player::OverlapsSolidX(int dirX, int offset) {

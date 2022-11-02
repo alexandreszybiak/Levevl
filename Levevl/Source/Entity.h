@@ -1,4 +1,5 @@
 #pragma once
+#include "Utilities.h"
 
 #define ENTITY_MAX_SPEED 24.0f
 
@@ -17,6 +18,9 @@ protected:
 	bool m_onFloor;
 	float m_xRemainder, m_yRemainder;
 	int m_carryAmountX, m_carryAmountY;
+
+	AABB m_boundingBox;
+
 	Level* m_levelRef;
 
 public:
@@ -48,7 +52,7 @@ public:
 	virtual bool OverlapsSolidY(int dirY, int offset);
 
 	// Check if that entity is riding that chunk
-	virtual bool IsRiding(Chunk& chunk) = 0;
+	virtual bool IsRiding(Chunk& chunk);
 
 
 	int X() { return m_x; }
