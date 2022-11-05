@@ -126,7 +126,7 @@ void SpawnerTile::Activate(const Vector2& position) {
 		return;
 	std::cout << "Spawner activated at " << position.x << "," << position.y << std::endl;
 
-	BouncingEnemy* newEnemy = new BouncingEnemy(position.x, position.y, &m_levelRef);
+	BouncingEnemy* newEnemy = new BouncingEnemy(position.x + 12, position.y + 12, &m_levelRef);
 
 	m_levelRef.AddEntityToDrawList(newEnemy);
 }

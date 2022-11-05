@@ -2,6 +2,7 @@
 #include <math.h>
 #include "Game.h"
 #include "Utilities.h"
+#include "Level.h"
 #include "Entity.h"
 #include "Chunk.h"
 
@@ -18,7 +19,7 @@ void Entity::MoveX(float x) {
 	while (move != 0) {
 
 		if (OverlapsSolidX(sign, sign)) {
-			m_velocityX = .0f;
+			m_velocityX = m_velocityX * m_bounciness * -1.0f;
 			break;
 		}
 
@@ -41,7 +42,7 @@ void Entity::MoveY(float y) {
 	while (move != 0) {
 
 		if (OverlapsSolidY(sign, sign)) {
-			m_velocityY = .0f;
+			m_velocityY = m_velocityY * m_bounciness * -1.0f;
 			if (move > 0) {
 				m_onFloor = true;
 			}
@@ -71,10 +72,22 @@ void Entity::SetCarryAmount(int x, int y) {
 }
 
 bool Entity::OverlapsSolidX(int dirX, int offset) {
+	VerticalLine bodyLine = { m_x + m_boundingBox.X2() * dirX + offset, m_y + m_boundingBox.Y1(), m_y + m_boundingBox.Y2() };
+
+	if (m_levelRef->LineOverlapsSolid(bodyLine)) {
+		return true;
+	}
+
 	return false;
 }
 
 bool Entity::OverlapsSolidY(int dirY, int offset) {
+	HorizontalLine bodyLine = { m_y + m_boundingBox.Y2() * dirY + offset, m_x + m_boundingBox.X1(), m_x + m_boundingBox.X2() };
+
+	if (m_levelRef->LineOverlapsSolid(bodyLine)) {
+		return true;
+	}
+
 	return false;
 }
 
