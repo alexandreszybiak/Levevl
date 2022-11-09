@@ -118,7 +118,7 @@ void Editor::Update(Input& input) {
 	
 	
 	if (int y = input.GetMouseWheel()) {
-		int maxValue = 5;
+		int maxValue = m_level_ref->m_tileTypes.size();
 		m_brushValue = (m_brushValue + maxValue + y) % maxValue;
 	}
 	if (input.WasKeyPressed(SDL_SCANCODE_DELETE)) {

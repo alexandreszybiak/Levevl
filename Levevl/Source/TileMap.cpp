@@ -9,6 +9,7 @@
 #include "Chunk.h"
 #include "Level.h"
 #include "BouncingEnemy.h"
+#include "BasicEnemy.h"
 
 TileMap::TileMap(int width, int height, int tileSize, TileType* initTile) : m_width(width), m_height(height), m_tileSize(tileSize) {
 	m_data.reserve(width * height);
@@ -116,7 +117,7 @@ bool TurboTile::Hit(Chunk& chunk, const Vector2& direction) {
 // Spawner tile
 
 void SpawnerTile::Draw(Graphics& graphics, int x, int y) {
-	SDL_Rect srcRect = { m_tileSize * 3, 0, m_tileSize, m_tileSize };
+	SDL_Rect srcRect = { m_tileSize * (m_type - 1), 0, m_tileSize, m_tileSize };
 	SDL_Rect dstRect = { x, y, m_tileSize, m_tileSize };
 	graphics.Draw(graphics.chunkTexture, &srcRect, &dstRect);
 }
@@ -126,7 +127,15 @@ void SpawnerTile::Activate(const Vector2& position) {
 		return;
 	std::cout << "Spawner activated at " << position.x << "," << position.y << std::endl;
 
-	BouncingEnemy* newEnemy = new BouncingEnemy(position.x + 12, position.y + 12, &m_levelRef);
+	Entity* newEntity = nullptr;
 
-	m_levelRef.AddEntityToDrawList(newEnemy);
+	if (m_type == TILE_TYPE_SPAWNER_BOUNCE) {
+		newEntity = new BouncingEnemy(position.x + 12, position.y + 12, &m_levelRef);
+	}
+	else if (m_type == TILE_TYPE_SPAWNER_BASIC) {
+		newEntity = new BasicEnemy(position.x + 12, position.y + 10, &m_levelRef);
+	}
+
+	if(newEntity)
+		m_levelRef.AddEntityToDrawList(newEntity);
 }

@@ -186,7 +186,7 @@ void Chunk::ActivateTiles() {
 	for (int x = left; x < right; x++) {
 		for (int y = top; y < bottom; y++) {
 			TileType* tile = m_tileMap->GetTile(x, y);
-			if (tile && tile->GetType() == TILE_TYPE_SPAWNER) {
+			if (tile && tile->m_isSpawner) {
 				tile->Activate(Vector2(x * TILE_SIZE + m_x, y * TILE_SIZE + m_y));
 			}
 		}

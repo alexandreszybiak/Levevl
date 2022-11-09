@@ -34,7 +34,7 @@ public:
 	std::array<Entity*, 20> m_entities;
 
 	// Stores all the pointers to tile types
-	std::array<TileType*, 5> m_tileTypes;
+	std::array<TileType*, 6> m_tileTypes;
 
 private:
 	// DrawList

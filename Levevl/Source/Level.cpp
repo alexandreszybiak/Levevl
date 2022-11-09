@@ -29,7 +29,8 @@ Level::Level(Camera& camera) : m_camera(camera), m_entitiesLastIndex(0) {
 	m_tileTypes[TILE_TYPE_EMPTY] = new EmptyTile();
 	m_tileTypes[TILE_TYPE_BRICK] = new BrickTile();
 	m_tileTypes[TILE_TYPE_TURBO] = new TurboTile();
-	m_tileTypes[TILE_TYPE_SPAWNER] = new SpawnerTile(*this);
+	m_tileTypes[TILE_TYPE_SPAWNER_BOUNCE] = new SpawnerTile(*this, TILE_TYPE_SPAWNER_BOUNCE);
+	m_tileTypes[TILE_TYPE_SPAWNER_BASIC] = new SpawnerTile(*this, TILE_TYPE_SPAWNER_BASIC);
 
 }
 

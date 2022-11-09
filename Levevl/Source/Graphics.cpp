@@ -57,6 +57,7 @@ Graphics::Graphics() : m_camera(*(new Camera(0, 0, 640, 360))) {
 	backgroundTexture = LoadTexture("Assets/background_texture.png");
 	tileHitFxTexture = LoadTexture("Assets/tile_hit_fx_texture.png");
 	bouncingEnemyTexture = LoadTexture("Assets/bouncing_enemy_texture.png");
+	basicEnemyTexture = LoadTexture("Assets/basic_enemy_texture.png");
 
 	gameTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, m_camera.m_width, m_camera.m_height);
 }

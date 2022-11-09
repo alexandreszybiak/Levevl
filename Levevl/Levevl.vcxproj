@@ -196,6 +196,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Animation.cpp" />
+    <ClCompile Include="Source\BasicEnemy.cpp" />
     <ClCompile Include="Source\BouncingEnemy.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Chunk.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="Source\Game.h" />
     <ClInclude Include="Source\Globals.h" />
     <ClInclude Include="Source\Graphics.h" />
+    <ClInclude Include="Source\BasicEnemy.h" />
     <ClInclude Include="Source\Input.h" />
     <ClInclude Include="Source\KeyFrame.h" />
     <ClInclude Include="Source\Level.h" />

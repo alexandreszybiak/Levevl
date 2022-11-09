@@ -40,7 +40,8 @@ enum TileTypes {
 	TILE_TYPE_EMPTY,
 	TILE_TYPE_BRICK,
 	TILE_TYPE_TURBO,
-	TILE_TYPE_SPAWNER
+	TILE_TYPE_SPAWNER_BOUNCE,
+	TILE_TYPE_SPAWNER_BASIC
 };
 
 class TileType {
@@ -48,13 +49,15 @@ protected:
 	static int m_tileSize;
 	TileTypes m_type;
 public:
-	TileType(TileTypes type) : m_type(type) {}
+	TileType(TileTypes type, bool isSpawner = false) : m_type(type), m_isSpawner(isSpawner) {}
 	virtual bool Hit(Chunk& chunk, const Vector2& direction);
 	virtual void Activate(const Vector2& position);
 	virtual bool Solid() = 0;
 	virtual bool Visible() = 0;
 	virtual void Draw(Graphics& graphics, int x, int y) = 0;
 	int GetType() { return m_type; }
+
+	bool m_isSpawner;
 
 };
 
@@ -101,7 +104,7 @@ class SpawnerTile : public TileType {
 private:
 	Level& m_levelRef;
 public:
-	SpawnerTile(Level& level) : TileType(TILE_TYPE_SPAWNER), m_levelRef(level) {}
+	SpawnerTile(Level& level, TileTypes enemyType) : TileType(enemyType, true), m_levelRef(level) {}
 	void Activate(const Vector2& position) override;
 	bool Solid() { return false; }
 	bool Visible() { return true; }

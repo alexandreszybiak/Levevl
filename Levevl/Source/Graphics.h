@@ -34,6 +34,7 @@ public:
 	SDL_Texture* backgroundTexture;
 	SDL_Texture* tileHitFxTexture;
 	SDL_Texture* bouncingEnemyTexture;
+	SDL_Texture* basicEnemyTexture;
 
 private:
 	//

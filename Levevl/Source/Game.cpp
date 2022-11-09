@@ -153,6 +153,7 @@ void Game::render(Graphics& graphics) {
 	SDL_SetTextureBlendMode(graphics.playerStickTexture, blendAndPreserveAlpha);
 	SDL_SetTextureBlendMode(graphics.tileHitFxTexture, blendAndPreserveAlpha);
 	SDL_SetTextureBlendMode(graphics.bouncingEnemyTexture, blendAndPreserveAlpha);
+	SDL_SetTextureBlendMode(graphics.basicEnemyTexture, blendAndPreserveAlpha);
 	for (Chunk& chunk : level->v_chunks) {
 		chunk.Draw(graphics);
 	}
@@ -162,7 +163,7 @@ void Game::render(Graphics& graphics) {
 	SDL_SetTextureBlendMode(graphics.backgroundTexture, maskedByAlpha);
 	level->worldMap->DrawBackground(graphics);
 
-	//Draw world map
+	// Draw world map
 	level->worldMap->Draw(graphics);
 
 	// End draw
