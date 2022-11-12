@@ -21,6 +21,8 @@ protected:
 	float m_bounciness;
 
 	AABB m_boundingBox;
+	AABB m_hurtBox;
+	AABB m_hitBox;
 
 	Level* m_levelRef;
 

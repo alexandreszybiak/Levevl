@@ -1,4 +1,5 @@
 #pragma once
+#include "SDL.h"
 
 struct SDL_Window;
 struct SDL_Renderer;
@@ -13,8 +14,16 @@ public:
 	~Graphics();
 	void Update(Input& input);
 	SDL_Texture* LoadTexture(const char* fileName);
+
+	// Draw in world space
 	void Draw(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect, SDL_RendererFlip flip = SDL_FLIP_NONE, double angle = 0, const SDL_Point* center = NULL, bool ignoreCamera = false);
+
+	// Draw in screen space
 	void Draw(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect, bool ignoreCamera);
+
+	// Draw rect in world space
+	void DrawRect(SDL_Rect& rect);
+
 private:
 	void ToggleFullscreen();
 public:

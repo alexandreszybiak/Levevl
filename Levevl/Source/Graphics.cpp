@@ -104,6 +104,12 @@ void Graphics::Draw(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destRe
 	SDL_RenderCopy(m_renderer, texture, sourceRect, destRect);
 }
 
+void Graphics::DrawRect(SDL_Rect& rect) {
+	rect.x -= m_camera.m_x;
+	rect.y -= m_camera.m_y;
+	SDL_RenderDrawRect(m_renderer, &rect);
+}
+
 void Graphics::ToggleFullscreen() {
 	Uint32 flags = SDL_GetWindowFlags(m_window);
 	Uint32 value = flags & SDL_WINDOW_FULLSCREEN_DESKTOP;
